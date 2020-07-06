@@ -1,0 +1,34 @@
+{% import "bootstrap/utils.html" as utils %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+    <title>Our Store Front Online {{ title }}</title>
+
+    {% include "osf/osf_header.html" %}
+</head>
+<body>
+
+        {% include "osf/osf_search.html" %}
+	   
+
+    <!-- ##### Main Content Wrapper Start ##### -->
+    <div class="main-content-wrapper d-flex clearfix">
+        {% include "osf/osf_navigator.html" %}
+        <div class="container">
+            <p>You have been removed from our subscribers list.</p>
+            <p>You will no longer receive promotional content from Our Store Fronts.</p>
+        </div>
+    </div>
+
+{% include "osf/osf_footer.html" %}
+{% include "osf/osf_scripts.html" %}
+</body>
+</html>

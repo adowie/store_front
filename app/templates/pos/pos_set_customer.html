@@ -1,0 +1,80 @@
+<div class="col-md-12">
+
+<div class="row">
+	<div class="col-md-4">
+		<div class="customer_search_dialog">
+			<div class="input-group">
+				<span class="input-group-addon" id="search-icon"><i class="fa fa-search"></i></span>
+				<input id="customer_search_input" type="text" class="form-control customer_search_input" placeholder="customer search" aria-describedby="search-icon" name="customers">
+			</div>
+		</div>
+	</div> 
+	<div class="col-md-8">
+	 	{% if customer %}
+			<div class="display_selected_customer">
+				<span class="selected_customer_name" customer="{{ customer.tax_id }}">Customer: {{ customer.name }} - {{ customer.tax_id }}</span>
+				<!-- <span class="set_customer"><i class="fa fa-plus"></i></span> -->
+			</div>
+		{% else %}
+			<div class="display_selected_customer">
+				<span class="selected_customer_name">Customer: Not Set</span>
+			</div>
+		{% endif %}
+
+	</div>
+</div>
+
+
+<div id="customers_list">
+<hr/>
+	<div class="row">
+		 <table class="table table-responsive customers_list_tbl"> 
+           
+              <!--  class="table table-responsive table-hovered"> -->
+              <thead class="thead">
+                <tr >
+                  <td class="customer_image">&nbsp;</td>
+                  <td class="underline">Name</td>
+                  <td class="underline">Tax ID</td>
+                  <td class="underline">Email</td>
+                  <td class="underline">Address</td>
+
+                  <td class="underline">Contact</td>
+                  <td class="underline">Company</td>
+                  <td class="underline">Type</td>
+                  <td class="underline">Barcode</td>
+                </tr>
+                </thead>
+                    
+                <tbody>
+                    {% if customers is iterable and customers|length > 0 %}
+                          {% for customer in customers %}
+
+                              <tr id="customer_line" customer="{{ customer.id }}" pos="{{ pos }}" order="{{ order }}" tax="{{ customer.tax_id }}" name="{{ customer.name }}" class="customer_line">
+                                <td id="customer_image"><img src="/static/{{  customer.avatar }}"/></td>
+                            	<td class="background" id="customer_name">{{  customer.name }}</td>
+                                <td class="background" id="customer_tax">{{  customer.tax_id }}</td>                                
+                                <td class="background" id="customer_email">{{  customer.email }}</td>
+                                <td class="background" id="customer_address">{{  customer.street }},{{  customer.street2 }},{{  customer.city }}, {{  customer.zip_code }}</td>
+        
+                                <td class="background" id="customer_contact">{{  customer.contact }}</td>
+                                <td class="background" id="customer_company">{{  customer.company_name }}</td>
+                                <td class="background" id="customer_type">{{  customer.customer_type }}</td>
+                                <td class="background" id="customer_barcode">{{  customer.barcode }}</td>
+                                
+                              </tr>                    
+
+                          {% endfor %}
+                                        
+                    {% else %}
+                    <span id="no_result_found_message">No Customers Found</span>
+
+                     
+                    {% endif %}
+                </tbody>
+       
+            </table>
+	</div>
+</div>
+
+</div>

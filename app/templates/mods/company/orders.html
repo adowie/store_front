@@ -1,0 +1,161 @@
+
+{% extends "home/index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+		<div id="custmer_list">
+        <div class="col-md-12">
+        	{% if company.orders %}
+
+        	   	<table class="table">
+	        		<thead>
+	        			<th>Order ID</th>
+	        			<th>Order Date</th>
+	        			<th>Discount</th>
+	        			<th>Sub Total</th>
+	        			<th>Tax</th>
+	        			<th>Total</th>
+	        			<th>Amount Due</th>
+	        			<th>Fulfilment Status</th>
+	        			<th>Paid Status</th>
+	        			<th>Confirmation</th>
+	        			<th>Order Detail</th>
+	        		</thead>
+	        		<tbody>
+	        				{% set order_discount_total = namespace(value=0) %}
+		        			{% set order_sub_total = namespace(value=0) %}
+		        			{% set order_tax_total = namespace(value=0) %}
+		        			{% set order_ext_total = namespace(value=0) %}
+
+
+		        	{% for order in company.orders %}
+		        		{% set disabled = "disabled" %}
+		        		{% if order.filter_state|upper == "SENT" %}
+		        			{% set disabled = "" %}
+		        		{% endif %}
+	        			{% if order.orderlines|length > 0 %}
+		        			<tr class="{{ disabled }}">
+		        				<td>{{ order.id }}</td>
+		        				<td>{{ order.order_date }}</td>
+		        				<td>{{ order.disc_amount }}</td>
+		        				<td>{{ order.sub_total }}</td>
+		        				<td>{{ order.tax_amount }}</td>
+		        				<td>{{ order.total }}</td>
+		        				<td>{{ order.amount_due }}</td>
+		        				{% if order.status == 1 %}
+		        					<td>Fulfilled</td>
+		        				{% else %}
+		        					<td>
+		        						<a class="btn btn-info {{ disabled }}" href="{{ url_for('mods.fillOrder',order=order.id) }}" title="Flag Order as fulfilled: Customer will be notified" ><i class="fa fa-flag"></i> Fulfilled</a>
+		        					</td>
+		        				{% endif %}
+		        				{% if order.paid == 1 %}
+		        					<td>Paid</td>
+		        				{% else %}
+		        					<td>
+		        						<a class="btn btn-success {{ disabled }}" href="{{ url_for('mods.paidOrder',order=order.id) }}"  title="Flag as Paid"><i class="fa fa-flag"></i> Paid</a>
+		        					</td>
+		        				{% endif %}
+		        				<td>{{ order.filter_state|upper }}</td>
+
+		        				<td>
+		        					<span class="show_order_details" id="order{{ order.id }}"  title="Show Order#{{ order.id }} Details">
+		        						<i class="fa fa-eye fa-2x"></i>
+		        					</span>
+		        				</td>
+		        			</tr>
+		        				{% set order_discount_total.value = order_discount_total.value + order.disc_amount %}
+			        			{% set order_sub_total.value = order_sub_total.value + order.sub_total %}
+			        			{% set order_tax_total.value = order_tax_total.value + order.tax_amount %}
+			        			{% set order_ext_total.value = order_ext_total.value + order.amount_due  %}
+		        		{% endif %}
+
+		        	{% endfor %}
+		        		<tr>
+			        			<td></td>
+			        			<td>Total:</td>
+			        			<td>{{ order_discount_total.value }}</td>
+			        			<td>{{ order_sub_total.value }}</td>
+			        			<td>{{ order_tax_total.value }}</td>
+			        			<td>{{ order_ext_total.value }}</td>
+			        		</tr>
+	        	 		</tbody>
+	        	</table>
+
+		        	{% for order in company.orders %}
+		        		{% set disabled = "disabled" %}
+		        		{% if order.filter_state|upper == "SENT" %}
+		        			{% set disabled = "" %}
+		        		{% endif %}
+	        			{% if order.orderlines|length > 0 %}
+
+	        		<div id="order{{ order.id }}" class="order-details" >
+		        		<h4 class="order-details-h4"> Order#{{ order.id }} Details</h4>
+		        		<table class="table table-hovered">
+			        		<thead>
+			        			<tr>
+			        			<th>Item ID</th>
+			        			<th>Item Name</th>
+			        			<th>Item Qty</th>
+			        			<th>Item Price</th>
+			        			<th>Discount</th>
+			        			<th>Subtotal</th>
+			        			<th>Tax</th>
+			        			<th>Extended</th>
+			        			<th>Void Status</th>
+			        			<th>
+			        				<a class="btn btn-info {{ disabled }}" href="{{ url_for('mods.fillOrder',order=order.id) }}" title="Flag Order as fulfilled: Customer will be notified" ><i class="fa fa-flag"></i> Fulfil</a>
+			        			</th>
+			        			<th>
+			        				<a class="btn btn-success {{ disabled }}" href="#" title="Add Payment Details to Order" ><i class="fa fa-cash-register"></i> Paid</a>
+			        			</th>
+			        			<th><span id="order{{ order.id }}" class="btn btn-danger cls_order_details" title="Close Dialog"><i class="fa fa-times"></i></span></th>
+			        			</tr>
+			        		</thead>
+			        		<tbody>
+		        			{% set discount_total = namespace(value=0) %}
+		        			{% set sub_total = namespace(value=0) %}
+		        			{% set tax_total = namespace(value=0) %}
+		        			{% set ext_total = namespace(value=0) %}
+
+				        	{% for line in order.orderlines %}
+		        			<tr class="{{ disabled }}">
+		        				{% set line_tax = calTax(line.product.taxable,line.extended,company.tax) %}
+		        				{% set line_ext_with_tax = (line_tax + line.extended|float) %}
+		        				<td>{{ line.product_id }}</td>
+		        				<td>{{ line.name }}</td>
+		        				<td>{{ line.qty }}</td>
+		        				<td>{{ line.price }}</td>
+		        				<td>{{ line.discount }}</td>
+		        				<td>{{ line.extended }}</td>
+		        				<td>{{ line_tax }}</td>
+		        				<td>{{ line_ext_with_tax }}</td>
+		        				<td>{{ line.voided }}</td>
+
+		        				{% set discount_total.value = discount_total.value + line.discount %}
+			        			{% set sub_total.value = sub_total.value + line.extended %}
+			        			{% set tax_total.value = tax_total.value + line_tax %}
+			        			{% set ext_total.value = ext_total.value + line_ext_with_tax  %}
+		        			</tr>
+				        	{% endfor %}
+			        		<tr>
+			        			<td></td>
+			        			<td></td>
+			        			<td></td>
+			        			<td>Total: </td>
+			        			<td>{{ discount_total.value }}</td>
+			        			<td>{{ sub_total.value }}</td>
+			        			<td>{{ tax_total.value }}</td>
+			        			<td>{{ ext_total.value }}</td>
+			        		</tr>
+			        		</tbody>
+			        	</table>
+			        </div>
+			        	{% endif %}
+		        {% endfor %}
+
+	        {% else %}
+	        	<span>No Orders Found.</span>
+	        {% endif %}
+        </div>
+    </div>
+{% endblock %}

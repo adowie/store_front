@@ -1,0 +1,165 @@
+{% import "bootstrap/utils.html" as utils %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+    <title>Our Store Front Online {{ title }}</title>
+
+    {% include "osf/osf_header.html" %}
+
+
+</head>
+
+<body>
+        {% include "osf/osf_search.html" %}
+  
+    <!-- Search Wrapper Area End -->
+
+    <!-- ##### Main Content Wrapper Start ##### -->
+    <div class="main-content-wrapper d-flex clearfix">
+
+        {% include "osf/osf_navigator.html" %}
+       
+        <!-- Header Area End -->
+        <div class="shop_sidebar_area">
+
+            <!-- ##### Single Widget ##### -->
+            <div class="widget catagory mb-50">
+                <!-- Widget Title -->
+                <h6 class="widget-title mb-30">Shopped @</h6>
+
+                <!--  Catagories  -->
+                {% set shopped_at = dict() %}
+                {% set companies = [] %}
+                <div class="catagories-menu">
+                    <ul>
+                        <li><a class="filter_company_orders" href="#all">All</a></li>
+                        {% for order in orders %}
+                            {% if order.orderlines|length > 0 %}
+                                {% if order.company.name not in shopped_at %}
+                                    {% set _shopped_at = shopped_at.__setitem__(order.company.name,1) %}
+                                    <!-- <li>{{ order.company.name }}()</li> -->
+                                {% else %}
+                                    {% set _shopped_at = shopped_at.update({order.company.name:shopped_at[order.company.name] + 1}) %}                                
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% for order in orders %}
+                            {% if order.orderlines|length > 0 %}
+                                {% if order.company.name not in companies %}
+                                    {% do companies.append(order.company.name) %}
+                                    <li><a class="filter_company_orders" href="#{{ order.company.name }}">{{ order.company.name }}({{ shopped_at[order.company.name] }})</a></li>
+                                {% endif %}                                
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="amado_product_area section-padding-100">
+            <div class="container-fluid">
+                <div class="row">
+                  
+                        <div class="cart-title mt-50">
+                             {{ utils.flashed_messages() }}
+
+                            <h2>Orders</h2>
+                        </div>
+          
+                <table class="table table-bordered table-hover table-striped" id="orders">
+                    <thead>
+                        <th class="ft" filter-type="normal" filter-data-type="string">Order ID</th>
+                        <th class="ft" filter-type="select" filter-data-type="date">Order Date</th>
+                        <th class="ft" filter-type="none" filter-data-type="number">#Items</th>
+                        <th class="ft" filter-type="none" filter-data-type="formatted-number">Discount</th>
+                        <th class="ft" filter-type="none" filter-data-type="formatted-number">Sub Total</th>
+                        <th class="ft" filter-type="none" filter-data-type="formatted-number">Tax</th>
+                        <th class="ft" filter-type="none" filter-data-type="formatted-number">Amount Due</th>
+                        <th class="ft" filter-type="select" filter-data-type="string">Fulfilled</th>
+                        <th class="ft" filter-type="select" filter-data-type="string">Paid</th>
+                        <th class="ft" filter-type="select" filter-data-type="string">Sent</th>
+                        <th class="ft" filter-type="select" filter-data-type="string">Company</th>
+                        <!-- <th>Order Detail</th> -->
+                    </thead>
+                    <tbody>
+                    {% set order_discount_total = namespace(value=0) %}
+                    {% set order_sub_total = namespace(value=0) %}
+                    {% set order_tax_total = namespace(value=0) %}
+                    {% set order_ext_total = namespace(value=0) %}
+
+                    {% for order in orders %}
+
+                        {% if order.orderlines|length > 0 %}
+                            <tr class="order_item" data-link="{{ url_for('osf.order',order=order.id,customer=order.customer_id,company=order.company_id)}}">
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.order_date }}</td>
+                                <td>{{ order.orderlines|length }}</td>
+                                <td>{{ order.disc_amount }}</td>
+                                <td>{{ order.sub_total }}</td>
+                                <td>{{ order.tax_amount }}</td>
+                                <td>{{ order.amount_due }}</td>
+                                <td>{{ 'YES' if order.status|int == 1 else 'NO' }}</td>
+                                <td>{{ 'YES' if order.paid == 1 else 'NO'}}</td>
+                                <td>{{ order.filter_state|upper }}</td>
+                                <td>{{ order.company.name }}
+                                    {% if order.status|int == 0 %}
+                                        <a href="{{ url_for('osf.shop',company=order.company_id) }}" class="btn btn-warning">Shop</a>
+                                    {% endif %}
+                                </td>
+                           <!--      <td class="show_order_details">
+                                    <i class="fa fa-arrow-right"></i>
+                                </td> -->
+                            </tr>
+                                {% set order_discount_total.value = order_discount_total.value + order.disc_amount %}
+                                {% set order_sub_total.value = order_sub_total.value + order.sub_total %}
+                                {% set order_tax_total.value = order_tax_total.value + order.tax_amount %}
+                                {% set order_ext_total.value = order_ext_total.value + order.amount_due  %}
+                        {% endif %}
+
+                    {% endfor %}
+                           
+                        </tbody>
+                </table>
+                <table class="table table-bordered TF">
+                    <thead>
+                        <tr>
+                            <th>Discount</th>
+                            <th>Sub Total</th>
+                            <th>Tax</th>
+                            <th>Amount Due</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       <tr class="totals">
+                                <td id="sum_discs">  {{ toMoney(order_discount_total.value) }} </td>
+                                <td id="sum_subs"> {{ toMoney(order_sub_total.value) }}</td>
+                                <td id="sum_taxs">{{ toMoney(order_tax_total.value) }}</td>
+                                <td id="sum_totals"> {{ toMoney(order_ext_total.value) }}</td>
+                            </tr>
+                    </tbody>
+                </table>
+                  
+                </div>
+            </div>
+    </div>
+</div>
+
+    <!-- ##### Main Content Wrapper End ##### -->
+
+
+{% include "osf/osf_footer.html" %}
+
+ {% include "osf/osf_scripts.html" %}
+
+</body>
+
+</html>

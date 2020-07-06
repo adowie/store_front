@@ -1,0 +1,74 @@
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+
+     {% include "header.html" %}
+
+</head>
+<body>
+
+               
+<div class="logo_"> <a href="index.html"><img src="{{ url_for('static', filename='img/core-img/logo.png') }}" alt=""></a></div> 
+
+  {{ utils.flashed_messages() }}
+
+<section class="login-block">
+   
+    <div class="container_ container">
+      
+  <div class="row">
+    <div class="col-md-4 login-sec">
+        <h2 class="text-center">Login</h2>
+         {{ wtf.quick_form(form) }}
+      <br/>
+
+      <div class="copy-text">
+        Dont have account? Create one <a href="{{ url_for('auth.register') }}"> here</a><br/>
+        Forgot your credentials? Recover account <a href="{{ url_for('auth.recover') }}"> here</a>
+      </div>
+
+    </div>
+  <div class="col-md-8 banner-sec">
+  
+<br/>
+<br/>
+<!--      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+           <ol class="carousel-indicators">
+              <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+              
+            </ol>
+      <div class="carousel-inner" role="listbox">
+  <div class="carousel-item active">
+  <img class="d-block img-fluid" src="" alt="First slide">
+  <div class="carousel-caption d-none d-md-block">
+    <div class="banner-text">
+      <h2>This is Heaven</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>
+    </div>  
+  </div>
+  </div>
+
+  </div>
+  </div> -->
+    <div class="banner-text">
+
+        
+       <!--  
+        <p>
+          Expand your Network: Increase your Networth.<br/>
+            Link with people who link with people you know.
+        </p> -->
+    </div>  
+  </div>
+
+</div>
+</div>
+
+</section>
+
+    {% include "scripts.html" %}
+</body>
+</html>

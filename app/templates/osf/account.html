@@ -1,0 +1,216 @@
+{% import "bootstrap/utils.html" as utils %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+    <title>Our Store Front Online | {{ title }}</title>
+
+    {% include "osf/osf_header.html" %}
+</head>
+
+<body>
+    <!-- Search Wrapper Area Start -->
+        {% include "osf/osf_search.html" %}
+
+    <!-- Search Wrapper Area End -->
+
+    <!-- ##### Main Content Wrapper Start ##### -->
+    <div class="main-content-wrapper d-flex clearfix">
+
+        <!-- Mobile Nav (max width 767px)-->
+        {% include "osf/osf_navigator.html" %}
+
+        <!-- Header Area End -->
+        <div class="products-catagories-area clearfix">
+  {{ utils.flashed_messages() }}
+
+
+        <input type="hidden" id="active_form" value="{{ account_type if account_type else form.account_type }}"/>
+
+                        <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" eq=1 href="#home" role="tab" aria-controls="home" aria-selected="true">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" eq=2 href="#profile" role="tab" aria-controls="profile" aria-selected="false">Customer</a>
+                            </li>
+                             <li class="nav-item">
+                                <a class="nav-link" id="login-tab" data-toggle="tab" eq=3 href="#login" role="tab" aria-controls="login" aria-selected="true">Business</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                <h3 class="register-heading">Login</h3>
+                                 <form action="{{ url_for('osf.account') }}" method="post">
+
+                                            <div class="row register-form">
+                                                <input type="hidden" name="account_type" value=1>
+
+                                                <div class="col-md-12">
+
+                                                    <div class="form-group">
+                                                        <input type="email" class="form-control" placeholder="Enter Account Email *" name="log_email" value="{{ form.log_email }}" required />
+                                                    </div>
+                                                     <div class="form-group">
+                                                        <input type="password" class="form-control" placeholder="Password *" name="log_pass" value="" required />
+                                                    </div>
+                                                    <a href="{{ url_for('osf.recover')}}" ><u>Recover Account</u></a>
+                                                    <input type="submit" class="btnRegister"  value="Login"/>
+                                                </div>
+
+                                                </div>
+                                    </form>
+                            </div>
+                            <div class="tab-pane fade show" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                <h3  class="register-heading">Register Customer Account</h3>
+                                 <form action="{{ url_for('osf.account') }}" method="post" enctype="multipart/form-data">
+
+                                <div class="row register-form">
+                                    <input type="hidden" name="account_type" value=2>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="First Name *" name="cus_fname" value="{{ form.cus_fname }}" required />
+                                        </div>
+                                         <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Last Name *"  name="cus_lname" value="{{ form.cus_lname }}" required/>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" placeholder="Email *" name="cus_email" value="{{ form.cus_email }}" required/>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" maxlength="10" minlength="10" class="form-control" placeholder="Phone *" name="cus_phone" value="{{ form.cus_phone }}" required/>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control" placeholder="Password *" name="cus_pass" value="" required/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                    <div class="form-group">
+                                        <label>ID Image</label>
+                                        <input class="form-control" type="file" name="image_" id="image_" accept="image/*" enctype="multipart/form-data">
+                                    </div>
+
+                                        <input type="submit" class="btnRegister"  value="Register"/>
+                                    </div>
+
+                                </div>
+                            </form>
+
+
+                            </div>
+
+
+                             <div class="tab-pane fade show" id="login" role="tabpanel" aria-labelledby="login-tab">
+                                <h3  class="register-heading">Register Business Account</h3>
+
+
+                                <form action="{{ url_for('osf.account') }}" method="post" enctype="multipart/form-data">
+
+                                <div class="row register-form">
+                                    <input type="hidden" name="account_type" value=3>
+                                    <div class="col-md-6">
+                                          <div class="form-group">
+                                            <!-- <input type="text" class="form-control" placeholder="Business Type *" name="bus_type" value="{{ form.bus_type }}" /> -->
+                                         <select class="form-control" name="bus_type" required>
+                                            <option> --- Set Business Type ---</option>
+                                          {% for type in company_types %}
+                                            {% set selected = "" %}
+
+                                            {% if form and 'bus_type' in form and form.bus_type|int == type.id|int %}
+                                                {% set selected = "selected" %}
+                                            {% endif %}
+                                            <option value="{{ type.id }}" {{ selected }}> {{ type.name }}</option>
+                                          {% endfor %}
+                                        </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Owner Full Name *" name="bus_owner" value="{{ form.bus_owner }}" required />
+                                        </div>
+
+                                         <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Business Name *" name="bus_name" value="{{ form.bus_name }}" required />
+                                        </div>
+
+                                       <div class="form-group">
+                                            <input type="email" class="form-control" placeholder="Business Email *" name="bus_email" value="{{ form.bus_email }}" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" minlength="10" maxlength="10" name="bus_phone" class="form-control" placeholder="Business Phone " value="{{ form.bus_phone }}" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Store Front Image</label>
+                                            <input class="form-control" type="file" name="store_front_image"  accept="image/*" enctype="multipart/form-data" >
+                                            <!-- <input class="form-control image_select" name="bus_image" type="text" id="bus_image" value="" placeholder="" required> -->
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+
+                                         <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Business Address *" name="bus_address" value="{{ form.bus_address }}" required/>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Business State" name="bus_state" value="{{ form.bus_state }}" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Business City" name="bus_city" value="{{ form.bus_city }}" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Business Postal Code" name="bus_postal" value="{{ form.bus_postal }}" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Business Tax *" name="bus_tax" value="{{ form.bus_tax }}" required/>
+                                        </div>
+                                         <div class="form-group">
+                                            <input type="password" class="form-control" placeholder="Password *" name="bus_pass" value="" required/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Business Logo *</label>
+                                            <input class="form-control" type="file" name="image_" id="image_" accept="image/*" enctype="multipart/form-data" >
+                                            <!-- <input class="form-control image_select" name="bus_image" type="text" id="bus_image" value="" placeholder="" required> -->
+                                        </div>
+
+                                        <input type="submit" class="btnRegister"  value="Register"/>
+                                    </div>
+                                </div>
+                            </form>
+                                </div>
+
+                            </div>
+
+                            {% if activation_link %}
+                                {{ activation_link }}
+                            {% endif %}
+
+              </div>
+
+        <!-- Product Catagories Area End -->
+    </div>
+
+    <!-- ##### Main Content Wrapper End ##### -->
+
+    <!-- ##### Newsletter Area Start ##### -->
+
+    <!-- ##### Newsletter Area End ##### -->
+
+    <!-- ##### Footer Area Start ##### -->
+{% include "osf/osf_footer.html" %}
+    <!-- ##### Footer Area End ##### -->
+
+ {% include "osf/osf_scripts.html" %}
+
+
+</body>
+
+</html>

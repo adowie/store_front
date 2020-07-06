@@ -1,0 +1,57 @@
+<!-- Form-->
+<div class="form">
+  <div class="form-toggle"></div>
+  <div class="form-panel one">
+    <div class="form-header">
+      <h1>Account Login</h1>
+    </div>
+    <div class="form-content">
+      <form action="" method="post" class="form-horizontal" role="form" id="logForm">
+        <input type="hidden" name="login" value="1">
+ 
+        <div class="form-group">
+          <label for="username">Email</label>
+          <input type="email" id="username" name="username" required="required" value="{{ form.username if form.username else '' }}" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required="required" value="{{ form.password if form.password else '' }}" />
+        </div>
+       {% if user and user.isAuthenticated %}
+        <input type="hidden" name="name" id="sel_company_name" />
+        <div class="form-group">
+            <label for="company">Company</label>
+        
+                <select name="company" id="company">
+                    <option value="0"> -- Select -- </option>
+                    {% if user.companies and user.companies is iterable %}
+                           {% for company in user.companies %}
+                              <option value="{{ company.id }}">{{ company.name }}</option>
+                           {% endfor%}
+                    {% endif %}
+                    <option class="add_" value="add_company"> -- Add Company -- </option>
+                </select>
+            
+        </div>
+        {% endif %}
+        <div class="form-group">
+        <!--   <label class="form-remember">
+            <input type="checkbox"/>Remember Me
+          </label> -->
+
+          <a class="left" href="/recover">Recover Account</a>
+          <a class="right" href="/register">Create Account</a>
+          <br/>
+          <br/>
+        </div>
+        <div class="form-group">
+          <button type="submit">Log In</button>
+        </div>
+      </form>
+        {% if user and user.error %}
+          <p class="validation-summary-errors">{{ user.error }}</p>
+        {% endif %}
+    </div>
+  </div>
+
+</div>

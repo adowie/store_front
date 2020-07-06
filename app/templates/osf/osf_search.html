@@ -1,0 +1,31 @@
+  <div class="search-wrapper section-padding-100">
+        <div class="search-close">
+            <i class="fa fa-close" aria-hidden="true"></i>
+        </div> 
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="search-content">
+                        <form action="{{ url_for('osf.search')}}" method="post" id="search_form">
+                            <input type="search" name="search" id="search" placeholder="Type your search..." value="{{ search }}"><br/>
+                            <input type="hidden" name="search_type" id="search_type" value="1">
+                            <button type="submit"><img src="{{ url_for('static', filename='img/core-img/search.png') }}" alt=""></button>
+                            <br>
+                            {% if search_by %}
+                                {% if search_by|int == 1 %}
+                                    <em class="btn btn-small search_type active" data=1>By Company Name:</em>
+                                    <em class="btn btn-small search_type" data=2>By Product Name:</em>
+                                {% else %}
+                                    <em class="btn btn-small search_type" data=1>By Company Name:</em>
+                                    <em class="btn btn-small search_type active" data=2>By Product Name:</em>
+                                {% endif %}
+                            {% else %}
+                                    <em class="btn btn-small search_type active" data=1>By Company Name:</em>
+                                    <em class="btn btn-small search_type" data=2>By Product Name:</em>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

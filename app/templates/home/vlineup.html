@@ -1,0 +1,39 @@
+
+{% extends "home/index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+<div class="main-card mb-3 card">
+    <div class="card-body">
+        <h5 class="card-title">VIRTUAL LINEUP</h5>
+         
+	        <table class="table">
+	        	<thead>
+	        		<tr>
+		        		<th>Customer ID</th>
+		        		<th>Customer Name</th>
+		        		<th>Customer Place Inline</th>
+		        		<th>Customer Image</th>
+		        		<th>Serve</th>
+	        		</tr>
+	        	</thead>
+	        	<tbody>
+	        		{% for entry in vline_.lineup %}
+	        			<tr>
+	        				<td>{{ entry.user.customer.tax_id }}</td>
+	        				<td>{{ entry.user.fullname }}</td>
+	        				<td>{{ entry.user.lineup[0].place_in_line }}</td>
+	        				<td class="user_avatar"><img src="{{ url_for('static',filename=entry.user.image) }}"></td>
+	        				<td><a class="btn btn-info" href="{{ url_for('mods.serving',company=company.id,line=vline_.id,user=entry.user.id) }}">Serve Client</a></td>
+	        			</tr>
+
+	        		{% else %}
+	        			<tr><td>No one in virtual line yet</td></tr>
+	        		{% endfor %}
+	        	</tbody>
+	        </table>
+  
+    </div>
+</div>
+{% endblock %}
+

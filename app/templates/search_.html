@@ -1,0 +1,130 @@
+
+{% if in_ == 'category_search' %}
+    <ul id="procs">
+      {% if products and products|length > 0 %}
+        {% for product in products %}
+          {% if product.id %}
+            <li id="product_{{ product.id }}">
+              <div >
+                <span class="proc_img"><img src="/static/{{ product.image }}" /></span>
+                <span class="proc_name">{{ product.name }}</span>
+                <span class="proc_add" data="{{ product.id }}:{{ product.name }}:{{ product.image }}">
+                  <i class="fa fa-plus fa-2x"></i>
+                </span>
+              </div>
+            </li>
+          {% else %}
+              <li>No Results</li>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <li>No Results</li>
+      {% endif %}
+    </ul>
+
+{% else %}
+ 
+				<div id="pos_product_detail_view" class="view pos_product_detail_view">
+          <ul id="product_thumb">
+          {% if products is iterable and products|length > 0 %}
+            {% if not products.error %}
+              {% for product in products %}
+                <li class="well col-md-12 product" id="product_thumb_item" category="{{ product.category_id }}" code="{{ product.item_code }}" name="{{ product.name }}" company="{{ product.company_id }}" view="detail">
+           
+                  <span id="item_thumb"><img src="{{ url_for('static',filename=product.image ) }}" class="product_img_thumb" /></span>
+                  <span id="item_detail" class="col-md-8">
+                  
+                    <span id="item_name"><b><center>{{  product.name }}</center></b></span>
+                    <br/>
+                    <!-- <span id="item_description"><em>Desc:</em>&nbsp;&nbsp;{{  product.description }}</span> -->
+                    <!-- <br/> -->
+                    <span id="item_price"><em>Price:</em>&nbsp;&nbsp;{{  toMoney(product.price) }}</span>
+                    
+                    <span id="item_qty"><em>Inventory:</em>&nbsp;&nbsp;{{  product.qty }}</span>
+                    <span id="item_qty"><em>Itemcode:</em>&nbsp;&nbsp;{{  product.item_code }}</span>
+                  </span>
+                </li>                    
+              {% endfor %}
+
+            {% else %}
+                    <li id="no_result_found_message">{{ products.error }} </li>
+          
+            {% endif %}
+          {% endif %}
+          </ul>
+
+
+          
+        </div>
+
+        <div id="pos_product_list_view" class="view pos_product_list_view">
+
+
+        <table class="table table-responsive table-hovered table-bordered"> 
+              <form action="{{ url_for('mods.removeProduct') }}" method="post" role="form" class="product_remover_creator">
+              <!--  class="table table-responsive table-hovered"> -->
+                <thead>
+                  <tr class="tr well">
+              <!--       <div class="th" id="remove_item" >
+                      <i class="fa fa-trash"  title="Remove Selected Products" data-placement="left"></i>
+                    </div> -->
+                    <th class="th">Code</th>
+                    <th class="th" id="name">Name</th>
+                    <th class="th" id="description">Description</th>
+                    <th class="th">Active</th>
+                    <th class="th">UOM</th>
+                    <th class="th">Cost</th>
+                    <th class="th">Price</th>
+                    <th class="th">OnHand</th>
+                    <!-- <th class="th">Created</th> -->
+                    <th class="th">Category</th>
+                    <th class="th">Company</th>
+                    <th class="th">Taxable</th>
+                    <th class="th">Type</th>
+                    <!-- <div class="th">Barcode</div> -->
+                    
+                  </tr>
+                </thead>
+                    
+                <tbody class="tbody">
+                    {% if products is iterable and products|length > 0 %}
+
+                      {% if not products.error %}
+                          {% for product in products %} 
+
+                              <tr class="tr well product" id="product_line" id="product_thumb_item" category="{{ product.category_id }}" code="{{ product.item_code }}" name="{{ product.name }}" company="{{ product.company_id }}" view="list">
+                                <!-- <div class="td"><input type="checkbox" name="remove_product" keyue="{{ product.item_code }}" id="item_remover"/></div> -->
+                                <td class="td" id="item_code" data="{{  product.item_code }}">{{  product.item_code }}</td>
+                                <td class="td" id="item_name" data="{{  product.name }}">{{  product.name }}</td>
+                                <td class="td" id="item_description" data="{{  product.description }}">{{  product.description }}</td>
+                                <td class="td" id="item_status" data="{{  product.status }}">{{  product.status }}</td>
+                                <td class="td" id="item_uom" data="{{ product.uom_id}}">{{  product.uom.name }}</td>
+                                <td class="td" id="item_cost" data="{{  product.cost }}">${{  product.cost }}</td>
+                                <td class="td" id="item_price" data="{{ product.price }}">${{  product.price }}</td>
+                                <td class="td" id="item_qty" data="{{ product.qty }}">{{  product.qty }}</td>
+                                <!-- <td class="td" id="item_date">{{  product.created_date }}</td> -->
+                                <td class="td" id="item_category" data="{{ product.category_id}}">{{  product.category.name }}</td>
+                                <td class="td" id="item_company" data="{{ product.company_id}}">{{  product.company.name }}</td>
+                                <td class="td" id="item_taxable" data="{{ product.taxable }}">{{  product.taxable }}</td>
+                                <td class="td" id="item_type" data="{{ product.product_type_id}}">{{  product.product_type.name }}</td>
+                                <!-- <div class="td" id="item_barcode">{{  product.barcode }}</div> -->
+                                
+                              </tr>                    
+
+                          {% endfor %}
+                        <input type="submit" id="remover_btn"/>
+                    {% endif %}
+                    
+                    {% else %}
+                    <span id="no_result_found_message">No Match Found </span>
+
+                     
+                    {% endif %}
+                </tbody>
+            </form>
+          </table>
+     </div>
+
+{% endif %}
+
+      

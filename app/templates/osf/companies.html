@@ -1,0 +1,140 @@
+{% import "bootstrap/utils.html" as utils %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+    <title>Our Store Front Online | {{ title }}</title>
+
+    {% include "osf/osf_header.html" %}
+</head>
+
+<body>
+    <!-- Search Wrapper Area Start -->
+        {% include "osf/osf_search.html" %}
+    
+    <!-- Search Wrapper Area End -->
+
+    <!-- ##### Main Content Wrapper Start ##### -->
+    <div class="main-content-wrapper d-flex clearfix">
+
+        {% include "osf/osf_navigator.html" %}
+        <!-- Header Area End -->
+
+        <!-- Product Catagories Area Start -->
+        <div class="products-catagories-area clearfix">
+  {{ utils.flashed_messages() }}
+
+            <div class="amado-pro-catagory clearfix">
+
+                
+
+                 {% for business in resgistered_businesses %}
+                   <!-- Single Catagory -->
+                    {% set closed="cold open" %}
+                    {% if business.closed %}
+                        {% set closed="hot closed" %}
+                    {% endif %}
+
+                    <div class="container">
+<div class="col-xs-12 col-md-6">
+                <!-- First product box start here-->
+                <div class="prod-info-main prod-wrap clearfix">
+                      <div class="row">
+                           <div class="col-md-5 col-sm-12 col-xs-12">
+                            <div class="product-image">
+                             <img src="{{ url_for('static', filename=business.logo) }}" class="img-responsive">
+                               <span class="tag2 {{ closed }}">
+                                 
+                               </span>
+                       </div>
+                  </div>
+     <div class="col-md-7 col-sm-12 col-xs-12">
+                  <div class="product-detail">
+                               <h5 class="name">
+                               <a href="{{ url_for('osf.company',name= business.name,_id=business.id)}}">
+                                {{ business.name }}
+                               </a><br>
+                               <a href="#">
+                                <span>{{ business.company_type.name }}</span>
+                               </a>                           
+                        </h5>
+                            <p class="price-container">
+                             <span></span>
+                           </p>
+              <span class="tag1">
+                {% if current_user.is_authenticated %}
+
+                {% set fav_title = "Add "+ business.name + " to favourites for easy access." %}
+                {% set add_fav_class = "" %}
+                {% if business.id|int in fav_companies %}
+                  {% set add_fav_class = "favourite" %}
+                  {% set fav_title = "Remove "+ business.name + " from favourites." %}
+                {% endif %}
+                <span class="add_fav {{ add_fav_class }}" data="1:{{ business.id }}:{{ business.name }}:0" data-toggle="tooltip" title="{{ fav_title }}">
+                  <i class="fa fa-star"></i>
+                </span>
+                {% else %}
+                  <span class="add_fav" data=":::" data-toggle="tooltip" title="Login to add this company to your favourites for easy access.">
+                  <i class="fa fa-star"></i>
+                </span>
+                {% endif %}
+
+              </span>
+   </div>
+   <div class="description">
+      <p> </p>
+   </div>
+      <div class="product-info smart-form">
+         <div class="row">
+         <div class="col-md-12">
+          <a href="{{ url_for('osf.shop',company=business.id) }}" class="shop-here btn btn-danger">Shop Here</a>
+       </div>
+      <div class="col-md-12">
+        <!--  <div class="rating">Rating:
+          <label for="stars-rating-5"><i class="fa fa-star text-danger"></i></label>
+          <label for="stars-rating-4"><i class="fa fa-star text-danger"></i></label>
+          <label for="stars-rating-3"><i class="fa fa-star text-danger"></i></label>
+          <label for="stars-rating-2"><i class="fa fa-star text-warning"></i></label>
+          <label for="stars-rating-1"><i class="fa fa-star text-warning"></i></label>
+         </div> -->
+       </div>
+    </div>
+   </div>
+  </div>
+  </div>
+ </div>
+ <!-- end product -->
+</div>
+</div>
+</div>
+                {% endfor %}
+            </div>
+        </div>
+              
+        
+        <!-- Product Catagories Area End -->
+    </div>
+    <!-- ##### Main Content Wrapper End ##### -->
+
+    <!-- ##### Newsletter Area Start ##### -->
+ 
+    <!-- ##### Newsletter Area End ##### -->
+
+    <!-- ##### Footer Area Start ##### -->
+{% include "osf/osf_footer.html" %}
+    <!-- ##### Footer Area End ##### -->
+
+ {% include "osf/osf_scripts.html" %}
+
+
+</body>
+
+</html>

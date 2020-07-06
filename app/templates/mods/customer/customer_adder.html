@@ -1,0 +1,191 @@
+
+{% extends "home/index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+	
+		
+		<div class="main-card mb-3 card">
+            <div class="card-body">
+              <h5 class="card-title">CUSTOMER REGISTRATION</h5>
+
+				<form action="{{ url_for('mods.addCustomer') }}" method="post" role="form" id="customers_creator" enctype="multipart/form-data">
+				    <input type="hidden" name="update" id="customers_update" value=0 />
+
+		            <input type="hidden" name="created_date" value="" id="customer_date">
+		            <input type="hidden" name="status" value="1" id="customer_status">
+		            <input type="hidden" name="last_business" value="0000-00-00 00:00:00" id="customer_last_business">
+					
+					<div class="form-row">
+						<div class="col-md-6">
+                      		<div class="position-relative form-group">
+								<label for="company_" class="col-form-label">Company</label>
+								<select class="form-control" name="company_id" id="company_">
+								    <option value="{{ company.id }}">{{ company.name }}</option>
+								          
+								   	{% if current_user.is_admin %}
+										<option class="add_" value="add_company"> -- Add Company -- </option>
+									{% endif %}
+								</select>
+
+							</div>
+						</div>
+
+						{% if form == 'add' %}
+	                  		<div class="col-md-6">
+	                      		<div class="position-relative form-group">
+
+									<label for="customer_type" class="col-form-label">Customer Type</label>
+									<select class="form-control" name="type" id="customer_type">
+										<option value=""> --- Select --- </option>
+										<option value="Employee">Employee</option>
+										<option value="Company">Company</option>
+										<option value="Partner">Partner</option>
+										<option value="Normal">Normal</option>					
+									</select>
+								</div>
+							</div>
+						{% else %}
+							<div class="col-md-6">
+	                      		<div class="position-relative form-group">
+									<input type="hidden" name="type" value="{{ customer[0].customer_type }}" class="form-control">
+									<label for="customer_type" class="col-form-label">Customer Type</label>&nbsp;&nbsp;&nbsp;
+									
+									<span id="change_customer_type"><i class="fa fa-pen"></i></span>
+									
+									<input type="text" name="type" value="{{ customer[0].customer_type }}" class="form-control" disabled>
+									
+									<select class="form-control" name="type" id="customer_type_select_hide" disabled>
+										<option value=""> --- Select --- </option>
+										<option value="Employee">Employee</option>
+										<option value="Company">Company</option>
+										<option value="Partner">Partner</option>
+										<option value="Normal">Normal</option>					
+									</select>
+								</div>
+							</div>
+
+						{% endif %}
+				
+					</div>
+
+
+					{% for fv in customer %}
+			
+					<div class="form-row">
+						<div class="col-md-4">
+                      		<div class="position-relative form-group">
+								<label for="customer_company" class="col-form-label">Customer Company</label>
+						        <input class="form-control" type="text" name="company_name" placeholder="Enter Customer's Company Name" value="{{ fv.company.name if form == 'edit' else fv.company }}" id="customer_company" />	
+					
+							</div>
+						</div>
+						<div class="col-md-4">
+                      		<div class="position-relative form-group">
+								<label for="" class="col-form-label">Customer Name</label>
+								<input class="form-control" type="text" name="name" placeholder="Enter Customer Name" value="{{ fv.name }}" id="customer_name">
+							</div>
+						</div>
+			    
+				    	<div class="col-md-4">
+	                      	<div class="position-relative form-group">
+								<label for="" class="col-form-label">Customer Email</label>
+								<input class="form-control" type="email" name="email" placeholder="Enter Customer email" value="{{ fv.email }}" id="customer_email">
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-4">
+							<div class="position-relative form-group">
+								<label for="customer_street" class="col-form-label">Street </label>
+								<input class="form-control" type="text" name="street" placeholder="Enter Customer Street" value="{{ fv.street }}" id="customer_street">
+								</div>
+						</div>
+						<div class="col-md-4">
+							<div class="position-relative form-group">
+
+								<label for="customer_street2" class="col-form-label">Street 2</label>
+								<input class="form-control" type="text" name="street2" placeholder="Enter Customer Street2" value="{{ fv.street2 }}" id="customer_street2">
+							</div>
+						</div>
+
+						<div class="col-md-4">
+	                  		<div class="position-relative form-group">
+								<label for="customer_city" class="col-form-label">City</label>
+								<input class="form-control" type="text" name="city" placeholder="Enter Customer City" value="{{ fv.city }}" id="customer_city">
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-4">
+                      		<div class="position-relative form-group">
+								<label for="customer_zip" class="col-form-label">Zip Code</label>
+								<input class="form-control" type="text" name="zip" placeholder="Enter Customer Zip Code" value="{{ fv.zip }}" id="customer_zip">
+							</div>
+						</div>
+
+						<div class="col-md-4">
+                      		<div class="position-relative form-group">
+								<label for="customer_contact" class="col-form-label">Contact</label>
+								<input class="form-control" type="tel" name="contact" placeholder="Enter Customer Contact" value="{{ fv.contact }}" id="customer_contact">
+							</div>
+						</div>
+						
+						<!-- <div class="col-md-4">
+                      		<div class="position-relative form-group">
+								<label for="customer_barcode" class="col-form-label">Barcode</label>
+							</div>
+						</div> -->
+								<input class="form-control" type="hidden" name="barcode" placeholder="Enter Customer Barcode" value="" id="customer_barcode">
+
+						<div class="col-md-4">
+	                      	<div class="position-relative form-group">
+								<label for="customer_tax_id" class="col-form-label">Tax ID</label>
+								<input class="form-control" type="text" name="tax_id" placeholder="Enter Customer Tax ID" value="{{ fv.tax_id }}" id="customer_tax">
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						
+
+						<div class="col-md-6">
+                      		<div class="position-relative form-group">
+								<label for="image" class="col-form-label">Customer Image</label>
+								<input class="form-control" type="file" name="image_" id="image_" accept="image/*" enctype="multipart/form-data">
+								{% if form == 'edit' %}
+									<input class="form-control image_select" name="image" type="text" id="customer_image" value="" placeholder="Change Customer Image">
+									<img src="/static/{{ fv.avatar }}" id="custer_image_preview" />
+								{% else %}
+									<input class="form-control image_select" name="image" type="text" id="customer_image" value="" placeholder="Select Customer Image">
+								{% endif %}
+			    			</div>
+			    		</div>
+			
+<!-- section 2 end -->
+			        {% endfor %}
+<!-- section 3 start -->
+
+			        <div class="col-md-6">
+                      		<div class="position-relative form-group">
+								<label for="image" class="col-form-label"></label>
+	           					
+	           					<div>
+	                    			<input class="btn btn-success" type="submit" value="{{ 'ADD CUSTOMER' if form == 'add' else 'CONFIRM EDIT' }} " id="add_customer">
+	                    			{% if form == 'edit' %}
+										<a href="{{ url_for('mods.customers')}}" class="btn btn-warning">CANCEL</a>
+									{% endif %}
+	                    		</div>
+					        </div>
+					    </div>
+	                </div>
+	         
+<!-- section 3 end -->
+
+				</form>
+				</div>
+
+		</div>
+
+{% endblock %}

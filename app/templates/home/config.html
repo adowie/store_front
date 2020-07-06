@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+
+
+    {% include "header.html" %}
+
+</head>
+<body>
+{% include "navigator.html" %}
+
+{% include 'config_menu.html' %}
+   
+    <div class="container body-content">
+    	<div id="company_setup">
+    		<h4>SETUP COMPANY <span id="edit_company" title="Modify company information"><i class="fa fa-pencil-alt"></i></span><span id="cancel_company_edit" title="Cancel company edit"><i class="fa fa-times"></i></span></h4>
+    		<div id="company_">
+    			<h5>Company Owner: <b>{{ company.owner.fullname}}</b></h5>
+    			<form role="form" id="company_form_setup" method="post" enctype="multipart/form-data">
+    				
+						<div id="form-container">
+							<input type="hidden" name="conf_company" value=1>
+						    <input type="hidden" name="update" value=1 id="company_update" />
+							<input type="hidden" name="created_date" value="" id="company_date">                                	
+							<input type="hidden" name="status" value="1" id="company_status">
+
+							<div class="form-group row">
+					         
+					            <input class="form-control" type="file" name="image_" id="image_" accept="image/*" enctype="multipart/form-data" onChange="javascript:img_preview_path(this);">
+					            <div id="logo_pre">
+					            	<img id="def_image" src="/static/{{company.logo}}">
+					            	<img id="pre_image" src="">
+
+					            	<button type="button" name="logo" class="image_select hid"><i class="fa fa-pencil-alt"></i></button>
+					            </div>
+					        </div>
+					        <br>
+
+
+					        <div class="form-group row">
+							  <label for="company_type" class="col-md-4 col-form-label">- Type: </label>
+							  <div class="col-md-8">
+							  	<span class="no_hide">{{company.company_type.name}}</span>
+								<select class="form-control hid" name="company_type_id" id="company_type">
+									<option value=""> --- Select ---</option> 
+									{% if company_types is iterable and company_types|length > 0 %}  
+							      <span class="opt_change">       
+							  		  {% for type in company_types %}
+							  		  	{% if type.id|int == company.company_type_id|int %}
+							  		    	<option value="{{ type.id }}" selected="selected"> {{ type.name }}</option>   
+							  		    {% else %}       
+							  		    	<option value="{{ type.id }}"> {{ type.name }}</option>   
+							  		    {% endif %}
+
+							  		  {% endfor %}
+							      </span>
+									 {% endif %}              
+								</select>
+							  </div>
+							</div>
+
+							<div class="form-group row">
+							  <label for="company_name" class="col-md-4 col-form-label">- Name:  </label>
+							  <div class="col-md-8">
+							  	<span class="no_hide">{{company.name}}</span>
+							    <input class="form-control hid" type="text" name="name" placeholder="Enter Company Name" value="{{company.name}}" id="company_name">
+							  </div>
+							</div>
+
+							<div class="form-group row">
+							  <label for="company_email" class="col-md-4 col-form-label">- Email: </label>
+							  <div class="col-md-8">
+							  	<span class="no_hide">{{company.email}}</span>
+							    <input class="form-control hid" type="text" name="email" placeholder="Enter Company Email" value="{{company.email}}" id="company_email">
+							  </div>
+							</div>
+
+							<div class="form-group row">
+							  <label for="company_name" class="col-md-4 col-form-label">- Tax Shedule: </label>
+							  <div class="col-md-8">
+							  	<span class="no_hide">{{company.tax|float }}%</span>
+							    <input class="form-control hid" type="number" name="tax" placeholder="Enter Company Tax %" value="{{ company.tax|float }}" id="company_tax">
+							  </div>
+							</div>
+
+							<div class="form-group row">
+							  <label for="company_contact" class="col-md-4 col-form-label">- Contact: </label>
+							  <div class="col-md-8">
+							  	<span class="no_hide">{{ '' if not company.contact else company.contact }}</span>
+							    <input class="form-control hid" type="text" name="contact" placeholder="Enter Company Contact" value="{{company.contact if company.contact else '' }}" id="company_contact">
+
+							  </div>
+							</div>
+
+							<div class="form-group row">
+							  <label for="company_location" class="col-md-4 col-form-label">- Location: </label>
+							  <div class="col-md-8">
+							  	<span class="no_hide">{{'' if not company.location else company.location }}</span>
+							    <input class="form-control hid" type="test" name="location" placeholder="Enter Company Address" value="{{ '' if not company.location else company.location  }}" id="company_location">
+							  </div>
+							</div>
+							
+							<div class="form-group row">
+							  <label for="company_location" class="col-md-4 col-form-label">- Thank Note: </label>
+							  <div class="col-md-8">
+							  	<span class="no_hide">{{'' if not company.thank_note else company.thank_note }}</span>
+							    <input class="form-control hid" type="text" name="thank_note" placeholder="Enter Company Thank you note" value="{{ company.thank_note }}" id="company_thank_note">
+							  </div>
+							</div>
+
+
+							<div class="form-group row">
+							  <label for="" class="col-md-4 col-form-label"></label>
+							  <div class="col-md-8">
+							    <input class="btn btn-success hid" type="submit" value="SUBMIT" id="add_company">
+							  </div>
+							</div>
+							</div>    				
+    			</form>
+    		</div>
+    	</div>
+
+      <div class="setup_receipt">
+
+    	        <div id="receipt_display">
+    	        	<h4 class="rec_hd">Receipt Preview</h4>
+
+          <div id="receipt_display_inner">
+            
+            <div id="receipt_header"> {{ header }} </div>
+
+            <div id="pos_payment_cart_items" >
+                <table id="pos_payment_cart_items_list">   
+                <thead>
+                  <tr class="center">
+                  <th>Code</th>
+                  <th>Item Desc.</th>
+                  <th>Qty.</th>
+                  <th>Disc.</th>
+                  <th>Price $</th>
+                  <th>Ext. $</th>
+                  </tr>
+                </thead>
+                  <tbody>           
+           
+                  <tr id="receipt_line_item" class="{{ voided }}">
+                    <td id="line_code">65000</td>
+                    <td id="">SAMSUNG GALAXY j5(6)</td>
+                    <td id="line_qty">24</td>
+                    <td id="line_discount"> 5%</td>
+                    <td id="line_price"> $20,000.00 </td> 
+                    <td id="line_extended"> $456,000.00 </td>
+                  </tr>
+                   <tr id="receipt_line_item" class="{{ voided }}">
+                    <td id="line_code">65001</td>
+                    <td id="">HTC ONE A9</td>
+                    <td id="line_qty">6</td>
+                    <td id="line_discount"> 5%</td>
+                    <td id="line_price"> $30,000.00 </td> 
+                    <td id="line_extended"> $171,000.00 </td>
+                  </tr>
+                   <tr id="receipt_line_item" class="{{ voided }}">
+                    <td id="line_code">65002</td>
+                    <td id="">Blue X2</td>
+                    <td id="line_qty">2</td>
+                    <td id="line_discount"> 5%</td>
+                    <td id="line_price"> $60,000.00 </td> 
+                    <td id="line_extended"> $114,000.00 </td>
+                  </tr>
+                 
+                  </tbody>
+                </table>
+                <div id="payment_cart_totals">
+                    <span class="payment_cart_discount"> 
+                      Discount <i class="disc_per"></i>
+                  
+                      <span id="payment_cart_disc_amount" class="right">$62,000.00 </span> 
+                    </span>
+
+                    <br/>
+                    <span class="payment_cart_sub_total"> 
+                    
+                      Sub Total
+                      
+                      <span id="payment_cart_ext_sub_total" class="right">$741,000.00</span> 
+                    </span>
+
+                    <br/>
+                    <span class="payment_cart_line_tax"> 
+                    
+                      Tax
+                    
+                      <span id="payment_cart_tax_" class="right">$122,265.00 </span> 
+                    </span>
+
+                    <br/>
+                    <span class="payment_cart_line_total"> 
+                      Total
+                      <span id="payment_cart_ext_total" class="right">$863,265.00 </span> 
+                    </span>
+                </div>
+                   
+                </div>
+
+                <div id="receipt_footer"><small>{{ footer }}</small></div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+{% if error %}
+
+<div class="well" id="error_message">
+  <span class="error_cls">X</span>
+  <div class="error_body well">
+    {{ error.error }}
+
+  </div>
+</div>
+{% endif %}
+
+
+    {% include "footer.html" %}
+
+
+    {% include "scripts.html" %}
+</body>
+</html>

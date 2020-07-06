@@ -1,0 +1,128 @@
+{% import "bootstrap/utils.html" as utils %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+    <title>Our Store Front Online | {{ title }}</title>
+
+    {% include "osf/osf_header.html" %}
+</head>
+
+<body>
+    <!-- Search Wrapper Area Start -->
+        {% include "osf/osf_search.html" %}
+  
+    <!-- Search Wrapper Area End -->
+
+    <!-- ##### Main Content Wrapper Start ##### -->
+    <div class="main-content-wrapper d-flex clearfix">
+
+        {% include "osf/osf_navigator.html" %}
+      
+        <!-- Header Area End -->
+
+        <!-- Product Catagories Area Start -->
+        <div class="products-catagories-area clearfix">
+  {{ utils.flashed_messages() }}
+
+          <!--   <div class="amado-pro-catagory clearfix">
+                <h6>You are the {{ ordinal(company.vline|length + 1) }} person here</h6>
+                <h5>Do you want to <a class="btn bth-info" href="{{ url_for('osf.joinvline',business=company.id)}}">Join the Line</a></h5>
+            </div>
+ -->
+    <div id="booking" class="section">
+        <br>
+       
+        <div class="section-center">
+            <div  title="This Company offers you the ability to start a transaction here online and complete it when you get there. Click the ! to start the process."> <a href="{{ url_for('pos.pos_',company=company.id) }}"><i class="fa fa-exclamation-circle fa-4x"></i></a>
+        </div>
+            <h3><center>Hello {{ current_user.fullname }}, </center></h3>
+                <h4><center>Welcome to the Virtual Line for {{ company.name }}</center></h4>
+
+            <div class="container">
+
+                <div class="row">
+                    <div class="booking-form">
+                        <form>
+                            <div class="row no-margin">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <span class="form-label">Place in Line</span>
+                                        <input class="form-control" type="text" placeholder="" value="{{ ordinal(place_in_line) }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="row no-margin">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <span class="form-label">Serving Number </span>
+                                                <input class="form-control" type="Number" value="{{ line.serving }}" disabled>
+                                            </div>
+                                        </div>
+                                       <!--  <div class="col-md-5">
+                                            <div class="form-group">
+                                                <span class="form-label">Check out</span>
+                                                <input class="form-control" type="date" required>
+                                            </div>
+                                        </div> -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <span class="form-label">Persons Waiting</span>
+                                                <input class="form-control" type="text" value="{{ line.lineup|length }}" disabled="">
+                                                  
+                                                <span class="select-arrow"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-btn">
+                                        {% if rejoin %}
+                                            <span class="rejoin">You joined line @ {{ toTime(joined) }}</span>
+                                            <div>
+                                                <h6><center>Was your Appointment:</center></h6>
+                                                <button class="btn btn-success"><a href="{{ url_for('osf.vlinestatus',business=company.id,status=1)}}">Honoured <i class="fa fa-thumbs-up"></i></a></button>&nbsp;&nbsp;Or&nbsp;&nbsp; 
+                                                <button class="btn btn-warning"><a href="{{ url_for('osf.vlinestatus',business=company.id,status=2)}}">Not Honoured  <i class="fa fa-thumbs-down"></i></a></button>
+                                            </div>
+                                            <!-- <span></span> -->
+                                        {% else %}
+                                            <button class="submit-btn"><a href="{{ url_for('osf.joinvline',business=company.id)}}">Join Line</a></button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+              
+        
+        <!-- Product Catagories Area End -->
+    </div>
+    <!-- ##### Main Content Wrapper End ##### -->
+
+    <!-- ##### Newsletter Area Start ##### -->
+ 
+    <!-- ##### Newsletter Area End ##### -->
+
+    <!-- ##### Footer Area Start ##### -->
+{% include "osf/osf_footer.html" %}
+    <!-- ##### Footer Area End ##### -->
+
+ {% include "osf/osf_scripts.html" %}
+
+
+</body>
+
+</html>

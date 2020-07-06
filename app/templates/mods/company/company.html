@@ -1,0 +1,132 @@
+
+{% extends "home/index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+<div class="main-card mb-3 card">
+  <div class="card-body">
+    <h5 class="card-title">Company Details</h5>
+          
+        
+
+                                <form action="{{ url_for('mods.addCompany') }}" method="post" enctype="multipart/form-data">
+
+                                <div class="row register-form">
+                                    <input type="hidden" name="account_type" value=3>
+                                    <div class="col-md-3">
+                                          <div class="form-group">
+                                        <label>Business Type</label>
+                                            <!-- <input type="text" class="form-control" placeholder="Business Type *" name="bus_type" value="{{ form.bus_type }}" /> -->
+                                         <select class="form-control" name="bus_type" required>
+                                            <option> --- Set Business Type ---</option> 
+                                          {% for type in company_types %}
+                                            {% set selected = "" %}
+                                           
+                                            {% if form and 'bus_type' in form and form.bus_type|int == type.id|int %}
+                                                {% set selected = "selected" %}
+                                            {% endif %}
+                                            <option value="{{ type.id }}" {{ selected }}> {{ type.name }}</option>          
+                                          {% endfor %}
+                                        </select>
+                                        </div>
+                                        <div class="form-group">
+                                        <label>Owner</label>
+                                            <input type="text" class="form-control text-capitalize" placeholder="Owner Full Name *" name="bus_owner" value="{{ form.bus_owner }}" required />
+                                        </div>
+                                     
+                                         <div class="form-group">
+                                        <label>Business Name</label>
+                                            <input type="text" class="form-control text-capitalize" placeholder="Business Name *" name="bus_name" value="{{ form.bus_name }}" required />
+                                        </div>
+                                      
+                                       <div class="form-group">
+                                        <label>Business Email</label>
+                                            <input type="email" class="form-control" placeholder="Business Email *" name="bus_email" value="{{ form.bus_email }}" required />
+                                        </div>
+                                        <div class="form-group">
+                                        <label>Phone</label>
+                                            <input type="text" minlength="10" maxlength="10" name="bus_phone" class="form-control" placeholder="Business Phone " value="{{ form.bus_phone }}" />
+                                        </div>
+                                        
+                                      <!--   <div class="form-group">
+                                            <input type="password" class="form-control" placeholder="Password *" name="bus_pass" value="" />
+                                        </div> -->
+                                        <div class="form-group">
+                                            <label>Store Front Image</label>
+                                            <input class="form-control" type="file" name="store_front_image" accept="image/*" enctype="multipart/form-data" >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        
+                                         <div class="form-group">
+                                        <label>Address</label>
+                                            <input type="text" class="form-control text-capitalize" placeholder="Business Address *" name="bus_address" value="{{ form.bus_address }}" required/>
+                                        </div>
+                                        <div class="form-group">
+                                        <label>State</label>
+                                            <input type="text" class="form-control text-capitalize" placeholder="Business State" name="bus_state" value="{{ form.bus_state }}" />
+                                        </div>
+                                        <div class="form-group">
+                                        <label>City</label>
+                                            <input type="text" class="form-control text-capitalize" placeholder="Business City" name="bus_city" value="{{ form.bus_city }}" />
+                                        </div>
+                                        <div class="form-group">
+                                        <label>Postal Code</label>
+                                            <input type="text" class="form-control" placeholder="Business Postal Code" name="bus_postal" value="{{ form.bus_postal }}" />
+                                        </div>
+                                        <div class="form-group">
+                                        <label>Tax</label>
+                                            <input type="text" class="form-control" placeholder="Business Tax *" name="bus_tax" value="{{ form.bus_tax }}" required/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Business Logo</label>
+                                            <input class="form-control" type="file" name="image_" id="image_" accept="image/*" enctype="multipart/form-data" >
+                                        </div>
+                                     
+                                        
+                                    </div>
+                                     <div class="col-md-3">
+                                         <div class="form-group">
+                                        <label>Twitter</label>
+
+                                            <input type="text" class="form-control" placeholder="Business Twitter Account" name="bus_twitter" value="{{ form.bus_twitter }}" />
+                                        </div>
+
+                                        <div class="form-group">
+                                        <label>Google</label>
+                                            <input type="text" class="form-control" placeholder="Business Google Plus Account" name="bus_google" value="{{ form.bus_google }}" />
+                                        </div>
+                                       
+
+                                        <div class="form-group">
+                                             <label>Facebook</label>
+                                            <input type="text" class="form-control" placeholder="Business Facebook Account" name="bus_facebook" value="{{ form.bus_facebook }}" />
+                                        </div>
+
+                                        <div class="form-group">
+                                        <label>Instagram</label>
+                                            <input type="text" class="form-control" placeholder="Business Instagram Account" name="bus_instagram" value="{{ form.bus_instagram }}" />
+                                        </div>
+
+                                        <div class="form-group">
+                                        <label>Order Hold Limit</label> <span title="This determines how long you will hold order quantities after fulfilment has been sent."><i class="fa fa-exclamation-circle"></i></span>
+                                            <input type="number" min=30 class="form-control" placeholder="Order hold limit" name="bus_ohl" value="{{ form.bus_instagram }}" />
+                                        </div>
+                                    </div>
+
+                                     <div class="col-md-3">
+                                        <div class="form-group">
+                                            
+                                        <label>Coordinates</label> <span title="Use Google maps to get your business address Coordinates (latitude, longitude)"><i class="fa fa-exclamation-circle"></i></span>
+                                            <input type="text" class="form-control" placeholder="Business Coordinates" name="bus_coords" value="{{ form.bus_coords }}" />
+                                        </div>
+                                        <input type="submit" class="btn btn-info"  value="Save Changes"/>
+
+                                     </div>
+                                </div>
+                            </form>
+                          </div>
+                        </div>
+                        
+
+{% endblock %}

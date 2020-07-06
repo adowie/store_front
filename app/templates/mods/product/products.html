@@ -1,0 +1,81 @@
+
+{% extends "home/index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+  <div id="popupimage">
+    
+  </div>
+              <div class="col-md-12">
+                <h3><center>PRODUCT LISTING</center></h3>
+          <!-- <div id="product_listing_list_view"> -->
+              <form action="{{ url_for('mods.removeProduct') }}" method="post" role="form" class="product_remover_creator">
+                <input type="hidden" name="company_id" value="{{ company.id }}">
+              <table class="table" id="company_products_list"> 
+              <!--  class="table table-responsive table-hovered"> -->
+              <thead class="thead">
+                <tr class="tr well">
+                  <td class="th" id="edit_item" >
+                    <a href="{{ url_for('mods.productAdder')}}"  title="Add New Product" data-placement="left"><i class="fa fa-plus"></i></a>
+                  </td>
+                  <td class="th" id="remove_item" >
+                    <i class="fa fa-trash"  title="Remove Selected Products" data-placement="left"></i>
+                  </td>
+                  <td class="th">Code</td>
+                  <td class="th" id="name">Name</td>
+                  <td class="th" id="description">Description</td>
+                  <td class="th">Active</td>
+                  <td class="th">Cost</td>
+                  <td class="th">Price</td>
+                  <td class="th">OnHand</td>
+                  <td class="th">Created</td>
+                  <td class="th">Company</td>
+                  <td class="th">Taxable</td>
+                  <td class="th">Barcode</td>
+                  <td class="th">Image</td>
+                  <td class="th">Variant</td>
+                </tr>
+                </thead>
+                    
+                <tbody class="tbody">
+                    {% if products is iterable and products|length > 0 %}
+                          {% for product in products %}
+
+                              <tr class="tr well" id="product_line">
+                                <td class="td"><a href="{{ url_for('mods.editProduct', product_id=product.item_code) }}" ><i class="fa fa-pen"></i></a></td>
+                                <td class="td"><input type="checkbox" name="remove_product" value="{{ product.item_code }}" /></td>
+                                <td class="td" id="item_code">{{  product.item_code }}</td>
+                                <td class="td" id="item_name" contenteditable="true" data-item-code="{{ product.item_code }}" data-type="str">{{  product.name }}</td>
+                                <td class="td" id="item_description" contenteditable="true" data-item-code="{{ product.item_code }}" data-type="str">{{  product.description }}</td>
+                                <td class="td" id="item_status" contenteditable="true" data-item-code="{{ product.item_code }}" data-type="bool" >{{  product.status }}</td>
+                                <td class="td" id="item_cost" contenteditable="true" data-item-code="{{ product.item_code }}" data-type="float">{{  product.cost }}</td>
+                                <td class="td" id="item_price" contenteditable="true" data-item-code="{{ product.item_code }}" data-type="float">{{ toMoney(product.price) }}</td>
+                                <td class="td" id="item_qty" contenteditable="true" data-item-code="{{ product.item_code }}" data-type="int">{{  product.qty }}</td>
+                                <td class="td" id="item_date">{{  product.created_date }}</td>
+                                <td class="td" id="item_company" data="{{ product.company_id}}">{{  product.company_id }}</td>
+                                <td class="td" id="item_taxable" data="{{ product.taxable }}" contenteditable="true" data-item-code="{{ product.item_code }}" data-type="bool">{{  product.taxable }}</td>
+                                <td class="td" id="item_barcode">{{  product.barcode }}</td>
+                                <td class="td dis_item_image" id="item_image" data="{{  product.image }}"><img src="/static/{{  product.image }}" alt="Product Image" /></td>
+                                <td class="td" id="item_variants"><a href="{{ url_for('mods.productVariant',product=product.id) }}"> {{  product.variants|length }}</td>
+
+                              </tr>                    
+
+                          {% endfor %}
+                        <input type="submit" class="remover_btn"/>
+                   
+                    {% else %}
+                    <br>
+                    <span id="no_result_found_message">No Products Found</span>
+
+                     
+                    {% endif %}
+                </tbody>
+          </table>
+            </form>
+          
+
+        <!-- </div> -->
+      </div>
+
+{% endblock %}
+
+

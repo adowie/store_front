@@ -1,0 +1,142 @@
+{% import "bootstrap/utils.html" as utils %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+    <title>Our Store Front Online {{ title }}</title>
+
+    {% include "osf/osf_header.html" %}
+
+
+</head>
+
+<body>
+    <!-- Search Wrapper Area Start -->
+        {% include "osf/osf_search.html" %}
+  
+    <!-- Search Wrapper Area End -->
+
+    <!-- ##### Main Content Wrapper Start ##### -->
+    <div class="main-content-wrapper d-flex clearfix">
+
+        {% include "osf/osf_navigator.html" %}
+       
+        <!-- Header Area End -->
+        
+
+        <div class="cart-table-area section-padding-100">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12 col-lg-8">
+                        <div class="cart-title mt-50">
+                             {{ utils.flashed_messages() }}
+
+                            <h2>Order #{{ order.id }} @ <a href="{{ url_for('osf.company',name=order.company.name,_id=order.company_id)}}">{{ order.company.name }} </a>
+                                <a class="btn btn-info" href="{{ url_for('osf.shop',company=order.company_id)}}">Back To Shop</a>
+                            </h2>
+                        </div>
+                        <div class="cart-table clearfix">
+                            {% if order %}
+                                <table class="table table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Name</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for line in order.orderlines %}
+                                            <tr>
+                                                <td class="cart_product_img">
+                                                    <a href="#"><img src="{{ url_for('static',filename=line.product.image) }}" alt="Product"></a>
+                                                </td>
+                                                <td class="cart_product_desc">
+                                                    <h5>{{ line.product.name|capitalize  }}</h5>
+                                                    <span>{{ line.name|capitalize }}</span>
+                                                </td>
+                                                <td class="price">
+                                                    <span>{{ toMoney(line.price) }}</span>
+                                                </td>
+                                                <td class="qty">
+                                                    <div class="qty-btn d-flex">
+                                                        <p>Qty</p>
+                                                        <div class="quantity">
+                                                            <span class="qty-minus"><i class="fa fa-minus" aria-hidden="true"></i></span>
+                                                            <input type="number" item="{{ line.product_id }}" price="{{ line.price }}" v_name="{{ line.name }}" order="{{ line.order_id }}"  company="{{ order.company_id }}" class="qty-text" id="qty" step="1" min="1" max="20" name="quantity" value="{{ line.qty|int }}">
+                                                            <span class="qty-plus"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                                                        </div>
+                                                        &nbsp;
+                                                        &nbsp;
+                                                        &nbsp;
+                                                   <a href="{{ url_for('osf.remove_orderline',company=order.company_id,order=order.id,line=line.id,customer=order.customer_id)}}"><i class="fa fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% else %}
+                                <div>
+                                    <p>You have not selected any products from this company today.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <div class="cart-summary">
+                            <h5>Order Total</h5>
+                            <ul class="summary-table">
+                                <li><span>Subtotal:</span> <span>{{ toMoney(order.sub_total) }}</span></li>
+                                <li><span>Tax:</span> <span>{{ toMoney(order.tax_amount) }}</span></li>
+                                <li><span>Total:</span> <span>{{ toMoney(order.total) }}</span></li>
+                            </ul>
+                            <div class="cart-btn mt-100">
+
+
+                                {% if order.status|int == 0 %}
+                                    {% if order.filter_state|upper == "NOT SENT" %}
+                                        {% if order.company.closed %}
+                                            <span class="btn btn-warning" title="{{ order.company.name }} is not processing any orders at this time. They are closed."> Company Closed</span>
+                                        {% else %}
+                                            <a href="{{ url_for('osf.sendorder',order=order.id,customer=order.customer_id,company=order.company_id)}}" class="btn amado-btn w-100" title="Send order for fulfilment.">Confirm Order</a>
+                                        {% endif %}
+                                    {% else %}
+                                        <p><center>This order is in [ <sub>fulfilment pending</sub> ] status</center></p>
+                                        <p>
+                                            <center>
+                                                Contact <span class="company">{{ order.company.name }}</span> to get fulfilment progress 
+                                            </center>
+                                        </p>
+                                    {% endif %}
+                                {% else %}
+                                        <p><center>This order has been flagged as being <span title="fulfilled: If you havent already picked up your order, you need to do so.">fulfilled.</center></p>
+                                        <h6><center><sub>If you did not confirm this order please reach out to <u>{{ order.company.name }}</u> for clarification</sub></center></h6>
+                                   
+                                {% endif %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Main Content Wrapper End ##### -->
+
+
+{% include "osf/osf_footer.html" %}
+
+ {% include "osf/osf_scripts.html" %}
+
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+        <div id="pos_product_detail_view" class="view pos_product_detail_view">
+          <ul id="product_thumb">
+            {% for product in products %}
+
+                      <li class="well col-md-12 product" id="product_thumb_item" category="{{ product.category_id }}" code="{{ product.item_code }}" name="{{ product.name }}" company="{{ product.company_id }}" view="detail">
+                 
+                        <span  class="col-md-4" id="item_thumb"><img src="{{ url_for('static',filename=product.image ) }}" class="product_img_thumb" /></span>
+                        <span id="item_detail" class="col-md-8">
+                        
+                          <span id="item_name"><b><center>{{  product.name }}</center></b></span>
+                          <br/>
+                         
+                          <!-- <span id="item_description"><em>Desc:</em>&nbsp;&nbsp;{{  product.description }}</span> -->
+                          <!-- <br/> -->
+                          <span id="item_price"><em>Price:</em>&nbsp;&nbsp;${{  product.price }}</span>
+                          <br/>
+                          <span id="item_qty"><em>Inventory:</em>&nbsp;&nbsp;{{  product.qty }}</span>
+                        </span>
+      
+                      </li>                    
+
+                    {% endfor %}
+            
+          </ul>
+        </div>
+
+        <div id="pos_product_list_view" class="view pos_product_list_view">
+
+
+        <div class="table table-responsive table-hovered table-bordered"> 
+              <form action="{{ url_for('removeProduct') }}" method="post" role="form" class="product_remover_creator">
+              <!--  class="table table-responsive table-hovered"> -->
+              <div class="thead">
+                <div class="tr well">
+            <!--       <div class="th" id="remove_item" >
+                    <i class="fa fa-trash"  title="Remove Selected Products" data-placement="left"></i>
+                  </div> -->
+                  <div class="th">Code</div>
+                  <div class="th" id="name">Name</div>
+                  <div class="th" id="description">Description</div>
+                  <div class="th">Active</div>
+                  <div class="th">UOM</div>
+                  <div class="th">Cost</div>
+                  <div class="th">Price</div>
+                  <div class="th">OnHand</div>
+                  <!-- <div class="th">Created</div> -->
+                  <div class="th">Category</div>
+                  <div class="th">Company</div>
+                  <div class="th">Taxable</div>
+                  <div class="th">Type</div>
+                  <!-- <div class="th">Barcode</div> -->
+                  
+                </div>
+                </div>
+                    
+                <div class="tbody">
+                    {% if products is iterable and products|length > 0 %}
+                          {% for product in products %}
+
+                              <div class="tr well product" id="product_line" id="product_thumb_item" category="{{ product.category_id }}" code="{{ product.item_code }}" name="{{ product.name }}" company="{{ product.company_id }}" view="list">
+                                <!-- <div class="td"><input type="checkbox" name="remove_product" keyue="{{ product.item_code }}" id="item_remover"/></div> -->
+                                <div class="td" id="item_code">{{  product.item_code }}</div>
+                                <div class="td" id="item_name">{{  product.name }}</div>
+                                <div class="td" id="item_description">{{  product.description }}</div>
+                                <div class="td" id="item_status">{{  product.status }}</div>
+                                <div class="td" id="item_uom" data="{{ product.uom_id}}">{{  product.uom.name }}</div>
+                                <div class="td" id="item_cost">${{  product.cost }}</div>
+                                <div class="td" id="item_price">${{  product.price }}</div>
+                                <div class="td" id="item_qty">{{  product.qty }}</div>
+                                <!-- <div class="td" id="item_date">{{  product.created_date }}</div> -->
+                                <div class="td" id="item_category" data="{{ product.category_id}}">{{  product.category.name }}</div>
+                                <div class="td" id="item_company" data="{{ product.company_id}}">{{  product.company.name }}</div>
+                                <div class="td" id="item_taxable" data="{{ product.taxable }}">{{  product.taxable }}</div>
+                                <div class="td" id="item_type" data="{{ product.product_type_id}}">{{  product.product_type.name }}</div>
+                                <!-- <div class="td" id="item_barcode">{{  product.barcode }}</div> -->
+                                
+                              </div>                    
+
+                          {% endfor %}
+                        <input type="submit" id="remover_btn"/>
+                   
+                    {% else %}
+                    <span id="no_result_found_message">No Products Found</span>
+
+                     
+                    {% endif %}
+                </div>
+            </form>
+          </div>
+     </div>
+
+      

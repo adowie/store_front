@@ -1,0 +1,145 @@
+.widget {
+	position: absolute;
+	display: none;
+	width: 50%;
+	left: 25%;
+	top: 20%;
+	background: #ddd;
+	border-radius:5px;
+	padding:1px;
+	border:2px solid #999;
+	box-shadow: 1px 1px 6px #000;
+	z-index: 1;
+
+}
+
+.widget-body {
+	overflow: hidden;
+}
+
+.widget-body #form-container {
+	padding:5%;
+}
+
+.widget_cls {
+	position: absolute;
+	right:1%;
+	cursor: pointer;
+	z-index: 4;
+	text-shadow: 0px 0px 3px #ff4633;
+}
+
+.widget_error {
+	position: absolute;
+	top: 5%;
+	left: 5%;
+	color: #ed143d;
+}
+
+.widget_error .success {
+	color: #06bd36;
+}
+
+.widget_cls:hover{
+	color:#a22e2e;
+}
+
+input.error,select.error {
+	border:1px solid #ed143d;
+}
+
+#customers_widget{
+    width: 90%;
+    height: 85%;
+    top: 10%;
+    left: 5%;
+    z-index: 10;
+}
+
+#products_widget{
+    width: 90%;
+    height: 85%;
+    top: 10%;
+    left: 5%;
+    z-index: 10;
+}
+
+#customers_list {
+	position: relative;
+    width: 98%;
+    height: 100%;
+    left: 1%;
+    margin-top: 1%;
+}
+
+#payment_widget{
+    width: 98%;
+    height: 98%;
+    top: 1%;
+    left: 1%;
+    z-index: 10;
+}
+
+#payment_widget .bill_owner {
+	position: relative;
+    width: 40%;
+    margin-top: 10px;
+    margin-left: 10px;
+	font-size: 1.2vw;
+}
+
+#payment_widget .change_bill_owner {
+    position: fixed;
+    color: #bd9988;
+    cursor: pointer;
+    top: 8px;
+    left: 30%;
+    font-size: 2.2vw;
+    text-shadow: 1px 1px 3px #000;
+    
+}
+
+#payment_widget .change_bill_owner:hover {
+	text-shadow: 1px 1px 3px #ff4633;
+	color:#fc3;
+}
+
+.customer_search_dialog {
+	margin-top:2%;
+}
+
+.underline {
+	border-bottom: 8px solid #555;
+}
+
+.background {
+	background: #a7a7a7;
+}
+
+.customer_line:hover td.background{
+	background:#fff;
+	cursor: pointer;
+}
+
+.blue {
+	background: #4b6eef;
+}
+
+
+.blue:hover {
+	background: #8da0e6;
+}
+
+.scale_head {
+	font-size:1.2vw;
+	font-weight: bold;
+}
+
+.btn {
+	font-size: 1.3vw;
+}
+
+.right {
+	float: right;
+}
+

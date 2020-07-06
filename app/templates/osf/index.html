@@ -1,0 +1,74 @@
+{% import "bootstrap/utils.html" as utils %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+    <title>Our Store Front Online | {{ title }}</title>
+
+    {% include "osf/osf_header.html" %}
+</head>
+
+<body>
+    <!-- Search Wrapper Area Start -->
+        {% include "osf/osf_search.html" %}
+  
+    <!-- Search Wrapper Area End -->
+
+    <!-- ##### Main Content Wrapper Start ##### -->
+    <div class="main-content-wrapper d-flex clearfix">
+
+        <!-- Header area start -->
+        {% include "osf/osf_navigator.html" %}
+        <!-- Header Area End -->
+
+        <!-- Product Catagories Area Start -->
+        <div class="products-catagories-area clearfix">
+  {{ utils.flashed_messages() }}
+            
+            <div class="amado-pro-catagory clearfix">
+                 {% for bus_type in bus_types %}
+                   <!-- Single Catagory -->
+                    {% set biz_count = namespace(value=0) %}
+                    {% for company in bus_type.companies %}
+                        {% if company.published == 1 %}
+                            {% set biz_count.value = biz_count.value + 1 %}
+                        {% endif %}
+                    {% endfor %}
+                    <div class="single-products-catagory clearfix">
+                        <a href="{{ url_for('osf.companies',company_type=bus_type.id)}}">
+                            <img src="{{ url_for('static', filename=bus_type.image) }}" alt="">
+                            <!-- Hover Content -->
+                            <div class="hover-content">
+                                <div class="line"></div>
+                                <p> {{ biz_count.value }} </p>
+                                <h4>{{ bus_type.name }}</h4>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+              
+        
+        <!-- Product Catagories Area End -->
+    </div>
+    <!-- ##### Main Content Wrapper End ##### -->
+
+    <!-- ##### Newsletter Area Start ##### -->
+ 
+    <!-- ##### Newsletter Area End ##### -->
+
+    <!-- ##### Footer Area Start ##### -->
+{% include "osf/osf_footer.html" %}
+    <!-- ##### Footer Area End ##### -->
+{% include "osf/osf_scripts.html" %}
+</body>
+</html>

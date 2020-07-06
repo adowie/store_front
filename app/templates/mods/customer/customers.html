@@ -1,0 +1,77 @@
+
+{% extends "home/index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+		<div id="custmer_list">
+        <div class="col-md-12">
+        	 <form action="{{ url_for('mods.removeCustomer') }}" method="post" role="form" id="customer_remover">
+            <table class="table table-responsive"> 
+             
+              <!--  class="table table-responsive table-hovered"> -->
+              <thead class="thead">
+                <tr class="tr well">
+                  <td class="th" id="edit_customers" >
+                    <a href="{{ url_for('mods.customerAdder') }}"  title="Add a New Customer"><i class="fa fa-plus"></i></a>
+                  </td>
+                  <td class="th" id="remove_customers" >
+                    <i class="fa fa-trash"  title="Remove Selected Customers" data-placement="left"></i>
+                  </td>
+                  <td class="th">Tax ID</td>
+                  <td class="th">Company</td>
+                  <td class="th">Name</td>
+                  <td class="th">Email</td>
+                  <td class="th">Street</td>
+                  <td class="th">Street 2</td>
+                  <td class="th">City</td>
+                  <td class="th">Zip Code</td>
+                  <td class="th">Contact</td>
+                  <td class="th">Customer Company</td>
+                  <td class="th">Type</td>
+                  <td class="th">Created</td>
+                  <td class="th">Barcode</td>
+                  <td class="th">Image</td>
+                </tr>
+                </thead>
+                    
+                <tbody class="tbody">
+                    {% if customers is iterable and customers|length > 0 %}
+                          {% for customer in customers %}
+
+                              <tr class="tr well" id="customer_line">
+                                <td class="td"><a href="{{ url_for('mods.editCustomer', customer_id=customer.id ) }}"><i class="fa fa-pen"></i></a></td>
+                                <td class="td"><input type="checkbox" name="remove_customer" value="{{ customer.id }}" id="customer_remover"/></td>
+                                <td class="td" id="customer_tax" data="{{  customer.tax_id }}">{{  customer.tax_id }}</td>
+                                <td class="td" id="company_" data="{{  customer.company.name }}">{{  customer.company.name }}</td>
+                                <td class="td" id="customer_name" data="{{  customer.name }}">{{  customer.name }}</td>
+                                <td class="td" id="customer_email" data="{{  customer.email }}">{{  customer.email }}</td>
+                                <td class="td" id="customer_street" data="{{  customer.street }}">{{  customer.street }}</td>
+                                <td class="td" id="customer_street2" data="{{  customer.street2 }}">{{  customer.street2 }}</td>
+                                <td class="td" id="customer_city" data="{{  customer.city }}">{{  customer.city }}</td>
+                                <td class="td" id="customer_zip" data="{{  customer.zip_code }}">{{  customer.zip_code }}</td>
+                                <td class="td" id="customer_contact" data="{{  customer.contact }}">{{  customer.contact }}</td>
+                                <td class="td" id="customer_company" data="{{  customer.company_name }}">{{  customer.company_name }}</td>
+                                <td class="td" id="customer_type" data="{{  customer.customer_type }}">{{  customer.customer_type }}</td>
+                                <td class="td" id="customer_created" data="{{  customer.created_date }}">{{  customer.created_date }}</td>
+                                <td class="td" id="customer_barcode" data="{{  customer.barcode }}">{{  customer.barcode }}</td>
+                                <td class="td" id="customer_image" data="{{  customer.avatar }}"><img src="static/{{  customer.avatar }}" /></td>
+                                
+                              </tr>                    
+
+                          {% endfor %}
+                        <input type="submit" id="remover_btn"/>
+                   
+                    {% else %}
+                    <span id="no_result_found_message">No Customers Found</span>
+
+                     
+                    {% endif %}
+                </tbody>
+           
+            </table>
+    		 </form>
+      </div>
+		</div>	
+{% endblock %}
+
+
+

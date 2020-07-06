@@ -1,0 +1,83 @@
+{% import "bootstrap/utils.html" as utils %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+    <title>Our Store Front Online | {{ title }}</title>
+
+    {% include "osf/osf_header.html" %}
+</head>
+
+<body>
+    <!-- Search Wrapper Area Start -->
+        {% include "osf/osf_search.html" %}
+   
+    <!-- Search Wrapper Area End -->
+
+    <!-- ##### Main Content Wrapper Start ##### -->
+    <div class="main-content-wrapper d-flex clearfix">
+
+        <!-- Header area start -->
+        {% include "osf/osf_navigator.html" %}
+        <!-- Header Area End -->
+
+        <!-- Product Catagories Area Start -->
+        <div class="products-catagories-area clearfix">
+  {{ utils.flashed_messages() }}
+       <div class="tab-content" id="myTabContent">
+        
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                <h3 class="register-heading">Recover Account</h3>
+                                <form action="{{ url_for('osf.recover',token=token) }}" method="post" enctype="multipart/form-data">
+
+                                    <div class="row register-form">
+                                    <input type="hidden" name="account_type" value=3>
+
+                                    <div class="col-md-6">
+                                 
+                                        <div class="form-group">
+                                            {% if not token %}
+                                                <input type="email" class="form-control" placeholder="Enter Email to recover account" name="email" value="" required />
+                                            {% else %}
+                                                <input type="password" class="form-control" placeholder="New password *" name="password" value="" required /><br>
+                                                <input type="password" class="form-control" placeholder="Confirm password *" name="c_pass" value="" required />
+                                            {% endif %}
+                                        </div>
+                                
+                                        <a href="{{ url_for('osf.account')}}" ><u>Login</u></a>
+                                        <input type="submit" class="btnRegister" id="do_recovery" value="Recover"/>
+                                    </div>
+                                    
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+        </div>
+              
+        
+        <!-- Product Catagories Area End -->
+    </div>
+    <!-- ##### Main Content Wrapper End ##### -->
+
+    <!-- ##### Newsletter Area Start ##### -->
+ 
+    <!-- ##### Newsletter Area End ##### -->
+
+    <!-- ##### Footer Area Start ##### -->
+{% include "osf/osf_footer.html" %}
+    <!-- ##### Footer Area End ##### -->
+
+ {% include "osf/osf_scripts.html" %}
+
+
+</body>
+
+</html>

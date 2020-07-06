@@ -1,0 +1,21 @@
+
+{% if payments %}
+
+        {% for pay in payments %}
+	
+<tr id="payment_line" class="payment_line " id_="{{ pay.name }}" method="{{ pay.payment_type_id }}"> 
+	<td id="line_dump"  title="Remove Payment" class="line_dump">
+		<i class="fa fa-trash"></i>
+	</td>
+	<td id="payment_method">{{ pay.method }}</td> 
+	<td id="payment_due" class="active" val="{{ pay.amount_due }}">{{ pay.amount_due }}</td> 
+	<td id="payment_received" class="active"> 
+		<input type="text" id="payment_amount_entry" class="payment_amount_entry active" placeholder="0.00" value="{{ pay.amount_tended }}" /> 
+	</td> 
+	<td id="payment_change" class="">{{ pay.change }}</td> 
+</tr>
+
+ {% endfor %}
+{% else %}
+  <tr id="no_payment"><td colspan=4>No payments are added yet. Select a payment type to add a payment.</td></tr>
+{% endif %}

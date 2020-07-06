@@ -1,0 +1,12 @@
+ <ul class="nav navbar-nav navbar-right">
+    <li class="nav-item dropdown">
+    	<span id="log_user_p" class="dropdown-toggle"  id="userOptions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    		<span id="logged_user">{{ current_user.username }}<input type="hidden" class="email" value="{{ current_user.email }}"/></span>
+    	</span>
+    	 <div class="dropdown-menu" aria-labelledby="userOptions">
+          <a class="dropdown-item" href="{{ url_for('auth.logout') }}">&nbsp;&nbsp;<i class="fa fa-power-off"></i> LOGOUT</a>
+         
+        </div>
+    </li> 
+ </ul>
+

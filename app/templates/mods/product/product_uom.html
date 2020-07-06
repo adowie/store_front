@@ -1,0 +1,120 @@
+
+{% extends "home/index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+      <div id="product_product_list_view">
+        
+          <div id="product_uom_adder">
+          <div class="col-md-6">
+            <h3><center>UOM REGISTRATION</center></h3>
+
+            <form action="{{ url_for('mods.addProductUom') }}" method="post" role="form" id="uom_creator">
+            
+             <input type="hidden" name="update" value="0" id="uom_update">
+
+              <div class="form-group row">
+                  <label for="uom_name" class="col-md-5 col-form-label">UOM Name</label>
+                  <div class="col-md-7">
+                    <input class="form-control" type="text" name="name" placeholder="Enter UOM Name" id="uom_name">
+                  </div>
+                </div>
+
+                    <input type="hidden" name="created_date" value="" id="uom_date">
+                    <input type="hidden" name="status" value="1" id="uom_status">
+                
+                <div class="form-group row">
+                  <label for="uom_" class="col-md-5 col-form-label">UOM Amount</label>
+                  <div class="col-md-7">
+                    <input class="form-control" type="number" placeholder="Enter UOM Amount" name="uom_" id="uom_"  >
+                    <input type="hidden" name="conversion" id="uom_conversion" value="">
+                  </div>
+                </div>
+                  <div class="form-group row">
+                  <label for="uom_base" class="col-md-5 col-form-label">UOM Base</label>
+                  <div class="col-md-7">
+                    <select class="form-control" name="base" id="uom_base">
+                      <option value="1">Unit</option>
+                      <option value="2">Weight</option>
+                      <option value="3">Length</option>
+                      <option value="4">Time</option>
+                      <option value="5">Volume</option>
+                      <!-- <option value="add_company">&lt;Add Company&gt;</option> -->
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="" class="col-md-5 col-form-label"></label>
+                  <div class="col-md-7">
+                    <input class="btn btn-success" type="submit" value="SUBMIT" id="add_product_uom">
+                  </div>
+                </div>
+            </form>
+            </div>
+
+
+               <div class="col-md-6">
+                  <div id="product_listing_list_view">  
+                  <h3><center>UNIT OF MEASURES</center></h3>      
+                       <form action="{{ url_for('mods.removeUom') }}" method="post" role="form" id="uom_remover">
+                      <table class="table"> 
+                     
+                      <!--  class="table table-responsive table-hovered"> -->
+                      <thead class="thead">
+                      <tr class="tr well">
+                      <th class="th" id="remove_uom" >
+                      
+                      <button type="submit" class="btn btn-info"><i class="fa fa-trash"  title="Remove Selected UOM(s)" data-placement="left"></i></button>
+                      </th>
+                        <th class="th">Name</th>
+                        <th class="th">UOM</th>
+                        <th class="th">Conversion</th>
+                        <th class="th">Active</th>
+                        <th class="th">Base</th>
+                        <th class="th">Created</th>
+                        
+                      </tr>
+                      </thead>
+
+                      <tbody class="tbody">
+                      {% if uoms is iterable and uoms|length > 0 %}
+                        {% for uom in uoms %}
+                        {% set base = ["Unit","Weight","Length","Time","Volume"] %}
+                        <tr class="tr well" id="uom_line">
+                          <td class="td"><input type="checkbox" name="remove_uom" value="{{ uom.id }}" id="remove_product_uom"/></td>
+                          <td class="td" id="uom_name">{{  uom.name }}</td>
+                          <td class="td" id="uom_">{{  uom.uom }}.00</td>
+                          <td class="td" id="uom_conversion">{{  uom.conversion }}</td>
+                          <td class="td" id="uom_status">{{  uom.active }}</td>
+                          <td class="td" id="uom_base">{{  base[uom.base|int -1] }}</td>
+                          <td class="td" id="uom_date">{{  uom.created_date }}</td>
+                          
+                        </tr>                    
+
+                        {% endfor %}
+                                                
+                      {% else %}
+                      <tr>
+                        <td id="no_result_found_message">No Unit Of Measures Found</td>
+                      </tr>
+                      {% endif %}
+                        </tbody>
+                      
+                    
+
+
+                </table>
+              </form>
+
+
+          </div>
+
+      </div> 
+        
+    </div>
+
+</div>
+
+{% endblock %}
+
+

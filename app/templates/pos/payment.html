@@ -1,0 +1,182 @@
+
+<div id="payment_display">
+
+          <div class="bill_owner well">
+          <h4 class="scale_head"><center><b>SHIPPING INFORMATION</b></center></h4>
+        	 	{% if customer %}
+                <span class="change_bill_owner select_customer"  customer="{{ customer.id }}" order="{{ order.id }}" pos="{{ pos }}" data-placement="left" title="Change Customer">
+                    <i class="fa fa-user"></i>
+                </span>
+
+        				<span class="bill_owner_name" customer="{{ customer.tax_id }}">Bill To: <span class="field_val">{{ customer.name }} </span></span><br/>
+                <span class="bill_owner_address" >Address: <span class="field_val">{{ customer.street }}, {{ customer.street2 }}, {{ customer.city }}</span></span><br/>
+                <span class="bill_owner_contact" >Contact: <span class="field_val">{{ customer.contact }}</span></span><br/>
+
+        				<!-- <span class="set_customer"><i class="fa fa-plus"></i></span> -->
+        		
+        		{% else %}
+        		  <span id="pos_customer" class="change_bill_owner select_customer" customer=0 order="{{ order.id }}" pos="{{ pos }}" data-placement="bottom"  title="Set Customer">
+                    <span class="cust_icon" ><i class="fa fa-user-plus"></i></span>
+              </span> 
+        				<span class="bill_owner_name">Bill To: Customer not set</span>
+        			
+        		{% endif %}
+          </div>
+     
+        <div id="payment_type" class="well">
+        <h4 class="payment_type_text scale_head"><center><b>SELECT PAYMENT TYPE</b></center></h4>
+          <button type="button" class="btn btn-success ptb" order="{{ order.id }}" pos_="{{ order.pos_id }}" id="cash_" method="CASH" value="1">CASH <i class="fa fa-plus"></i></button>
+          <button type="button" class="btn btn-info blue ptb" order="{{ order.id }}" pos_="{{ order.pos_id }}" id="debit_" method="DEBIT" value="2">DEBIT <i class="fa fa-plus"></i></button>
+          <button type="button" class="btn btn-warning ptb" order="{{ order.id }}" pos_="{{ order.pos_id }}" id="credit_" method="CREDIT" value=3>CREDIT <i class="fa fa-plus"></i></button>
+       
+          <h5 class="amount_to_be_tended"><center>AMOUNT DUE<br/><b>{{ toMoney( amount_due|float )}}</b></center></h5>
+          <input type="hidden" id="payment_balance" value="{{ amount_due }}"/>
+          <input type="hidden" id="payment_change" value="0.00"/>
+        </div>
+
+        <div id="accept_payment" class="well">
+          <button type="button" class="btn btn-success" id="do_payment" disabled>PROCE<i class="fa fa-usd"></i><i class="fa fa-usd"></i> PAYMENT </button>
+        </div>
+
+        <div id="payment_">
+          <h4 class="payment_text scale_head"><center><b>PAYMENT</b></center></h4>
+
+          <div id="cont_payment_tendered">
+              <table id="payment_tendered" class="headfixed">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Type</th>
+                  <th>Due</th>
+                  <th>Received</th>
+                  <th>Change</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if payments %}
+                  {% for pay in payments %}
+                    {% set pc_ = pay.payment_type.name.lower() %}
+                      <tr id="payment_line" class="payment_line {{ pc_ }}_" id_="{{ pay.name }}" method="{{ pay.payment_type_id }}"> 
+                        <td id="line_dump" title="Remove Payment" class="line_dump">
+                          <i class="fa fa-trash"></i>
+                        </td>
+                        <td id="payment_method">{{ pay.payment_type.name }}</td> 
+                        <td id="payment_due" class="" val="{{ pay.amount_due }}">{{ pay.amount_due }}</td> 
+                        <td id="payment_received" class=""> 
+                          <input type="text" id="payment_amount_entry" class="payment_amount_entry" placeholder="0.00" value="{{ pay.amount_tended }}" /> 
+                        </td> 
+                        <td id="payment_change" class="">{{ pay.change }}</td> 
+                      </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr id="no_payment"><td colspan=4>No payments are added yet. Select a payment type to add a payment.</td></tr>
+                {% endif %}
+              </tbody>
+
+              </table>
+          </div>
+        </div>
+  
+        <div id="pos_payment_keypad" >
+
+          <div id="pos_payment_keypad_keys" >
+            <ul>
+              <li class="key" key="1">1</li>
+              <li class="key" key="2">2</li>
+              <li class="key" key="3">3</li>
+
+            <br/>
+              <li class="key" key="4">4</li>
+              <li class="key" key="5">5</li>
+              <li class="key" key="6">6</li>
+            <br/>
+              <li class="key" key="7">7</li>
+              <li class="key" key="8">8</li>
+              <li class="key" key="9" >9</li>
+            <br/>
+
+              <li class="key" key="0" >0</li>
+              <li class="key" key="_del"  title="BACKONE" data-placement="bottom"><i class="fa fa-caret-square-left"></i></li>
+              <li class="key" key="." >.</li>
+
+            </ul>
+          </div>
+        </div>
+
+        <div id="receipt_display">
+          <div id="receipt_display_inner">
+            
+            <div id="receipt_header"> {{ header }} </div>
+
+            <div id="pos_payment_cart_items" >
+                <table id="pos_payment_cart_items_list">   
+                <thead>
+                  <tr class="center">
+                  <th>Code</th>
+                  <th>Item Desc.</th>
+                  <th>Qty.</th>
+                  <th>Disc.</th>
+                  <th>Price $</th>
+                  <th>Tax</th>
+                  <th>Ext. $</th>
+                  </tr>
+                </thead>
+                  <tbody>           
+                  {% for line in order.orderlines %}
+
+                  {% set voided = "" %}
+                
+                    {% if line.voided %}
+                      {% set voided = "voided" %}
+                    {% endif %}
+
+                  <tr class="receipt_line_item" class="{{ voided }}">
+                    <td class="line_code">{{ line.product_id }}</td>
+                    <td class="line_prod_name"> {{ line.name }} </td>
+                    <td class="line_qty"> {{ line.qty }} </td>
+                    <td class="line_discount"> {{ line.discount }}%</td>
+                    <td class="line_price" class="cur"> {{ toMoney(line.price) }} </td> 
+                    <td class="line_tax" class="cur"> {{ toMoney(line.tax) }} </td> 
+                    <td class="line_extended" class="cur"> {{ toMoney(line.extended) }} </td>
+                  </tr>
+                 
+                  {% endfor %}
+                  </tbody>
+                </table>
+                <div id="payment_cart_totals">
+                    <span class="payment_cart_discount"> 
+                      Discount <i class="disc_per"></i>
+                  
+                      <span id="payment_cart_disc_amount" class="right cur">{{ order.disc_amount }} </span> 
+                    </span>
+
+                    <br/>
+                    <span class="payment_cart_sub_total"> 
+                    
+                      Sub Total
+                      
+                      <span id="payment_cart_ext_sub_total" class="right cur">{{ order.sub_total }}</span> 
+                    </span>
+
+                    <br/>
+                    <span class="payment_cart_line_tax"> 
+                    
+                      Tax
+                    
+                      <span id="payment_cart_tax_" class="right cur">{{ order.tax_amount }} </span> 
+                    </span>
+
+                    <br/>
+                    <span class="payment_cart_line_total"> 
+                      Total
+                      <span id="payment_cart_ext_total" class="right cur">{{ order.amount_due }} </span> 
+                    </span>
+                </div>
+                   
+                </div>
+
+                <div id="receipt_footer"><small>{{ footer }}</small></div>
+        </div>
+        </div>
+
+</div>

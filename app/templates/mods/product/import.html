@@ -1,0 +1,56 @@
+
+{% extends "home/index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+              <div class="col-md-12">
+
+        <h5 class="card-title"><br/>
+        	PRODUCT BULK IMPORT
+        </h5>
+        {% if not no_import_form %}
+          <form action="{{ url_for('mods.doProductImport') }}" method="post" role="form" id="products_creator" enctype="multipart/form-data">
+	        <h5><center>excel file format should look like:</center> </h5>
+	        <table class="table">
+	        	<thead>
+	        		<tr>
+		        		<th>Item ID</th>
+		        		<th>Item Description</th>
+		        		<th>Item Price</th>
+		        		<th>Item Inventory</th>
+		        		<th>Item Tags [a comma separated list]<i class="fa fa-exclamation-circle"  title="Product tags are useful to automatically create Categories and Search Filters"></i></th>
+		        		<!-- <th>Item UOM[unit of Measure]<i class="fa fa-exclamation-circle"  title="product UOM: Unit of Measure defines the full case amount of a particular product."></i></th> -->
+		        		<th title="Image source url">Item Image Src</th>
+	        		</tr>
+	        	</thead>
+	        	<tbody>
+	        		<tr></tr>
+	        	</tbody>
+	        </table>
+	        <label for="import_file" class="col-form-label">Import File</label>
+            <div class="position-relative form-group">
+            	<input class="form-control" type="file" name="import_file" id="import_file" accept=".xlsx, .xls" enctype="multipart/form-data">
+			</div>
+          </form>
+          {% endif %}
+          <div class="col-md-12">
+          		<h3><center>Importing {{ total_rows }} unique entities.</center></h3>
+          		<h5>
+          			New products {{ products_to_import|length }}
+          			{% if products_to_import|length > 0 %}
+          				<span class="btn btn-warning">IMPORT</span>
+          			{% endif %}
+          		</h5>
+          		<hr>
+          		<h6>Already Registered</h6>
+          		<p>{{ products_to_update|length }}</p>
+          		{% if products_to_update|length > 0 %}
+          			<h4>Items that would be updated. <span class="btn btn-warning">UPDATE</span></h4>
+          			{% for item in products_to_update %}
+          				<span class="btn btn-warning">{{ item }}</span>
+          			{% endfor %}
+          		{% endif %}
+          </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,156 @@
+
+{% extends "home/index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+    <div class="row">
+          <div class="col-md-12">
+          <table class="table"> 
+              <thead class="thead">
+                <tr class="tr well">
+                  <td></td>
+                  <td class="th" id="remove_item" >
+                    <i class="fa fa-trash"  title="Remove Selected Products" data-placement="left"></i>
+                  </td>
+                  <td class="th">Code</td>
+                  <td class="th" id="name">Name</td>
+                  <td class="th" id="description">Description</td>
+                  <td class="th">Active</td>
+                  <td class="th">Cost</td>
+                  <td class="th">Price</td>
+                  <td class="th">OnHand</td>
+                  <td class="th">Created</td>
+                  <td class="th">Company</td>
+                  <td class="th">Taxable</td>
+                  <td class="th">Barcode</td>
+                  <td class="th">Image</td>
+                  
+                </tr>
+                </thead>
+                    
+                <tbody class="tbody">
+                   <tr class="tr well" id="product_line">
+                                <td class="td"><a href="{{ url_for('mods.editProduct', product_id=product.item_code) }}" ><i class="fa fa-pen"></i></a></td>
+                                <td class="td"><input type="checkbox" name="remove_product" value="{{ product.item_code }}" id="item_remover"/></td>
+                                <td class="td" id="item_code">{{  product.item_code }}</td>
+                                <td class="td" id="item_name">{{  product.name }}</td>
+                                <td class="td" id="item_description">{{  product.description }}</td>
+                                <td class="td" id="item_status">{{  product.status }}</td>
+                                <td class="td" id="item_cost">{{  product.cost }}</td>
+                                <td class="td" id="item_price">{{ toMoney(product.price) }}</td>
+                                <td class="td" id="item_qty">{{  product.qty }}</td>
+                                <td class="td" id="item_date">{{  product.created_date }}</td>
+                                <td class="td" id="item_company" data="{{ product.company_id}}">{{  product.company_id }}</td>
+                                <td class="td" id="item_taxable" data="{{ product.taxable }}">{{  product.taxable }}</td>
+                                <td class="td" id="item_barcode">{{  product.barcode }}</td>
+                                <td class="td dis_item_image" id="item_image" data="{{  product.image }}"><img src="/static/{{ product.image }}" alt="Product Image" /></td>
+                              </tr>                    
+                        <input type="submit" class="remover_btn"/>
+
+                </tbody>
+              </table>
+       </div>
+
+    <div class="col-md-1">
+    </div>
+    <div class="col-md-5">
+      <h5><center>ADD VARIATION</center></h5>
+
+      <form action="{{ url_for('mods.addProductVariant') }}" method="post" role="form" id="variant_creator">
+      
+       <input type="hidden" name="update" value="0" id="uom_update">
+
+        <div class="form-group row">
+            <label for="uom_name" class="col-md-5 col-form-label">Name</label>
+            <div class="col-md-7">
+              <input class="form-control" type="text" name="name" placeholder="Variant Name" id="var_name" required>
+            </div>
+          </div>
+
+              <input type="hidden" name="product_id" value="{{ product.id }}">
+                            
+          <div class="form-group row">
+            <label for="uom_" class="col-md-5 col-form-label">Price</label>
+            <div class="col-md-7">
+              <input class="form-control" type="text" placeholder="Variant Price" name="price" id="var_price"  required>
+              <input type="hidden" name="conversion" id="uom_conversion" value="">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="var_qty" class="col-md-5 col-form-label">Inventory</label>
+            <div class="col-md-7">
+              <input class="form-control" type="text" placeholder="Variant Inventory" name="qty" id="var_qty"  required>
+            </div>
+          </div>
+           
+          <div class="form-group row">
+            <label for="" class="col-md-5 col-form-label"></label>
+            <div class="col-md-7">
+              <input class="btn btn-success" type="submit" value="ADD VARIANT" id="add_product_variant">
+            </div>
+          </div>
+      </form>
+      </div>
+
+
+            <div class="col-md-5">
+                
+                  <h5><center>PRODUCT VARIATIONS</center></h5>
+                 
+                      <form action="{{ url_for('mods.removeProductVariant') }}" method="post" role="form" id="variant_remover">
+                      <table class="table"> 
+                     
+                      <!--  class="table table-responsive table-hovered"> -->
+                      <thead class="thead">
+                      <tr class="tr well">
+                        <th></th>
+                      <th class="th" id="remove_variant" >
+                        <button type="submit" class="btn btn-info">
+                          <i class="fa fa-trash"  title="Remove Selected Variant" data-placement="left"></i>
+                        </button>
+                      </th>
+                        <th class="th">Name</th>
+                        <th class="th">Price</th>
+                        <th class="th">Quantity</th>
+                        <th class="th">Created</th>
+                      </tr>
+                      </thead>
+
+                      <tbody class="tbody">
+                      {% if product.variants|length > 0 %}
+                        {% for variant in product.variants %}
+                        
+                        <tr class="tr well" id="uom_line">
+                          <td class="td" class="edit_variant"><i class="fa fa-pen"></i></td>
+                          <td class="td"><input type="checkbox" name="remove_variant" value="{{ variant.id }}" id="remove_product_variant"/></td>
+                          <td class="td" id="variant_name">{{  variant.name }}</td>
+                          <td class="td" id="variant_price">{{  variant.price }}.00</td>
+                          <td class="td" id="variant_qty">{{  variant.qty }}</td>
+                          <td class="td" id="variant_date">{{  variant.created_date }}</td>
+                          
+                        </tr>                    
+
+                        {% endfor %}
+                                                
+                      {% else %}
+                      <tr>
+                        <td id="no_result_found_message">No Variants Defined</td>
+                      </tr>
+                      {% endif %}
+                        </tbody>
+                      
+                    
+
+
+                </table>
+              </form>
+          </div>
+          
+
+</div>
+
+
+{% endblock %}
+
+

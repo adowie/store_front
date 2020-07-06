@@ -1,0 +1,215 @@
+{% extends "home/index.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+              <div class="col-md-12">
+
+          <h3>
+            <a href="{{ url_for('mods.bulkImporProduct') }}" class="btn btn-info">BULK IMPORT</a>
+          </h3>
+            <br>
+          <h3><center>PRODUCT REGISTRATION</center></h3>
+          <form action="{{ url_for('mods.addProduct') }}" method="post" role="form" id="products_creator" enctype="multipart/form-data">
+                <input type="hidden" name="update" id="products_update" value=0 />
+                <!-- section 1 start -->
+            {% for pp in product %}
+                <div class="form-row">
+                  <div class="col-md-4">
+                      <div class="position-relative form-group">
+                  <label for="company" class=" col-form-label">Company</label>
+                  
+                    <select class="form-control" name="company_id" id="item_company">
+                      <option value="{{ company.id }}">{{ company.name }}</option>
+                    </select>
+                        </div>
+                      </div>
+
+                  <div class="col-md-4">
+                      <div class="position-relative form-group">
+                  <label for="taxable" class="col-form-label">Taxable</label>
+                  
+                    <select class="form-control" name="taxable" id="item_taxable">
+                      <option> --- Select --- </option>
+                      {% if pp.taxable == 1 %}
+                        <option value="1" selected>Taxable</option>
+                        <option value="0">Non-Taxable</option>
+                      {% elif pp.taxable == 0 %}
+                        <option value="1" >Taxable</option>
+                        <option value="0" selected>Non-Taxable</option>                      
+                      {% else %}
+                        <option value="1" selected>Taxable</option>
+                        <option value="0">Non-Taxable</option>
+                      {% endif %}
+                    </select>
+                  
+                </div>
+              </div>
+              
+            
+                   <div class="col-md-4">
+                      <div class="position-relative form-group">
+                        <label for="category" class="col-form-label">Product Categories</label>
+                        {% if categories is iterable and categories|length > 0 %}   
+                          <div class="opt_change">     
+                             {% for entry in categories %}
+                                <input type="checkbox" class="btn btn-small" name="product_categories" value="{{ entry.category_id }}" >&nbsp;{{ entry.category.name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                             {% endfor%}
+                           </div>
+                        {% endif %}
+                        <!-- <option class="add_" value="add_category"> -- Add Category -- </option> -->
+                
+                  </div>
+                </div>
+                
+              </div>
+              
+             
+            <!-- section 1 end  -->
+            <!-- section 2 start -->
+           <div class="form-row">
+                 <!-- <div class="col-md-4">
+                      <div class="position-relative form-group">
+                          <label for="type" class="col-form-label">Product Unit Of Measure</label>
+                          <input type="number" name="uom" value="1" class="form-control" placeholder="Product Unit of Measure default 1" id="item_uom">
+                      </div>
+                  </div>
+ -->
+              
+               
+                  
+              <div class="col-md-4">
+                      <div class="position-relative form-group">                
+          <input type="hidden" name="created_date" value="{{ pp.created_date }}" id="item_date">
+                       
+          <label for="item_code" class="col-form-label">Product Code</label>
+                            
+          <input class="form-control" type="text" name="item_code" placeholder="Enter Item Code" value="{{ pp.item_code }}" id="item_code">
+                 </div>
+                 </div>         
+                              
+                                                                   
+              {% if pp.status or pp.status == 'True' %}
+                <input type="hidden" name="status" value="1" id="item_status">
+              {% else %}
+                <input type="hidden" name="status" value="0" id="item_status">
+              {% endif %}
+
+    
+                        <div class="col-md-4">
+                                    <div class="position-relative form-group">   
+                                      <label for="price" class="col-form-label">Price</label>
+                                 
+                                    <input class="form-control" name="price" type="number" placeholder="Enter Product Selling Price" value="{{ pp.price }}" id="item_price">
+                                 </div>
+                               </div>
+             <!--                            <div class="col-md-4">
+                      <div class="position-relative form-group">
+                        <label for="category" class="col-form-label">Product Unit of measures</label>
+                        {% if uoms is iterable and uoms|length > 0 %}   
+                          <div class="opt_change">     
+                             {% for uom in uoms %}
+                                <input type="checkbox" class="btn btn-small" name="product_uoms" value="{{ uom.id }}" >&nbsp;{{ uom.name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                             {% endfor%}
+                           </div>
+                        {% endif %}
+                
+                  </div>
+                </div> -->
+                 <div class="col-md-4">
+                      <div class="position-relative form-group">           
+                      <label for="barcode" class="col-form-label">Barcode (Optional)</label>
+                                             
+                      <input class="form-control" type="text" name="barcode" placeholder="Scan item barcode" value="{{ pp.barcode }}" id="item_barcode">
+                                  
+                      </div>
+                </div>
+                </div>                
+                  
+                <div class="form-row">
+                   <div class="col-md-4">
+                      <div class="position-relative form-group">              
+            <label for="product_name" class="col-form-label">Product Name</label>
+                                 
+            <input class="form-control" type="text" name="name" placeholder="Enter Product Name (limit:50 Char)" value="{{ pp.name }}" id="item_name">
+                                
+                         </div>
+                         </div>    
+                              <div class="col-md-4">
+                      <div class="position-relative form-group">    
+                              <label for="cost" class="col-form-label">Cost</label>
+                               
+                                    <input class="form-control" name="cost" value=0 type="number" placeholder="Product Cost" value="{{ pp.cost }}" id="item_cost">
+                               
+
+                               </div>
+                             </div>
+                        
+           
+
+
+
+                             </div>
+                                
+                              <!-- section 2 end -->
+                              <!--  secton 3 start -->
+                            
+                            <div class="form-row">
+                                <div class="col-md-12">
+                      <div class="position-relative form-group">
+                                  <label for="description" class="col-form-label">Product Description</label>
+                                  
+                                    <textarea class="col-md-12 form-control" name="description" placeholder="Enter Product Description (limit: 220 Char)"  id="item_description">{{ pp.description }}</textarea> 
+                                  
+                              
+                                </div>
+                              </div>
+                            </div> 
+
+
+                            <div class="form-row">
+                                 <div class="col-md-4">
+                      <div class="position-relative form-group">                                   
+                             
+                                  <label for="qty" class="col-form-label">OnHand Quantity</label>
+                                 
+                                    <input class="form-control" name="qty" type="number" placeholder="Product Inventory (smallest unit)" value="{{ pp.qty }}" id="item_qty">
+                                
+                             </div>
+                           </div>
+                                 <div class="col-md-4">
+                                    <div class="position-relative form-group">   
+                                    <label for="image" class="col-form-label">Product Image</label>
+                                    <input class="form-control" type="file" name="image_" id="image_" accept="image/*" enctype="multipart/form-data">
+                                    {% if form == 'edit' %}
+                                      <!-- <input class="form-control image_select" name="image" type="text" id="item_image" placeholder="Change Product Image"> -->
+                                      <img src="/static/{{  pp.image }}" id="custer_image_preview" />
+                                    {% else %}
+                                      <!-- <input class="form-control image_select" name="image" type="text" id="item_image" placeholder="Select Product Image"> -->
+                                    {% endif %}
+                                  </div>
+                                </div>
+                        {% endfor %}
+              
+              
+                     <div class="col-md-4">
+                      <div class="position-relative form-group">   
+                        <label for="" class="col-md-5 col-form-label"></label>
+                        <div>
+                          <input class="btn btn-success form-control" type="submit" value="{{ 'CREATE PRODUCT' if form == 'add' else 'CONFIRM EDIT' }}" id="add_product">
+                          {% if form == 'edit' %}
+                            <a href="{{ url_for('mods.products_')}}" class="btn btn-warning">CANCEL</a>
+                          {% endif %}
+                        </div>           
+                      </div>
+                    </div>
+                  </div>
+                  </form>
+     
+
+          
+</div>
+
+              <!-- section 3 end -->
+
+         
+
+{% endblock %}

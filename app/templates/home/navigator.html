@@ -1,0 +1,216 @@
+                 <div class="scrollbar-sidebar">
+                        <div class="app-sidebar__inner">
+                            <ul class="vertical-nav-menu">
+                                <li class="app-sidebar__heading">Dashboards</li>
+                                <li>
+                                    <a href="/dashboard" class="mm-active">
+                                        <i class="metismenu-icon pe-7s-rocket"></i>
+                                        Dashboard 
+                                    </a>
+                                </li>
+                                <li class="app-sidebar__heading">Modules</li>
+                
+                                <li id="products">
+                                    <a href="#">
+                                        <i class="metismenu-icon pe-7s-diamond"></i>
+                                        Products 
+                                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                                    </a>
+                                    <ul>
+                                        <li>
+                                            <a href="{{ url_for('mods.products_') }}">
+                                                <i class="metismenu-icon"></i>
+                                                List
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ url_for('mods.productAdder') }}">
+                                                <i class="metismenu-icon">
+                                                </i>Add
+                                            </a>
+                                        </li>
+
+                                          <li>
+                                            <a href="{{ url_for('mods.Category') }}">
+                                              Categories
+                                            </a>
+                                          </li>
+                                   
+                                       <!--    <li>
+                                            <a href="{{ url_for('mods.ProductUom') }}">
+                                             Uom
+                                            </a>
+                                          </li> -->
+                                    </ul>
+                                </li>
+                                <li id="orders">
+                                    <a href="#">
+                                        <i class="metismenu-icon pe-7s-cash"></i>
+                                        Order$
+                                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                                    </a>
+                                    <ul>
+                                        <li>
+                                            <a href="{{ url_for('mods.orders') }}">
+                                                <i class="metismenu-icon"></i>
+                                                View Order$
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                  <li id="company">
+                                    <a href="#">
+                                        <i class="metismenu-icon pe-7s-cart"></i>
+                                        Company
+                                        
+                                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                                    </a>
+                                    <ul>
+                                        <li>
+                                            <a href="{{ url_for('mods.addCompany') }}">
+                                                <i class="metismenu-icon"></i>
+                                                Details
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ url_for('mods.openCompany',company=company.id) }}">
+                                                <i class="metismenu-icon"></i>
+                                                Open For Business
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ url_for('mods.closeCompany',company=company.id) }}">
+                                                <i class="metismenu-icon"></i>
+                                                Close Business
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                        <!--         <li id="vline">
+                                    <a href="#">
+                                        <i class="metismenu-icon pe-7s-graph3"></i>
+                                        Virtual Line
+                                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                                    </a>
+                                    <ul>
+                                        <li>
+                                            <a href="{{ url_for('mods.vLineup',company=company.id) }}">
+                                                <i class="metismenu-icon"></i>
+                                                Virtual Lineup
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ url_for('mods.startVline',company=company.id) }}">
+                                                <i class="metismenu-icon"></i>
+                                                Start Virtual Line
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ url_for('mods.pauseVline',company=company.id) }}">
+                                                <i class="metismenu-icon"></i>
+                                                Pause Virtual Line
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ url_for('mods.closeVline',company=company.id) }}">
+                                                <i class="metismenu-icon"></i>
+                                                Close Virtual Line
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </li> -->
+                                <li id="pos">
+                                    <a href="#">
+                                        <i class="metismenu-icon pe-7s-cart"></i>
+                                        POS
+                                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                                    </a>
+                                    <ul>
+                                        <li>
+                                            <a href="{{ url_for('pos.pos_',company=company.id) }}">
+                                                <i class="metismenu-icon"></i>
+                                                Load Point of Sale
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                      <!--           <li>
+                                    <a href="#">
+                                        <i class="metismenu-icon pe-7s-car"></i>
+                                        Components
+                                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                                    </a>
+                                    <ul>
+                                        <li>
+                                            <a href="components-tabs.html">
+                                                <i class="metismenu-icon">
+                                                </i>Tabs
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="components-accordions.html">
+                                                <i class="metismenu-icon">
+                                                </i>Accordions
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="components-notifications.html">
+                                                <i class="metismenu-icon">
+                                                </i>Notifications
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="components-modals.html">
+                                                <i class="metismenu-icon">
+                                                </i>Modals
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="components-progress-bar.html">
+                                                <i class="metismenu-icon">
+                                                </i>Progress Bar
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="components-tooltips-popovers.html">
+                                                <i class="metismenu-icon">
+                                                </i>Tooltips &amp; Popovers
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="components-carousel.html">
+                                                <i class="metismenu-icon">
+                                                </i>Carousel
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="components-calendar.html">
+                                                <i class="metismenu-icon">
+                                                </i>Calendar
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="components-pagination.html">
+                                                <i class="metismenu-icon">
+                                                </i>Pagination
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="components-scrollable-elements.html">
+                                                <i class="metismenu-icon">
+                                                </i>Scrollable
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="components-maps.html">
+                                                <i class="metismenu-icon">
+                                                </i>Maps
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li> -->
+                               
+                            </ul>
+                        </div>
+                    </div>

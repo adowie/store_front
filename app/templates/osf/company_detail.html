@@ -1,0 +1,119 @@
+{% import "bootstrap/utils.html" as utils %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+    <title>{{ title }} | Our Store Front Online </title>
+
+    {% include "osf/osf_header.html" %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.js"></script>
+</head>
+<body>
+
+        {% include "osf/osf_search.html" %}
+	
+    <!-- ##### Main Content Wrapper Start ##### -->
+    <div class="main-content-wrapper d-flex clearfix">
+
+        {% include "osf/osf_navigator.html" %}
+
+        <div class="container">
+    <div class="row">
+        <div class="col-12">
+            {{ utils.flashed_messages() }}
+     
+            <div class="container">
+                <div class="row">
+                    <!-- <div class="col-lg-4 col-sm-8"> -->
+
+                        <div class="card hovercard">
+                            {% if company.store_front_image %}
+                                <div class="cardheader" style="background: url('{{ company.store_front_image }}');">
+
+                                </div>
+                            {% else %}
+                                <div class="cardheader text-right" style="background:#555;">
+                                    <span class="text-white p-2" data-toggle="tooltip" title="Map markers are not always accurate. They are there to give an insight of where the company is located. Do not use the map pin as a source of truth."><i class="fa fa-exclamation-circle"></i></span>
+                                </div>
+                            {% endif %}
+                            <div class="avatar">
+                                <img alt="" src="{{ url_for('static',filename=company.logo)}}">
+                            </div>
+                            <div class="info">
+                                <div class="title">
+                                    <h1 class="text-center">{{ company.name }}</h1>
+                                </div>
+                                <div class="desc text-capitalize">{{ company.location }}</div>
+                                <div class="desc">{{ company.contact }}</div>
+                                <div class="desc"></div>
+                            </div>
+                            <div class="bottom profile">
+                                {% if company.twitter %}
+                                    <a class="btn btn-primary btn-twitter btn-sm" href="{{ company.twitter }}">
+                                        <i class="fa fa-twitter"></i>
+                                    </a>
+                                {% endif %}
+                                {% if company.google %}
+                                    <a class="btn btn-danger btn-sm" rel="publisher"
+                                       href="{{ company.google }}">
+                                        <i class="fa fa-google-plus"></i>
+                                    </a>
+                                {% endif %}
+                                {% if company.facebook %}
+                                    <a class="btn btn-primary btn-sm" rel="publisher"
+                                       href="{{ company.facebook }}">
+                                        <i class="fa fa-facebook"></i>
+                                    </a>
+                                {% endif %}
+                                
+                                {% if company.instagram %}
+                                    <a class="btn btn-warning btn-sm" rel="publisher" href="{{ company.instagram }}">
+                                       <i class="fa fa-instagram"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                       
+                    <!-- </div> -->
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+                <div id="map"></div>
+    
+
+</div>
+    </div>
+
+
+
+{% include "osf/osf_footer.html" %}
+{% include "osf/osf_scripts.html" %}
+
+<script type="text/javascript">
+
+     function initMap() {
+       var mymap = L.map('map').setView([parseFloat('{{ geo.raw.lat }}'),parseFloat('{{ geo.raw.lon }}')], 18);  
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: parseInt('{{ geo.zoom }}'),
+            attribution: 'Data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(mymap); 
+        var marker = L.marker([parseFloat('{{ geo.raw.lat }}'),parseFloat('{{ geo.raw.lon }}')]).addTo(mymap); 
+        marker.bindPopup("<div class='popup'><h4 class='text-center'><b>{{ company.name }}</b></h4> <span class='text-capitalize'>{{ company.location }}</span></div>").openPopup();
+    }
+
+    initMap();
+</script>
+</body>
+</html>

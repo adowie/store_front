@@ -1,0 +1,89 @@
+
+{% extends "home/index.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+
+          {{ product_type }}
+
+          <div id="product_category_adder">
+            <br>
+               <h2><center>PRODUCT TYPE ADDER</center></h2>
+               <br>
+
+          <div class="col-md-6">
+            
+            <form action="{{ url_for('mods.addProductType') }}" method="post" role="form">
+               <input type="hidden" name="update" value="0" id="type_update">
+              <div class="form-group row">
+                  <label for="type_name" class="col-md-5 col-form-label">Type Name</label>
+                  <div class="col-md-7">
+                    <input class="form-control" type="text" name="name" placeholder="Enter Type" id="type_name">
+                  </div>
+                </div>
+
+                    <input type="hidden" name="created_date" value="" id="type_date">
+                    <input type="hidden" name="status" value="1" id="type_status">
+               <div class="form-group row">
+                <label for="" class="col-md-5 col-form-label"></label>
+                <div class="col-md-7">
+                  <input class="btn btn-success" type="submit" value="SUBMIT" id="add_product_type">
+                </div>
+              </div>
+            </form>
+          </div>
+
+                         <div class="col-md-6">
+                  <div id="product_listing_list_view">    
+                  <h3><center>PRODUCT TYPES</center></h3>
+                      <form action="{{ url_for('mods.removeType') }}" method="post" role="form" id="type_remover">
+                      
+                      <table class="table"> 
+                      <!--  class="table table-responsive table-hovered"> -->
+                      <thead class="thead">
+                        <thead class="tr well">
+                        <th class="th" id="remove_uom" >
+                        <i class="fa fa-trash"  title="Remove Selected Types" data-placement="left"></i>
+                        </th>
+                          <th class="th">Name</th>
+                          <th class="th">Active</th>
+                          <th class="th">Created</th>
+                        </thead>
+                      </thead>
+
+                        <tbody class="tbody">
+                            {% if types is iterable and types|length > 0 %}
+                              {% for type in types %}
+
+                              <tr class="tr well" id="uom_line">
+                                <td class="td"><input type="checkbox" name="remove_type" value="{{ type.name }}" id="remove_product_type"/></td>
+                                <td class="td" id="type_name">{{  type.name }}</td>
+                                <td class="td" id="type_status">{{  type.active }}</td>
+                                <td class="td" id="type_date">{{  type.created_date }}</td>
+                              </tr>                    
+
+                              {% endfor %}
+                               <input type="submit" id="remover_btn"/>
+                             
+                            {% else %}
+                            <span id="no_result_found_message">No Product Types Found</span>
+                            {% endif %}
+                        </tbody>
+                      </table>
+                      </form>
+
+
+             
+
+
+          </div>
+
+          </div>
+
+      </div> 
+
+    
+{% endblock %}
+
+

@@ -1,0 +1,357 @@
+{% import "bootstrap/utils.html" as utils %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{ title }}</title>
+
+
+{% include "header.html" %}
+
+<script type="text/javascript">
+	var company_ = parseInt("{{ pos.company_id }}"); 
+	var company_tax = parseInt("{{ pos.company.tax }}"); 
+</script>
+</head>
+<body>
+
+<div id="loader"><div id="load_inner"><img src="{{ url_for('static',filename='img/load_.gif') }}" alt="POS"/><p>Loading POS session......</p></div></div>
+    
+<div id="pos_content">
+  
+<!-- cut for shadow pos->spos starts -->
+<span class="logo_tag"><img src="{{ url_for('static',filename='img/core-img/logo.png')}}" /></span>
+<div class="logo_pos"> {{ pos.company.name }} </div>
+
+{% for order in pos.orders %}
+
+	{% set class = "inactive" %}
+
+	{% if loop.index == pos.orders|length %}
+		{% set class = "active" %}
+	{% endif %}
+
+	<div id="pos_order" class="{{ class }}" order="{{ order.id }}" pos_="{{ pos.pos_ }}" pos_id="{{ pos.id }}">
+    	<input type="hidden" value="{{ pos.pos_ }}" id="pos_" />
+    	<input type="hidden" id="user_id" value="{{ user.id }}" />
+
+	<div id="pos_cart_view">
+    	
+    	<div id="pos_cart_nav">
+	    	<nav class="navbar navbar-inverse well">
+	      		<span id="close_pos" title="Close POS Session">
+	      			<a href="{{ url_for('home.dashboard') }}"><i class="fa fa-backspace"></i></a>
+	      		</span>
+						{% if order.customer_id != 0 %}
+							<span id="pos_customer" class="select_customer" pos_id="{{ pos.id }}" customer="{{ order.customer_id }}" order="{{ order.id }}" pos="{{ pos.pos_ }}" title="Change Customer">
+	      			<span class="cust_icon" ><i class="fa fa-user-times "></i></span>
+	      			<script type="text/javascript">
+						var customer_ = parseInt("{{ order.customer_id }}"); 
+					</script>
+								{{ order.customer.name }}
+							</span> 
+						{% else %}
+							<span id="pos_customer" class="select_customer" customer=0 pos_id="{{ pos.id }}" order="{{ order.id }}" pos="{{ pos.pos_ }}" title="Select Customer">
+	      						<span class="cust_icon" ><i class="fa fa-user-plus"></i></span>
+
+								Not Set
+							</span> 
+							
+						{% endif %} 
+					
+
+	         	          <!--      	<div class="input-group">
+					  <span class="input-group-addon" id="search-icon"><i class="fa fa-search"></i></span>
+					  <input id="customer_search_input" type="text" class="form-control customer_search_input" placeholder="customer search" aria-describedby="search-icon" name="customers">
+
+					</div> -->            
+	      </nav>
+	      		<table class="table table-responsive t_head_fixed">
+						<thead>
+							<tr>
+							<th>Code</th>
+							<th>Qty</th>
+							<th>Discount</th>
+							<th>Price</th>
+							<th>Tax</th>
+							<th>Extended</th>
+							</tr>
+						</thead>
+					</table>
+    	</div>
+
+    		<div id="pos_cart_items" >
+    			{% if order.orderlines|length > 0 %}
+    				
+    				<select id="avail_disc" class="form-control avail_disc">
+		    			<option value="None">--Discount--</option>
+		    			<option value="0">0%</option>
+		    			<option value="5">5%</option>
+		    			<option value="10">10%</option>
+		    			<option value="20">20%</option>
+		    			<option value="30">30%</option>
+		    			<option value="50">50%</option>
+		    			<option value="100">100%</option>
+		    		</select>
+					
+					<input type='text' id='active_changer' class='btn btn-small active_changer' />
+			
+					<table id="pos_cart_items_list" class="table table-responsive pos_cart_items_list">
+					<input type="hidden" name="disc_applied" id="disc_applied" value="{{ order.disc_amount }}"/>
+						
+						<tbody>
+
+							{% for line in order.orderlines %}
+								{% set voided = "void" %}
+								{% set void_text = "Void this line item" %}
+								{% set input_status = '' %}
+								{% set void_icon = 'fa fa-minus' %}
+
+								{% if line.voided %}
+									{% set voided = "voided" %}
+									{% set void_text = "Make line item active" %}
+									{% set input_status = 'disabled' %}
+									{% set void_icon = 'fa fa-plus' %}
+								{% endif %}
+							
+							<tr>
+								<td id="line_desc" colspan=6> 
+									<span class="btn btn-small variant_chosen">{{ line.name }}</span>
+									<span class="product_name">{{ line.product.name }} {{ '[inactive]' if voided == 'voided' else '' }}</span>
+									<span line="{{ line.id }}" order="{{ order.id }}" class="line_remove {{ voided }}" title="{{ void_text }}"> <i class="{{ void_icon }}"></i></span>
+									{% if order.user_id == current_user.id %}
+										<span line="{{ line.id }}" order="{{ order.id }}" class="line_delete" title="Remove this line item"> <i class="fa fa-trash"></i></span>
+									{% endif %}
+								</td>
+							</tr>
+							<tr class="line_item {{ voided }}" id="line_item_{{ line.product_id }}_{{ line.name }}" name="{{ line.name }}" order="{{ order.id }}" line="{{ line.id }}" price="{{ line.price }}" discount="{{ line.discount }}" code="{{ line.product_id }}">
+								<td id="line_code">{{ line.product_id }}</td>
+								<td id="line_qty" val="{{ line.qty }}" preqty="{{ line.qty }}"> <input name="{{ line.name }}" order="{{ order.id }}" line="{{ line.id }}" type="number" class="line-input qty_mod" min=1 value="{{ line.qty }}" {{ input_status }}/> </td>
+								<td id="line_discount" val="{{ line.discount }}" predisc="{{ line.discount }}"> <input name="{{ line.name }}" code="{{ line.product_id }}" order="{{ order.id }}" line="{{ line.id }}" type="number" min=0 class="line-input disc_mod" value="{{ line.discount }}" {{ input_status }}> %</td>
+								<td id="line_price" val="{{ line.price }}" preprice="{{ line.price }}"> {{ toMoney(line.price|float) }} </td> 
+								<td id="line_tax" val="{{ line.tax }}" pretax="{{ line.tax }}"> {{ toMoney(line.tax) }} </td> 
+								<td id="line_extended" val="{{ line.extended }}"> {{ toMoney(line.extended) }} </td>
+							</tr>
+							{% endfor %}
+							
+						</tbody>
+					</table>
+					<div class="totals">
+							<span class="line_discount block"> 
+							 	Discount <i class="disc_per"></i>
+						
+								<span id="disc_amount" class="total_item disc_amount" val="{{ order.disc_amount }}">{{ toMoney(order.disc_amount) }} </span> 
+							</span>
+							<span class="line_sub_total block"> 
+							
+								Sub Total
+								
+								<span id="ext_sub_total" class="total_item ext_sub_total" val="{{ order.sub_total }}">{{ toMoney(order.sub_total) }}</span> 
+							</span>
+							<span class="line_tax block"> 
+							
+								Tax
+							
+								<span id="tax_" class="total_item tax_" val="{{ order.tax_amount }}">{{ toMoney(order.tax_amount) }} </span> 
+							</span>
+							<span class="line_total block"> 
+								Total
+								<span id="ext_total" class="total_item ext_total" val="{{ order.amount_due }}">{{ toMoney(order.amount_due) }} </span> 
+							</span>
+					</div>
+				    		{% else %}
+						<table id="pos_cart_items_list" class="table table-responsive table-hover zero">
+							<thead>
+								<tr>
+								<th>Code</th>
+								<th>Description</th>
+								<th>Qty</th>
+								<th>Discount</th>
+								<th>Price</th>
+								<th>Tax</th>
+								<th>Extended</th>
+								</tr>
+							</thead>
+							<tbody>
+								<p  id="pos_empty_cart_message">Scan or click items to start a transaction</p>
+							</tbody>
+						</table>
+		    			{% endif %}
+	    			</div>
+    		
+
+    	<div id="pos_payment_tab" class="well">
+    		<button id="payment_selector" name="payment_selector" class="btn btn-success payment_selector" disabled="true">
+    			PROCESS PAYMENT
+    		</button>
+    	</div>
+    	
+    	<div id="pos_cart_keypad" >
+
+    	<div id="pos_cart_keys" class="well">
+	    	<ul>
+		    	<li class="key" key="1">1</li>
+		    	<li class="key" key="2">2</li>
+		    	<li class="key" key="3">3</li>
+		    	<li class="key" key="_del" title="BACKONE" data-placement="bottom"><i class="fa fa-caret-square-left"></i></li>
+		    	<li class="key" key="_disc" title="DISCOUNT" data-placement="bottom">DISC</li>
+<br />
+		    	<li class="key" key="4">4</li>
+		    	<li class="key" key="5">5</li>
+		    	<li class="key" key="6">6</li>
+		    	<!-- <li class="key" key="107">+</li> -->
+		    	<li class="key" key="_set" title="ENTER"><i class="fa fa-level-down-alt"></i></li>
+		    	<li class="key" key="_void" title="VOID ITEM" data-placement="bottom">-</li>	
+<br />
+		    	<li class="key" key="7">7</li>
+		    	<li class="key" key="8">8</li>
+		    	<li class="key" key="9" >9</li>
+		    	<li class="key" key="0" >0</li>
+		    	<li class="key" key="_dec" >.</li>
+		    	<!-- <li class="key" key="disc_all" title="Apply Discount to transaction" data-placement="bottom" >DISC ALL</li> -->
+	    	</ul>
+	    	</div>
+    	</div>
+
+
+    	</div>
+	  
+	    <div id="pos_product_view">
+		    <nav class="navbar navbar-inverse well nav_leff">
+		    	
+		    			<span id="logged_user">[<b>logged in</b>: {{ user.username }}]</span>
+
+		    	<div id="tab_nav">
+		    		<div id="tab_nav_inner"  class="tab_nav_inner">
+				    	<ul id="pos_product_view_nav_left" class="tabs_nav">
+				    		{% for order in pos.orders %}
+				    		<li>
+				    			{% set class = "inactive" %}
+
+				    			{% if loop.index == pos.orders|length %}
+				    				{% set class = "active" %}
+				    			{% endif %}
+
+				    			<span id="order_tab" class="tab {{ class }}" val="{{ order.id }}" index="{{ loop.index }}">
+				    				<input type="hidden" id="order_id" value="{{ order.id }}"/><i id="order_count">{{ loop.index }} </i> <i id="order_time">{{ toTime(order.order_date) }}</i><i id="order_day">{{ toDate(order.order_date) }}</i> <i id="order_cancel" class="fa fa-times order_cancel"></i></span>
+				    			
+				    		</li>
+				    	{% endfor %}
+				    		<li class="add_tab">
+				    			<span id="add_order_tab" class="add_order_tab"><i class="fa fa-plus"></i></span>
+				    		</li>
+				    	</ul>
+			    	</div>
+		    	</div>
+		    
+		    </nav>
+
+
+
+		    <div id="pos_product_selectors">
+
+		    	<!-- <div id="pos_product_category_selector">
+		    		<select id="pos_product_category_selector_options" name="product_category" class="form-control">
+		    			<option keyue="none"> -- Category -- </option>
+			    			{% if categories %}
+		                       {% for category in categories %}
+		                          <option keyue="{{ category.id }}">{{ category.name }}</option>
+		                       {% endfor%}
+		                    {% endif %}
+		    		</select>
+		    	</div> -->
+
+
+		       	<div id="pos_product_search">
+						  <span class="product_search_loader"><i class="fa fa-spinner faa-spin animated"></i></span>
+		    		
+	               <!--  	<div class="input-group">
+						  <span class="input-group-addon" id="p-search-icon"><i class="fa fa-search"></i></span>
+						  <input type="text" id="product_search_input" class="form-control product_search_input" placeholder="product search" aria-describedby="p-search-icon" name="products">
+
+						</div> -->
+					<div class="input-group">
+                        <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div>
+                        <input name="products" placeholder="product search" type="text" class="form-control">
+                    </div>
+	           		
+		    	</div>
+
+		    	<!-- <div id="pos_product_view_options">
+		    		<span id="product_list_view" data-toggle="tootip" title="Product detaill view" class="view_toggle product_list_view" ><i class="fa fa-list"></i></span> <span id="separator">-</span>
+		    		<span id="product_detail_view" data-toggle="tootip" title="Product thumbnail view" class="view_toggle active product_detail_view"><i class="fa fa-th"></i></span>
+		    	</div> -->
+		    </div>
+
+		<div class="p_view">
+		    <div id="pos_product_detail_view" class="view pos_product_detail_view">
+		    	<ul id="product_thumb">
+		    		{% for product in products %}
+
+		                  <li class="well col-md-12 product_{{ product.item_code }}" id="product_thumb_item" category="{{ product.category_id }}" taxable="{{ 1 if product.taxable else 0 }}" code="{{ product.item_code }}" name="base" company="{{ product.company_id }}" view="detail">
+		             
+		                    <span id="item_thumb">
+		                    	<img src="{{ url_for('static',filename=product.image ) }}" class="product_img_thumb" />
+		                    </span>
+		                    <span class="product_adder" price="{{ product.price }}" category="{{ product.category_id }}" taxable="{{ 1 if product.taxable else 0 }}" code="{{ product.item_code }}" name="base"><i class="fa fa-plus fa-2x"></i></span>
+		                    <span id="item_detail" class="col-md-8">
+			                    <div class="detail_item"><span class="product-name">{{  product.name }}</span></div>
+			                    <span class="detail_item"><span>Desc:</span><span title="{{ product.description }}"><i class="fa fa-exclamation"></i></span></span>
+								{% if product.variants|length > 0 %}
+								<div class="detail_item">
+									<span>Variantions</span><span> <select class="variant_options">
+										<option value="0">- Base -</option>
+										{% for variant in product.variants %}
+											<option value="{{ variant.id }}:{{ product.item_code }}:{{ variant.name }}:{{ variant.price }}"> {{ variant.name }}</option>
+										{% endfor %}
+									</select>
+								</span>
+								</div>
+								{% endif %}
+			                    			                   
+			                    <div class="detail_item"><span>Item Code:</span><span class="the_code">{{ product.item_code }}</span></div>
+			                    <div class="detail_item"><span>Price:</span><span class="the_price" data="{{ product.price }}">{{ toMoney(product.price) }}</span></div>
+			                    <div class="detail_item"><span>Inventory:</span><span class="the_qty" data="{{ product.qty }}">{{ product.qty }}</span></div>
+		                    </span>
+		  
+		                  </li>                    
+
+                    {% endfor %}
+		    		
+		    	</ul>
+		    </div>
+
+	    </div>
+	    	<!-- categories list view -->
+	<!-- 	 	<div class="categ_list_views">
+		 		<div class="categ_list_views_inner">
+		 			<label> Filter:&nbsp;&nbsp;&nbsp;</label>
+		 			<select id="pos_product_category_selector_options" name="product_category" class="form-control pos_category_filter" >
+		    			<option value="0">-- Product Category --</option>
+		    			{% if categories %}
+	                       {% for category in categories %}
+	                        	<option value="{{ category.id }}">{{ category.name|upper }}</option>
+	                       {% endfor%}
+	                    {% endif %}
+		    		</select>
+		 		</div>
+		 	</div> -->
+		
+</div>
+	    	
+</div>
+{% endfor %}
+
+</div>
+{{ utils.flashed_messages() }}
+
+<div class="well" id="alert_error_message">
+  <span class="alert_error_cls">X</span>
+  <div class="alert_error_body well">
+  
+  </div>
+</div>
+{% include "scripts.html" %}
+
+</body>
+</html>

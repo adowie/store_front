@@ -1,0 +1,8 @@
+.fixed{
+  top:0;
+  position:fixed;
+  width:auto;
+  display:none;
+  border:none;
+  background-color:white;
+}

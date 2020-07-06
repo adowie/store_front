@@ -1,0 +1,134 @@
+{% import "bootstrap/utils.html" as utils %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+    <title>Our Store Front Online {{ title }}</title>
+
+    {% include "osf/osf_header.html" %}
+</head>
+<body>
+
+        {% include "osf/osf_search.html" %}
+	   
+
+    <!-- ##### Main Content Wrapper Start ##### -->
+    <div class="main-content-wrapper d-flex clearfix">
+
+        {% include "osf/osf_navigator.html" %}
+
+        <div class="container">
+    <div class="row">
+        <div class="col-12">
+        {{ utils.flashed_messages() }}
+            
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="row p-5">
+                        <div class="col-md-6">
+                        	<div class="invoice-logo">
+                            	<a href="{{ url_for('osf.shop',company=order.company.id)}}"><img src="{{ url_for('static',filename=order.company.logo) }}"></a>
+                        	</div>
+                        </div>
+
+                        <div class="col-md-6 text-right">
+                            <p class="font-weight-bold mb-1">Invoice #{{ order.id }}</p>
+                            <p class="text-muted">Order Date: {{ order.order_date }}</p>
+                        </div>
+                    </div>
+
+                    <hr class="my-5">
+
+                    <div class="row pb-5 p-5">
+                        <div class="col-md-6">
+                            <p class="font-weight-bold mb-4">Customer Details</p>
+                            <p class="mb-1"><span class="text-muted">Name: </span>{{ order.customer.name }}</p>
+                            <p><span class="text-muted">Address: </span>{{ order.customer.street }}</p>
+                            <p><span class="text-muted">Street: </span>{{ order.customer.street2 }}</p>
+                            <p class="mb-1"><span class="text-muted">City: </span>{{ order.customer.city }}</p>
+                            <p class="mb-1"><span class="text-muted">Postal: </span>{{ order.customer.zip_code }}</p>
+                        </div>
+
+                        <div class="col-md-6 text-left">
+                            <p class="font-weight-bold mb-4">Company Information</p>
+                            <p class="mb-1"><span class="text-muted">Name: </span> {{ order.company.name }}</p>
+                            <p class="mb-1"><span class="text-muted">Address: </span> <span class="text-capitalize">{{ order.company.location }}</span></p>
+                            <p class="mb-1"><span class="text-muted">Payment Type: </span> <span title="Cash On Pickup">COP</span></p>
+                        </div>
+                    </div>
+
+                    <div class="row p-5">
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="border-0 text-uppercase small font-weight-bold">line</th>
+                                        <th class="border-0 text-uppercase small font-weight-bold">Item</th>
+                                        <th class="border-0 text-uppercase small font-weight-bold">Variant</th>
+                                        <th class="border-0 text-uppercase small font-weight-bold">Quantity</th>
+                                        <th class="border-0 text-uppercase small font-weight-bold">Price</th>
+                                        <th class="border-0 text-uppercase small font-weight-bold">Tax</th>
+                                        <th class="border-0 text-uppercase small font-weight-bold">Extended(x-tax)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                	{% for line in order.orderlines %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td class="text-capitalize">{{ line.product.name }}</td>
+                                        <td class="text-capitalize">{{ line.name }}</td>
+                                        <td>{{ line.qty }}</td>
+                                        <td>{{ line.price }}</td>
+                                        <td>{{ line.tax }}</td>
+                                        <td>{{ line.extended }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                   
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="">
+                      
+
+                        <div class="py-3 px-5 text-right">
+                            <div class="mb-2">Discount</div>
+                            <div class="h2 font-weight-light">{{ order.disc_amount }}</div>
+                        </div>
+                      
+                        <div class="py-3 px-5 text-right">
+                            <div class="mb-2">Sub-Total</div>
+                            <div class="h2 font-weight-light">{{ order.sub_total }}</div>
+                        </div>
+
+                          <div class="py-3 px-5 text-right">
+                            <div class="mb-2">Tax</div>
+                            <div class="h2 font-weight-light">{{ order.tax_amount }}</div>
+                        </div>
+                         <div class="py-3 px-5 text-right">
+                            <div class="mb-2">Grand Total</div>
+                            <div class="h2 font-weight-light">{{ order.amount_due }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+
+</div>
+    </div>
+
+{% include "osf/osf_footer.html" %}
+{% include "osf/osf_scripts.html" %}
+</body>
+</html>

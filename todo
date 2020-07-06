@@ -1,0 +1,15 @@
+//TODO 
+
+* Customer Order Feature
+- show product listing
+- add product to order list
+- send product for fulfilment
+- alert company of transaction
+
+* Favourites feature
+- Add a company to your favourites list as a customer
+- Remove company from favs list
+
+* Search feature
+- search for a companies by category / name / parish / city
+

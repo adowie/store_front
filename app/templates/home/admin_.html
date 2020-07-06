@@ -1,0 +1,25 @@
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+
+    {% include "header.html" %}
+</head>
+<body>
+
+{% include "home/navigator.html" %}
+    <div class="container body-content">
+   		{% block body %}
+      	{% endblock %}
+    </div>
+    {% include "footer.html" %}
+
+    {% include "scripts.html" %}
+</body>
+</html>
+
+
+
+
