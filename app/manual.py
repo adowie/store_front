@@ -5,6 +5,7 @@ from pathlib import Path
 from os import listdir, rename
 from os.path import isfile, join
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError, DataError
+from werkzeug.security import generate_password_hash, check_password_hash
 
 import sys
 import shutil
@@ -12,8 +13,15 @@ import time
 
 
 command = sys.argv[1]
-company = sys.argv[2]
-company_num = sys.argv[3]
+if command == "-np":
+	company = sys.argv[2]
+	company_num = sys.argv[3]
+
+if command == "-du":
+	user_name = sys.argv[2]
+	user_email = sys.argv[3]
+	user_full = sys.argv[4]
+	user_pass = sys.argv[5]
 
 engine = create_engine("mysql://Adora:62866181@ali@localhost:3306/osfo")
 Session = sessionmaker(bind=engine)
@@ -81,6 +89,48 @@ class Product(Base):
 		self.image = image
 		self.company_id = company_id
 
+class User(Base):
+	__tablename__ = users
+
+	id = db.Column(db.Integer, primary_key=True)
+	username = db.Column(db.String(20), index=True)
+	fullname = db.Column(db.String(64), index=True)
+	email = db.Column(db.String(120), index=True, unique=True)
+	password_ = db.Column(db.String(220), index=True)
+	created_date = db.Column(db.DateTime)
+	image = db.Column(db.String(224), default='img/user/default.png')
+	last_login = db.Column(db.DateTime)
+	is_logged_in = db.Column(db.Boolean, default=False)
+	is_admin = db.Column(db.Boolean, default=False)
+	def __init__(self,username,fullname,email,password_, created_date, image, last_login=None, is_logged_in=False, is_admin=True):
+		self.username = username
+		self.fullname = fullname
+		self.email = email
+		self.password_ = password_
+		self.created_date = created_date
+		self.image = image
+		self.last_login = last_login
+		self.iself.s_logged_in = is_logged_in
+		self.is_admin = is_admin
+
+	@property
+	def password(self):
+		"""
+		Prevent password from being accessed
+		"""
+		return self.password_
+
+	# return self._password
+	@password.setter
+	def password(self, value):
+		"""
+		Set password to a hashed password
+		"""
+		self.password_ = generate_password_hash(value)
+
+def now():
+    return time.strftime("%Y-%m-%d %H:%M:%S")
+
 def db_insert(db_obj):
     error = None
     if len(db_obj) > 0:
@@ -105,8 +155,8 @@ def now():
 # create business
 # auto create user and customer
 
-
-def get_product_images():
+# bulk product adder by product image
+def create_product_from_image():
 	mypath = f'img/company/{company}'
 	base = 'static/'
 	images = [f for f in listdir(f'{base}{mypath}') if isfile(join(f'{base}{mypath}', f))]
@@ -126,5 +176,18 @@ def get_product_images():
 		bulk_products.append(product)
 	return db_insert(bulk_products)
 		
+def add_default_admin_user():
+	user = User(username=user_name, fullname=user_full, email=user_email, password=user_pass, created_date=now()) 
+	db_sess = session
+	try:
+		db_sess.add(user)
+		db_sess.commit()
+	except (SQLAlchemyError, IntegrityError, DataError) as e:
+		db_sess.rollback()
+		db_sess.flush() # for resetting non-commited .add()
+		error = e
+
+
+
 
 print(get_product_images())
