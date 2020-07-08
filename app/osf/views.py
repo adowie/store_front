@@ -11,13 +11,14 @@ from ..func_ import *
 import simplejson as json
 import geocoder
 
+
+
 @osf.route('/',methods=['GET', 'POST'])
 def land():
 	is_admin = False
 	if "is_admin" in session:
 		is_admin = session["is_admin"]
 
-	print(is_admin)
 	bus_types = CompanyType.query.all()
 	return render_template("osf/index.html",title="Home",bus_types=bus_types,is_admin=is_admin)
 
@@ -140,16 +141,6 @@ def companies(company_type):
 			fav_companies.append(company.company_id)
 	return render_template("osf/companies.html",title="Companies",resgistered_businesses=business_of_type,is_admin=is_admin,fav_companies=fav_companies)
 
-
-@osf.route('/logout/', methods=['GET', 'POST'])
-def logout():
-	if "is_admin" in session:
-		session.pop('is_admin')
-	
-	logout_user()
-	flash('You have been successfully logged out.')
-	return redirect(url_for('osf.land'))
-
 @osf.route('/account/',defaults={"account_type":None}, methods=['GET', 'POST'])
 @osf.route('/account/<account_type>/', methods=['GET', 'POST'])
 def account(account_type):
@@ -162,7 +153,6 @@ def account(account_type):
 			user = User.query.filter_by(email=form["bus_email"]).first()
 			if not user:
 				new_user = {"username_":make_user_name(form["bus_owner"]),"fullname_":form["bus_owner"],"email_":form["bus_email"],"password_":form["bus_pass"]}
-				# print(new_user)
 				res = createUser(new_user,request.files["image_"]) 
 				if "success" in res:
 					owner_id = res["user_id"]
@@ -172,13 +162,12 @@ def account(account_type):
 			location = f'{form["bus_address"]},{form["bus_state"]},{form["bus_city"]},{form["bus_postal"]}'
 			company = {"name":form["bus_name"],"created_date":today(),"contact":form["bus_phone"],"email":form["bus_email"],"tax":form["bus_tax"],"owner_id":owner_id,"type_id":form["bus_type"],"location":location,"status":0,"update":0}#account to be verified b4 it becomes active
 
-			res = createCompany(company,request.files["image_"])
+			res = createCompany(company,request.files["image_"],request.files["store_front_image"])
 			if "success" in res:
 				# add business as customer by default
 				customer_ = Customer(name=form["bus_owner"],email=form["bus_email"],created_date=now(),last_business=None,street=form["bus_address"],street2={form["bus_state"]},city=form["bus_city"],zip_code=form["bus_postal"],active=1,customer_type="normal",contact=form["bus_phone"],barcode="",credit_limit=None,tax_id="000000000",avatar="img/customers/default.png",company_name=form["bus_name"])   
 				error = db_commit_add_or_revert(customer_)
 				mail_send_res = accountVerification(res["company"],"business")
-				print(mail_send_res)
 
 			msg, msg_type = flash_res_msg(res)
 			if msg:
@@ -254,6 +243,7 @@ def account(account_type):
 
 	return render_template("osf/account.html",title="Sign In | Sign Up",form=form,account_type=account_type,company_types=comp_types,activation_link=activation_link,is_admin=is_admin)
 
+
 @osf.route('/account/activation/<int:account_type>/<email>/', methods=['GET', 'POST'])
 def resend(account_type,email):
 	if account_type == 2:
@@ -323,6 +313,7 @@ def recover(token):
 					flash(Markup(f"No OSFO account found with email {form['email']}. Register new account <a href='{url_for('osf.account',account_type=3)}'> here</a>"),"error")
 
 	return render_template('osf/recover.html', form=form,token=token,title="Recover Account",is_admin=is_admin)
+
 
 @osf.route('/shop/<int:company>/',defaults={'category':0}, methods=['GET', 'POST'])
 @osf.route('/shop/<int:company>/<int:category>/', methods=['GET', 'POST'])
@@ -638,3 +629,14 @@ def unsubscribe(email):
 		error = db_commit_delete_or_revert(subscriber)
 				
 	return render_template("osf/unsubscriber.html",title=f"Unsubscriber",is_admin=is_admin)
+
+
+@osf.route('/logout/', methods=['GET', 'POST'])
+def logout():
+	if "is_admin" in session:
+		session.pop('is_admin')
+	
+	logout_user()
+	flash('You have been successfully logged out.')
+	return redirect(url_for('osf.land'))
+

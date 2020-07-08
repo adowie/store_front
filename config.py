@@ -27,8 +27,13 @@ USER_IMAGES_DIR = 'app/static/img/user/'
 
 # basedir = os.path.abspath(os.path.dirname(__file__))
 DB_PASS = os.getenv('DB_PASS')
-SQLALCHEMY_DATABASE_URI = "mysql+pymysql://adowie01:"+DB_PASS+"@adowie01.mysql.pythonanywhere-services.com/adowie01$osfo"
+DB_HOST = os.getenv('DB_SERVER')
+DB_USER = os.getenv('DB_USER')
+DB_ = os.getenv('DBASE')
+
+SQLALCHEMY_DATABASE_URI = "mysql+pymysql://"+DB_USER+":"+DB_PASS+"@"+DB_HOST+"/"+DB_
 # # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
 # SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_mysql_repository')
 # SQLALCHEMY_TRACK_MODIFICATIONS = True
+
 
