@@ -42,9 +42,14 @@ class ProductView(ModelView):
 class CustomerView(ModelView):
 	form_excluded_columns = ['orders','fav_companies','fav_products']
 	column_exclude_list = ['orders','fav_companies','fav_products']
+	
+class CompanyTypeView(ModelView):
+	form_excluded_columns = ['companies']
+
 
 admin.add_view(UserView(User,db_sess))
 admin.add_view(PlanView(Plan,db_sess))
+admin.add_view(CompanyTypeView(CompanyType,db_sess))
 admin.add_view(CompanyView(Company,db_sess))
 admin.add_view(CustomerView(Customer,db_sess))
 admin.add_view(CategoryView(Category,db_sess))

@@ -11,7 +11,7 @@ MAIL_PORT = 587
 MAIL_USE_TLS = True
 MAIL_USERNAME = "admin@ourstorefront.online"
 MAIL_PASSWORD = os.getenv('SMTP_MAIL_PASS')
-ADMINS = ["adowie01@gmail.com","admin@ourstorefront.online"]
+ADMINS = ["admin@ourstorefront.online"]
 
 SECRET_KEY = os.getenv('FLASK_SECKRET_KEY')
 POSTS_PER_PAGE = 6

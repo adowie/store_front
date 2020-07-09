@@ -210,7 +210,7 @@ def send_async_email(login,password,from_addr,to_addr_list,msg):
 		return {"error": e}
 	server.quit()
 
-def sendMail(from_addr, to_addr_list, cc_addr_list, subject, text_message,html_message, login, password, smtpserver='smtp.gmail.com:587'):
+def sendMail(from_addr, to_addr_list, cc_addr_list, subject, text_message,html_message, login, password, smtpserver='smtp.yandex.com:465'):
 	from email.mime.image import MIMEImage
 	from email.mime.text import MIMEText
 	from email.mime.multipart import MIMEMultipart
