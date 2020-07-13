@@ -3,6 +3,10 @@ img {
     border-radius: 5px;
 }
 
+.row {
+    margin:0;
+}
+
 .btn-small.active {
     background: #999;
 }
@@ -431,7 +435,7 @@ img {
 
 .showcase .showcase-img {
   min-height: 30rem;
-  background-size: cover;
+  background-size: 100% 100%;
 }
 
 @media (min-width: 768px) {
