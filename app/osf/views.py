@@ -8,6 +8,7 @@ from sqlalchemy import extract
 from ..api import *
 from ..models import *
 from ..func_ import *
+from bson import json_util
 import simplejson as json
 import geocoder
 
@@ -155,7 +156,8 @@ def account(account_type):
 				new_user = {"username_":make_user_name(form["bus_owner"]),"fullname_":form["bus_owner"],"email_":form["bus_email"],"password_":form["bus_pass"]}
 				res = createUser(new_user,request.files["image_"]) 
 				if "success" in res:
-					owner_id = res["user_id"]
+					user_ = res["user"]
+					owner_id = user_.id
 			else:
 				owner_id = user.id
 
@@ -167,7 +169,12 @@ def account(account_type):
 				# add business as customer by default
 				customer_ = Customer(name=form["bus_owner"],email=form["bus_email"],created_date=now(),last_business=None,street=form["bus_address"],street2={form["bus_state"]},city=form["bus_city"],zip_code=form["bus_postal"],active=1,customer_type="normal",contact=form["bus_phone"],barcode="",credit_limit=None,tax_id="000000000",avatar="img/customers/default.png",company_name=form["bus_name"])   
 				error = db_commit_add_or_revert(customer_)
-				mail_send_res = accountVerification(res["company"],"business")
+				# mail_send_res = accountVerification(res["company"],"business")
+				# user_.add_notification("activation", "company", user_.id, "Company Account Activation", json.dumps(res["company"].as_dict(), default=json_util.default), 0)
+				token = company_.get_activation_token()
+				params = {"type":"company","name":company_.owner.fullname,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":company_.email}
+				user_.add_notification("activation", "company", user_.id, "Company Account Activation", json.dumps(params, default=json_util.default), 0)
+
 
 			msg, msg_type = flash_res_msg(res)
 			if msg:
@@ -175,7 +182,7 @@ def account(account_type):
 
 			company_ = Company.query.filter_by(email=form["bus_email"]).first()
 			if not company_.active:
-				activation_link = Markup(f"<a class='btn btn-success' href='{url_for('osf.resend',account_type=2,email=company_.email)}'>Resend Activation link</a>")
+				activation_link = Markup(f"<a class='btn btn-success' id='activation_link' href='{url_for('osf.resend',account_type=2,email=company_.email)}'>Resend Activation link</a>")
 			else:
 				flash("Your Business Account is already active. You may need to use account recovery to regain access.")
 		else:
@@ -188,7 +195,8 @@ def account(account_type):
 					res = createUser(new_user,request.files["image_"]) 
 
 					if "success" in res:
-						user_id = res["user_id"]
+						user_ = res["user"]
+						user_id = user_.id
 				else:
 					user_id = user.id
 
@@ -197,8 +205,13 @@ def account(account_type):
 					res = createCustomer(customer,request.files["image_"])	
 						
 					if "success" in res:
-						mail_send_res = accountVerification(res["customer"],"customer")
-						print(mail_send_res)
+						customer_ = res["customer"]
+						# mail_send_res = accountVerification(res["customer"],"customer")
+						# user_.add_notification("activation", "customer", user_.id, "Customer Account Activation", json.dumps(res["customer"].as_dict(),default=json_util.default), 0)
+						token = customer_.get_activation_token()
+						params = {"type":"customer","name":customer_.name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":customer_.email}
+						user_.add_notification("activation", "customer", user_.id, "Customer Account Activation", json.dumps(params, default=json_util.default), 0)
+						
 
 					msg, msg_type = flash_res_msg(res)
 					if msg:
@@ -206,7 +219,7 @@ def account(account_type):
 					
 					customer_ = Customer.query.filter_by(email=form["cus_email"]).first()
 					if not customer_.active:
-						activation_link = Markup(f"<a id='resend' class='btn btn-success' href='{url_for('osf.resend',account_type=1,email=customer_.email)}'>Resend Activation link</a>")
+						activation_link = Markup(f"<a id='resend' class='btn btn-success' id='activation_link' href='{url_for('osf.resend',account_type=1,email=customer_.email)}'>Resend Activation link</a>")
 					else:
 						flash("Your Customer Account is already active. You may need to use account recovery to regain access.")
 			else:
@@ -248,12 +261,24 @@ def account(account_type):
 def resend(account_type,email):
 	if account_type == 2:
 		company_ = Company.query.filter_by(email=email).first()
-		mail_send_res = accountVerification(company_,"company")
+		user_ = User.query.filter_by(email=email).first()
+		# mail_send_res = accountVerification(company_,"company")
+		if user_:
+			token = company_.get_activation_token()
+			params = {"type":"company","name":company_.owner.fullname,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":company_.email}
+			user_.add_notification("activation", "company", user_.id, "Company Account Activation", json.dumps(params, default=json_util.default), 0)
+
 	else:
 		if account_type == 1:
 			customer_ = Customer.query.filter_by(email=email).first()
-			mail_send_res = accountVerification(customer_,"customer")
-		
+			# mail_send_res = accountVerification(customer_,"customer")
+			user_ = User.query.filter_by(email=email).first()
+			# mail_send_res = accountVerification(company_,"company")
+			if user_:
+				token = customer_.get_activation_token()
+				params = {"type":"customer","name":customer_.name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":email}
+				user_.add_notification("activation", "customer", user_.id, "Customer Account Activation", json.dumps(params, default=json_util.default), 0)
+			
 	flash("You should receive an activation link within the next 5 minutes, otherwise contact us at support@ourstorefront.online","success")
 	return redirect(url_for('osf.account'))
 
@@ -300,15 +325,15 @@ def recover(token):
 				user_ = User.query.filter_by(email=form["email"]).first()
 				if user_:
 					if user_.customer and user_.customer.active or user_.company and user_.company.active:
-						res_ = recoverUserAccount(form["email"],"osf")
-					else:
-						flash(f"The account associated with email {user_.email} is not active. Log in to {user_.email} and follow account activation instructions.","error")
+						# res_ = recoverUserAccount(form["email"],"osf")
+						token = user_.get_recover_password_token()
+						params = {"type":"customer","name":customer_.name,"app_link":url_for('osf.account',_external=True),"rec_link":url_for('osf.recover',token=token,_external=True),"email":user_.email}
+						user_.add_notification("recovery", "osf", user_.id, "Customer Account Recovery",json.dumps(params, default=json_util.default), 0)
+						flash("A recovery email has been sent to email provided. Check your email for instructions to recover your account","success")
 
-					if 'success' in res_:
-						flash(res_["success"],"success")
 						return redirect(url_for('osf.account'))
 					else:
-						flash(res_["error"],"error")
+						flash(f"The account associated with email {user_.email} is not active. Log in to {user_.email} and follow account activation instructions.","error")
 				else:
 					flash(Markup(f"No OSFO account found with email {form['email']}. Register new account <a href='{url_for('osf.account',account_type=3)}'> here</a>"),"error")
 
@@ -504,14 +529,15 @@ def company(name,_id):
 			geo["json"] = {"raw":{"lat":18.47369,"lon":-77.92209},"zoom": 11}
 		else:
 			geo.json["zoom"] = 25
-			company.coords = f'{geo.json.raw.lat},{geo.json.raw.lon}'
+			print(geo.json)
+			company.coords = f'{geo.json["raw"]["lat"]},{geo.json["raw"]["lon"]}'
 			error = db_commit_update_or_revert()
 			if error:
 				print(error)
 	else:
 		geo["json"] = {"raw":{"lat":company.coords.split(",")[0],"lon":company.coords.split(",")[1]},"zoom":25}
 
-	return render_template("osf/company_detail.html",title=f"Detail | {company.name}",is_admin=is_admin,company=company,geo=geo.json)
+	return render_template("osf/company_detail.html",title=f"Detail | {company.name}",is_admin=is_admin,company=company,geo=geo["json"])
 
 @osf.route('/favourite/', methods=['GET', 'POST'])
 @login_required

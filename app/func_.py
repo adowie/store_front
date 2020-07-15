@@ -235,7 +235,7 @@ def sendMail(from_addr, to_addr_list, cc_addr_list, subject, text_message,html_m
 		loop_thread.daemon = True
 		loop_thread.start()
 		
-		server = smtplib.SMTP(smtpserver)
+		server = smtplib.SMTP(conf.MAIL_SERVER)
 		server.starttls()
 
 		try:
@@ -264,23 +264,25 @@ def resetUserPassword(passwd,token):
 	return {"success":""}
 
 
-def recoverUserAccount(email_,module):
-	user_ = User.query.filter_by(email=email_).first()
-	if module == "auth":
-		login_uri = 'auth.login'
-		recover_uri = 'auth.recover'
-	else:
-		if module == "osf":
-			login_uri = 'osf.account'
-			recover_uri = 'osf.recover'
+def recoverUserAccount(account):
+	# user_ = User.query.filter_by(email=account.email_).first()
+	# if module == "auth":
+	# 	login_uri = 'auth.login'
+	# 	recover_uri = 'auth.recover'
+	# else:
+	# 	if module == "osf":
+	# 		login_uri = 'osf.account'
+	# 		recover_uri = 'osf.recover'
 
-	if user_:
-		token = user_.get_recover_password_token()
+			# url_for(login_uri,_external=True)
+			# url_for(recover_uri,token=token,_external=True)
+
+	if account:
 		error = None
 		admin_error = None
 		_temp = None
 		try:
-			_temp = get_email_template('recovery_temp.html',{"user_":user_.fullname,"app_link":url_for(login_uri,_external=True),"rec_link":url_for(recover_uri,token=token,_external=True),"app_sign":"Our Store Front Online"})	
+			_temp = get_email_template('recovery_temp.html',{"user_":account.name,"app_link":account.app_link,"rec_link":account.rec_link,"app_sign":"Our Store Front Online"})	
 		except Exception as e:
 			error = {"error": e.message }
 
@@ -290,7 +292,7 @@ def recoverUserAccount(email_,module):
 			if user_:
 		# 		pass
 				try:
-					error = sendMail(conf.ADMINS[0],[email_],[],"Account Recovery","To recover your account copy the following link to your browsers address bar %s"%url_for(recover_uri),rec_temp,conf.MAIL_USERNAME,conf.MAIL_PASSWORD)
+					error = sendMail(conf.ADMINS[0],[account.email],[],"Account Recovery","To recover your account copy the following link to your browsers address bar %s"%recover_url,rec_temp,conf.MAIL_USERNAME,conf.MAIL_PASSWORD)
 				except Exception as e:
 					error = {"error": e}
 			else:
@@ -312,19 +314,14 @@ def recoverUserAccount(email_,module):
 		error = {'error':'Account does not exist.'}
 	return error
 
-def accountVerification(account,type_):
+def accountVerification(account):
 	error = None
 	_temp = None
-	if type_ == "business":
-		account_name = account.owner.fullname
-	else:
-		if type_ == "customer":
-			account_name = account.name
+	act_temp = ""
 			
 	if account:
-		token = account.get_activation_token()
 		try:
-			_temp = get_email_template('activation_temp.html',{"user_":account_name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"app_sign":"Our Store Front Online","account_type":type_.capitalize()})	
+			_temp = get_email_template('activation_temp.html',{"user_":account.name,"app_link":account.app_link,"rec_link":account.rec_link,"app_sign":"Our Store Front Online","account_type":account.type.capitalize()})	
 		except Exception as e:
 			error = {"error": e }
 		
@@ -332,7 +329,7 @@ def accountVerification(account,type_):
 			act_temp = _temp
 		
 		try:
-			error = sendMail(conf.ADMINS[0],[account.email],[],"Account Activation","To activate your account copy the following link to your browsers address bar %s"%url_for('osf.activate'),act_temp,conf.MAIL_USERNAME,conf.MAIL_PASSWORD)
+			error = sendMail(conf.ADMINS[0],[account.email],[],"Account Activation","To activate your account copy the following link to your browsers address bar %s"%account.rec_link,act_temp,conf.MAIL_USERNAME,conf.MAIL_PASSWORD)
 		except Exception as e:
 			error = {"error": e}
 	else:
@@ -344,7 +341,7 @@ def sendOrderConfirmation(order,type_):
 	_temp = None
 	if type_ == "confirmed":
 		account_name = order.company.name
-		confirmation_message = f"You have a new order confirmation. Order#{order.id} has been confirmed by customer and requires fulfillment. Log in to your OSFO account for order details using the button below."
+		confirmation_message = f"You have a new order confirmation. Order#{order.id} has been confirmed by customer and requires fulfillment. Log in to your OSFO account for order detail using the button below."
 		rec_link = url_for('home.dashboard',_external=True)
 		confirmation_email = order.company.email
 	else:
@@ -354,7 +351,7 @@ def sendOrderConfirmation(order,type_):
 			rec_link = url_for('osf.company',name=order.company.name,_id=order.company.id,_external=True)
 			confirmation_email = order.customer.email
 	try:
-		_temp = get_email_template('confirmation_temp.html',{"user_":account_name,"app_link":url_for('osf.land',_external=True),"rec_link":rec_link,"app_sign":"Our Store Front Online","confirmation_message":confirmation_message})	
+		_temp = get_email_template('confirmation_temp.html',{"user_":account_name,"app_link":url_for('osf.land',_external=True),"rec_link":order.rec_link,"app_sign":"Our Store Front Online","confirmation_message":confirmation_message})	
 	except Exception as e:
 		error = {"error": e}
 		
@@ -368,24 +365,24 @@ def sendOrderConfirmation(order,type_):
 	
 	return error
 
-def Notification(notif_):
-	error = None
-	_temp = None
+# def Notification(notif_):
+# 	error = None
+# 	_temp = None
 	
-	try:
-		_temp = get_email_template('notification_temp.html',{"user_":notif_.name,"app_link":url_for('osf.land',_external=True),"app_sign":"Our Store Front Online"})	
-	except Exception as e:
-		error = {"error": e }
+# 	try:
+# 		_temp = get_email_template('notification_temp.html',{"user_":notif_.name,"app_link":url_for('osf.land',_external=True),"app_sign":"Our Store Front Online"})	
+# 	except Exception as e:
+# 		error = {"error": e }
 	
-	if _temp:
-		not_temp = _temp
+# 	if _temp:
+# 		not_temp = _temp
 	
-	try:
-		error = sendMail(conf.ADMINS[0],[account.email],[],"Notification","This is a notification email from OSFO",not_temp,conf.MAIL_USERNAME,conf.MAIL_PASSWORD)
-	except Exception as e:
-		error = {"error": e}
+# 	try:
+# 		error = sendMail(conf.ADMINS[0],[account.email],[],"Notification","This is a notification email from OSFO",not_temp,conf.MAIL_USERNAME,conf.MAIL_PASSWORD)
+# 	except Exception as e:
+# 		error = {"error": e}
 
-	return error
+# 	return error
 
 def sendRegistrationLink(user):
 	pass

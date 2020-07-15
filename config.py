@@ -1,17 +1,30 @@
+from dotenv import load_dotenv
 import os
+import sys
+
+
+path = '/home/adowie/osfo_live'
+if path not in sys.path:
+    sys.path.append(path)
+
+project_folder = os.path.expanduser('~/osfo_live')  # adjust as appropriate
+load_dotenv(os.path.join(project_folder, '.env'))
 
 """
 dev configs
 """
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 DEBUG = True
 SQLALCHEMY_ECHO = False
-MAIL_SERVER = "smtp.googlemail.com"
-MAIL_PORT = 587
+MAIL_SERVER = "smtp.yandex.com"
+# MAIL_PORT = 587
+MAIL_PORT = 465
 MAIL_USE_TLS = True
 MAIL_USERNAME = "admin@ourstorefront.online"
-MAIL_PASSWORD = os.getenv('SMTP_MAIL_PASS')
-ADMINS = ["admin@ourstorefront.online"]
+# MAIL_USERNAME = "ourstorefrontonline@gmail.com"
+MAIL_PASSWORD = "abeezxidbwiwvuvg"#"meoqjgpaighaoqid"#os.getenv('SMTP_MAIL_PASS')
+ADMINS = ["admin@ourstorefront.online","error@ourstorefront.online"]
+
 
 SECRET_KEY = os.getenv('FLASK_SECKRET_KEY')
 POSTS_PER_PAGE = 6

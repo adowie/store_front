@@ -44,14 +44,9 @@ def recover(token):
     else:
         form = RecoverForm()   
         if form.validate_on_submit():
-            res_ = recoverUserAccount(form.email.data,"auth")
-            if 'success' in res_:
-                flash(res_["success"])
-            else:
-                flash("Error: %s" % res_["error"])
-                
-                return render_template('auth/recover.html', form=form)
-            # redirect to the login page
+            # res_ = recoverUserAccount(form.email.data,"auth")
+            user_.add_notification("recovery", "auth", user_.id, "Customer Account Recovery", form["email"], 0)
+            flash("A recovery email has been sent to email provided. Check your email for instructions to recover your account","success")
             return redirect(url_for('auth.login'))
         # load registration template
         return render_template('auth/recover.html', form=form)
@@ -67,14 +62,10 @@ def login():
         if user_ is not None:
             # log employee in
             login_user(user_, remember=form.remember_me.data)
-      
             return redirect(url_for('auth.company'))
-            
         # when login details are incorrect
         else:
             flash('Invalid email or password.')
-
-        
     return render_template("auth/login.html",title=title_+" | Login",form=form)
 
 @auth.route('/company', methods=['GET', 'POST'])

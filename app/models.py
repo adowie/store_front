@@ -112,6 +112,9 @@ class User(UserMixin,db.Model):
 		notif_.sent = flag
 		db.session.commit()
 
+	def as_dict(self):
+		return {f.name: getattr(self, f.name) for f in self.__table__.columns}
+
 	def __repr__(self):
 		return '<User %s,%s,%s,%s>' % (self.username,self.fullname,self.email,self.created_date)
 
@@ -239,6 +242,9 @@ class Customer(db.Model):
 		except:
 			return
 		return Customer.query.get(id)
+	
+	def as_dict(self):
+		return {f.name: getattr(self, f.name) for f in self.__table__.columns}
 
 	def __repr__(self):
 		return '<Customer %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s>' % (self.name,self.email,self.created_date,self.last_business,self.street,self.street2,self.city,self.zip_code,self.active,self.customer_type,self.company_name,self.contact,self.barcode,self.credit_limit,self.tax_id,self.avatar,self.company_id)
@@ -291,6 +297,8 @@ class Order(db.Model):
 
 	orderlines = db.relationship("OrderLine")
 	payments = db.relationship('Payment')
+	def as_dict(self):
+		return {f.name: getattr(self, f.name) for f in self.__table__.columns}
 
 	def __repr__(self):
 		return '<Order %s,%s,%s,%s,%s,%s,%s,%s,%s>' % (self.tax_amount,self.disc_amount,self.sub_total,self.amount_due,self.user_id,self.company_id,self.order_date,self.name,self.prints)
@@ -337,7 +345,7 @@ class Product(db.Model):
 	favourites = db.relationship("FavouriteProduct")
 	images = db.relationship("ProductPhoto")
 	def as_dict(self):
-	   return {f.name: getattr(self, f.name) for f in self.__table__.columns}
+		return {f.name: getattr(self, f.name) for f in self.__table__.columns}
 
 	def __repr__(self):
 		return '<Product %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s>' % (self.item_code,self.name,self.description,self.taxable,self.qty,self.price,self.cost,self.image,self.company_id,self.barcode,self.created_date,self.status)
@@ -405,7 +413,7 @@ class Company(db.Model):
 		return Company.query.get(id)
 
 	def as_dict(self):
-	   return {f.name: getattr(self, f.name) for f in self.__table__.columns}
+		return {f.name: getattr(self, f.name) for f in self.__table__.columns}
 
 	def __repr__(self):
 		return '<Company %s,%s,%s,%s,%s,%s,%s,%s>' % (self.name,self.logo,self.tax,self.active,self.owner_id,self.email,self.company_type_id,self.location)
@@ -419,6 +427,9 @@ class Plan(db.Model):
 	created_date = db.Column(db.DateTime)
 	company = db.relationship('Company')
 	
+	def as_dict(self):
+		return {f.name: getattr(self, f.name) for f in self.__table__.columns}
+	
 	def __repr__(self):
 		return '<Plan %s,%s>'%(self.name,self.cost)
 
@@ -428,7 +439,8 @@ class Companies(db.Model):
 	company = db.relationship('Company')
 	user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
 	# user = db.relationship('User',back_populates="companies",foreign_keys=user_id)
-	
+	def as_dict(self):
+		return {f.name: getattr(self, f.name) for f in self.__table__.columns}
 	def __repr__(self):
 		return '<Company %s>'%(self.company_id)
 

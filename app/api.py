@@ -592,13 +592,11 @@ def createUser(form,image):
 				db_sess.rollback()
 				db_sess.flush() # for resetting non-commited .add()
 
-			userId = user_.id #fetch last inserted id
 			# data = User.query.filter_by(id=userId).first() #fetch our inserted product
-			
 			if error:
 				result = {"error":"An error has been encountered. Please try action again and if error persist contact support."}
 			else:
-				result = {"success":"You have been successfully registered.<br/>An email with your account information has been sent to the email address you provided.","user_id":userId}#prepare visual data
+				result = {"success":"You have been successfully registered.<br/>An email with your account information has been sent to the email address you provided.","user":user_}#prepare visual data
 				
 	else:
 		result = {"error":"No User Information to process."}

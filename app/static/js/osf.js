@@ -1,3 +1,4 @@
+var hide = null;
 $(function(){
 	// var crop_;
 	paginLinks();
@@ -15,7 +16,12 @@ $(function(){
 	$(".qty-minus").on("click",minusItemQty);
 	$(".qty-plus").on("click",addItemQty);
 	$(".qty-text").on("change",updateItemQty);
-
+	$(".edit_image").on("click",function(){
+		$("#"+$(this).attr("for")).click();
+	})
+	$("#activation_link").on("click",function(){
+		$(this).remove();
+	});
 	if($("#orders").length > 0)
 		setOrderFilters();
 
@@ -23,7 +29,73 @@ $(function(){
 	$(".add_fav").on("click",addFavourite);
 
 	$(".search_type").on("click",initSearchType);
+	initBusinessEnrollmentWizard();
 });
+
+
+function initBusinessEnrollmentWizard(){
+	$(".wiz").hide();
+	$("#start_business_enrollment_wiz").on("click",function(){
+		$(this).hide("slow");
+		$(".wiz-start").show("slow");
+		$(".wiz input").on("change",function(){
+			if(!$(this).parent().hasClass("wiz-bump")){
+				if(!$(this).parent().next().hasClass("wiz-image")){
+					$(this).parent().next().show("slow");
+					$(this).parent().next().children("input").focus();
+				}else{
+					useImageSelector($(this).parent().next());
+				}
+
+			}else{
+				if(!$(this).parent().parent().next().children(":eq(0)").hasClass("wiz-image")){
+					$(this).parent().parent().next().children(":eq(0)").show("slow");					
+					$(this).parent().parent().next().children(":eq(0)").children("input").focus();					
+				}else{
+					useImageSelector($(this).parent().parent().next().children(":eq(0)"));
+				}
+			}
+		});
+	});
+}
+
+function useImageSelector(target_){
+	// $("#"+for_).click();
+	notifyAlert(target_.attr("note")+"<h5><button id='yes' class='btn btn-success'>YES</button></h5>","CANCEL",false);
+	$("#yes").click(function(){
+		$("#"+target_.attr("for")).click();
+		$("#"+target_.attr("for")).on("change",setPreviewImage);
+		$(".alert").hide("slow");
+	});
+	$("#ok").click(function(){
+		$("#"+target_.attr("for")).change();
+		$(".alert").hide("slow");
+	});
+}
+
+
+function buildImagePreview(input,preview) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function() {
+      preview.attr('src', reader.result);
+    }
+    reader.readAsDataURL(input.files[0]); // convert to base64 string
+  }
+}
+
+function setPreviewImage(){
+	var preview_id = $(this).attr("id");
+	if(preview_id == "image_"){
+		buildImagePreview(this,$("#store-logo img"));
+		$("#store-logo").show();
+	}else{
+		if(preview_id == "store_front_image"){
+			buildImagePreview(this,$("#store-front-image img"));
+			$("#store-front-image").show();
+		}
+	}
+}
 
 function initSearchType(){
 	$(".search_type").removeClass("active");
@@ -42,7 +114,6 @@ function addFavourite(){
 	var fav_name = fav_[2];
 	var fav_company = fav_[3];
 	var nav_module = window.location.pathname.split("/")[1];
-	
 
 	if(fav_type && fav_id){
 		$.post("/favourite/",{"company":fav_company,"type":fav_type,"item":fav_id},function(response){
@@ -97,6 +168,68 @@ function updateItemQty(){
 			window.location = "?";
 		});
 	}
+}
+
+
+function notifyAlert($msg,btnLabel,autoHide){
+	$btn_type = "btn-success-ok";
+	$cancel = btnLabel.toUpperCase().match(/CANCEL/g);
+	$exit = btnLabel.toUpperCase().match(/EXIT/g);
+	if($cancel){
+		if($cancel.length > 0){
+			$btn_type = "btn-warning";
+		}
+	}
+	$clsA = "<h6><center><button id='ok' class='btn btn-small "+$btn_type+"' >"+btnLabel+"</button></center></h6>";
+	if($exit){
+	 if($exit.length > 0){
+			$btn_type = "btn-warning";
+		}
+		$clsA = "";
+	}
+  	$(".alert .content").html("<h1><center>"+$msg+"</center></h1> "+$clsA); 
+  	// setTimeout(function(){
+  	// 	$cheight = $(".alert .content").innerHeight();	
+  	// 	if($cheight !== 0){
+  	// 		$(".alert").animate({height: $cheight});
+  	// 	}
+  	// },500);	
+  	showHideNotif(autoHide);
+}
+
+function showHideNotif(autoHide){
+	$(".alert").addClass("s").show();
+
+  	$(".alert button#ok").click(function(){
+		$("span.alert_cls").click();
+  	});
+
+  	$("span.alert_cls").click(function(){
+		$(".alert").removeClass("s").addClass("c").hide();
+		$(".alert .content").html("");
+ 	});
+
+  	if($(".alert").hasClass("s")){
+	  if(autoHide){
+	  	hideAlert();
+	  }else{
+	  	clearTimeout(hide);
+	  }
+	}else{
+		if($(".alert").hasClass("c") && $(".alert").html() == ""){
+			$(".alert").addClass("s").show();
+		}
+	}
+}
+
+function hideAlert(){
+	hide = setTimeout(function(){
+		alertCls();
+	},(gameSpeed + 1000));
+}
+
+function alertCls(){
+	$("span.alert_cls").click();
 }
 
 function addOsfLineItem(){
