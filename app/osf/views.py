@@ -169,10 +169,8 @@ def account(account_type):
 				# add business as customer by default
 				customer_ = Customer(name=form["bus_owner"],email=form["bus_email"],created_date=now(),last_business=None,street=form["bus_address"],street2={form["bus_state"]},city=form["bus_city"],zip_code=form["bus_postal"],active=1,customer_type="normal",contact=form["bus_phone"],barcode="",credit_limit=None,tax_id="000000000",avatar="img/customers/default.png",company_name=form["bus_name"])   
 				error = db_commit_add_or_revert(customer_)
-				# mail_send_res = accountVerification(res["company"],"business")
-				# user_.add_notification("activation", "company", user_.id, "Company Account Activation", json.dumps(res["company"].as_dict(), default=json_util.default), 0)
 				token = company_.get_activation_token()
-				params = {"type":"company","name":company_.owner.fullname,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":company_.email}
+				params = {"type":"company","name":company_.owner.fullname,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":company_.email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
 				user_.add_notification("activation", "company", user_.id, "Company Account Activation", json.dumps(params, default=json_util.default), 0)
 
 
@@ -206,10 +204,9 @@ def account(account_type):
 						
 					if "success" in res:
 						customer_ = res["customer"]
-						# mail_send_res = accountVerification(res["customer"],"customer")
-						# user_.add_notification("activation", "customer", user_.id, "Customer Account Activation", json.dumps(res["customer"].as_dict(),default=json_util.default), 0)
+					
 						token = customer_.get_activation_token()
-						params = {"type":"customer","name":customer_.name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":customer_.email}
+						params = {"type":"customer","name":customer_.name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":customer_.email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
 						user_.add_notification("activation", "customer", user_.id, "Customer Account Activation", json.dumps(params, default=json_util.default), 0)
 						
 
@@ -265,7 +262,7 @@ def resend(account_type,email):
 		# mail_send_res = accountVerification(company_,"company")
 		if user_:
 			token = company_.get_activation_token()
-			params = {"type":"company","name":company_.owner.fullname,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":company_.email}
+			params = {"type":"company","name":company_.owner.fullname,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":company_.email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
 			user_.add_notification("activation", "company", user_.id, "Company Account Activation", json.dumps(params, default=json_util.default), 0)
 
 	else:
@@ -276,7 +273,7 @@ def resend(account_type,email):
 			# mail_send_res = accountVerification(company_,"company")
 			if user_:
 				token = customer_.get_activation_token()
-				params = {"type":"customer","name":customer_.name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":email}
+				params = {"type":"customer","name":customer_.name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
 				user_.add_notification("activation", "customer", user_.id, "Customer Account Activation", json.dumps(params, default=json_util.default), 0)
 			
 	flash("You should receive an activation link within the next 5 minutes, otherwise contact us at support@ourstorefront.online","success")
@@ -325,9 +322,8 @@ def recover(token):
 				user_ = User.query.filter_by(email=form["email"]).first()
 				if user_:
 					if user_.customer and user_.customer.active or user_.company and user_.company.active:
-						# res_ = recoverUserAccount(form["email"],"osf")
 						token = user_.get_recover_password_token()
-						params = {"type":"customer","name":customer_.name,"app_link":url_for('osf.account',_external=True),"rec_link":url_for('osf.recover',token=token,_external=True),"email":user_.email}
+						params = {"type":"customer","name":customer_.name,"app_link":url_for('osf.account',_external=True),"rec_link":url_for('osf.recover',token=token,_external=True),"email":user_.email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
 						user_.add_notification("recovery", "osf", user_.id, "Customer Account Recovery",json.dumps(params, default=json_util.default), 0)
 						flash("A recovery email has been sent to email provided. Check your email for instructions to recover your account","success")
 
