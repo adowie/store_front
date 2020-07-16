@@ -210,7 +210,7 @@ def send_async_email(login,password,from_addr,to_addr_list,msg):
 		return {"error": e}
 	server.quit()
 
-def sendMail(from_addr, to_addr_list, cc_addr_list, subject, text_message,html_message, login, password, smtpserver='smtp.yandex.com:465'):
+def sendMail(from_addr, to_addr_list, cc_addr_list, subject, text_message,html_message, login, password):
 	from email.mime.image import MIMEImage
 	from email.mime.text import MIMEText
 	from email.mime.multipart import MIMEMultipart
@@ -219,6 +219,8 @@ def sendMail(from_addr, to_addr_list, cc_addr_list, subject, text_message,html_m
 	msg['To'] = '%s' % ','.join(to_addr_list) 
 	msg['From'] = from_addr
 	msg['Subject'] = subject
+	msg['In-Reply-To'] = conf.COMPANY_EMAIL
+	msg.add_header('reply-to', conf.COMPANY_EMAIL)
 	
 	text = text_message
 	html = html_message
