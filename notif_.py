@@ -7,8 +7,7 @@ from email import encoders
 from app.models import Notification, User, Customer, Company
 from app.func_ import *
 from datetime import datetime
-from bson import json_util
-import app 
+# import app 
 import smtplib
 import os
 import config as conf
@@ -27,16 +26,15 @@ sent_emails = []
 
 
 def notify_(notif):
-	with app.app_context(), app.test_request_context():
-		error = {"error":"No notification to process"}
-		if notif.name == "activation":
+	error = {"error":"No notification to process"}
+	if notif.name == "activation":
+		account = DDOT(json.loads(notif.params))
+		# print(account)
+		error = accountVerification(account)
+	else:
+		if notif.name == "recovery":
 			account = DDOT(json.loads(notif.params))
-			# print(account)
-			error = accountVerification(account)
-		else:
-			if notif.name == "recovery":
-				account = DDOT(json.loads(notif.params))
-				error = recoverUserAccount(account)
+			error = recoverUserAccount(account)
 	return error
 
 
