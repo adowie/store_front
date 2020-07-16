@@ -237,7 +237,7 @@ def sendMail(from_addr, to_addr_list, cc_addr_list, subject, text_message,html_m
 		loop_thread.daemon = True
 		loop_thread.start()
 		
-		server = smtplib.SMTP(conf.MAIL_SERVER)
+		server = smtplib.SMTP(conf.MAIL_SERVER, conf.MAIL_PORT)
 		server.starttls()
 
 		try:
