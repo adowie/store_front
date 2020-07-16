@@ -15,6 +15,9 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 admin = Admin(name='OSFO Administrator', index_view=MyAdminIndexView(), template_mode='bootstrap3')
 
+def server_error(e):
+  return render_template('error/500.html'), 500
+
 def page_not_found(e):
   return render_template('error/404.html'), 404 
 
@@ -72,6 +75,7 @@ def create_app():
 	# app.config.from_pyfile('config.py')
 	app.register_error_handler(404, page_not_found)
 	app.register_error_handler(403, permission_denied)
+	app.register_error_handler(500, server_error)
 	app.jinja_env.globals.update(encript_=encript_)
 	app.jinja_env.globals.update(toTime=toTime)
 	app.jinja_env.globals.update(toMoney=toMoney)
