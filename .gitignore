@@ -1,3 +1,4 @@
 notifications_log.txt
 .env
 config.py
+migrations/

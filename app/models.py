@@ -333,9 +333,9 @@ class Product(db.Model):
 	price = db.Column(db.Float)
 	qty = db.Column(db.Float)
 	taxable = db.Column(db.Boolean)
-	image = db.Column(db.String(1024))
+	image = db.Column(db.String(324), default="img/products/default.png")
 
-	company_id = db.Column(db.Integer,db.ForeignKey('company.id'))
+	company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
 	company = db.relationship("Company",back_populates="products")
 	
 	uoms = db.relationship("UomShedule")
@@ -356,6 +356,7 @@ class Variation(db.Model):
 	name = db.Column(db.String(64),index=True)
 	price = db.Column(db.Float)
 	qty = db.Column(db.Float)
+	image = db.Column(db.String(324), nullable=True, default=None)
 	created_date = db.Column(db.DateTime)
 	
 	def __repr__(self):
