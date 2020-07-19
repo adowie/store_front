@@ -253,6 +253,11 @@ def create_company():
 				return e
 			
 			print("......Company created successfully.....\n")
+			print(f"......Company Name is: {company.name}\n")
+			print(f"......Company ID is: {company.id}\n")
+			print(f"......You can initiate the auto product addition script with python3 manual.py -np {trim(company.name.lower())} {company.id}\n")
+			print(f"......Ensure that folder with img/company/{trim(company.name.lower())} has been created and populated with product shots.\n")
+
 		else:
 			print("......That company email is already taken try using a different one.....\n")
 	else:
