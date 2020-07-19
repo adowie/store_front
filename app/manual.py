@@ -25,18 +25,19 @@ if command == "-du":
 
 if command == "-cm":
 	owner_name = sys.argv[2]
-	company_email = sys.argv[3]
-	company_logo = sys.argv[4]
-	company_sfi = sys.argv[5]
-	company_location = sys.argv[6]
-	company_contact = sys.argv[7]
-	thank_note = sys.argv[8]
-	order_time_limit = sys.argv[9]
-	coords = sys.argv[10]
-	company_type = sys.argv[11]
-	plan = sys.argv[12]
-	company_tax = sys.argv[13]
-	company_pass = sys.argv[14]
+	company_name = sys.argv[3]
+	company_email = sys.argv[4]
+	company_logo = sys.argv[5]
+	company_sfi = sys.argv[6]
+	company_location = sys.argv[7]
+	company_contact = sys.argv[8]
+	thank_note = sys.argv[9]
+	order_time_limit = sys.argv[10]
+	coords = sys.argv[11]
+	company_type = sys.argv[12]
+	plan = sys.argv[13]
+	company_tax = sys.argv[14]
+	company_pass = sys.argv[15]
 
 engine = create_engine("mysql+pymysql://Adora:62866181@ali@localhost:3306/osfo")
 Session = sessionmaker(bind=engine)
@@ -241,7 +242,7 @@ def create_company():
 	if user:
 		company = db_sess.query(Company).filter_by(email=company_email).first()
 		if not company:
-			company = Company(name=owner_name, email=company_email, created_date=now(), logo=company_logo, store_front_image=company_sfi, location=company_location, contact=company_contact, thank_note=thank_note,order_hold_limit=order_time_limit, coords=coords, company_type_id=company_type, plan_id=plan, active=True, owner_id=user.id, tax=company_tax)
+			company = Company(name=company_name, email=company_email, created_date=now(), logo=company_logo, store_front_image=company_sfi, location=company_location, contact=company_contact, thank_note=thank_note,order_hold_limit=order_time_limit, coords=coords, company_type_id=company_type, plan_id=plan, active=True, owner_id=user.id, tax=company_tax)
 			try:
 				print("......Created customer account.....\n")
 				print("......Now Creating company.....\n")
