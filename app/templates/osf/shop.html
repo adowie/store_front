@@ -71,7 +71,11 @@
                             </div>
                             <h3><center>You are @ <a href="{{ url_for('osf.company',name=company.name,_id=company.id)}}">{{ company.name }}</a></center></h3>
                             <div class="shop_logo">
-                                <img src="{{ url_for('static',filename=company.logo) }}">
+                                {% if company.logo %}
+                                    <img src="{{ url_for('static',filename=company.logo) }}">
+                                {% else %}
+                                    <img src="{{ url_for('static',filename='img/core-img/logo.png') }}">
+                                {% endif%}
                             </div>
                         <div class="product-topbar d-xl-flex align-items-end justify-content-between">
                             <!-- Total Products -->

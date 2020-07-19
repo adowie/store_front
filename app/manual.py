@@ -38,7 +38,7 @@ if command == "-cm":
 	company_tax = sys.argv[13]
 	company_pass = sys.argv[14]
 
-engine = create_engine("mysql://Adora:62866181@ali@localhost:3306/osfo")
+engine = create_engine("mysql+pymysql://Adora:62866181@ali@localhost:3306/osfo")
 Session = sessionmaker(bind=engine)
 
 session = Session()
@@ -280,8 +280,10 @@ def create_product_from_image():
 		else:
 			product_code = product_id[0][:-4]
 
-		product = Product(item_code=product_code,created_date=now(),name=old_image[:-4],description='',image=image_path,company_id=company_num)
-		bulk_products.append(product)
+		if product_code != "logo" and product_code != "store":
+			product = Product(item_code=product_code,created_date=now(),name=old_image[:-4],description='',image=image_path,company_id=company_num)
+			bulk_products.append(product)
+	
 	return db_insert(bulk_products)
 		
 def add_default_admin_user():
