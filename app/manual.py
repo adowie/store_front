@@ -39,7 +39,15 @@ if command == "-cm":
 	company_tax = sys.argv[14]
 	company_pass = sys.argv[15]
 
-engine = create_engine("mysql+pymysql://Adora:62866181@ali@localhost:3306/osfo")
+
+DB_PASS = os.getenv('DB_PASS')
+DB_HOST = os.getenv('DB_SERVER')
+DB_USER = os.getenv('DB_USER')
+DB_ = os.getenv('DBASE')
+
+SQLALCHEMY_DATABASE_URI = "mysql+pymysql://"+DB_USER+":"+DB_PASS+"@"+DB_HOST+"/"+DB_
+
+engine = create_engine(SQLALCHEMY_DATABASE_URI)
 Session = sessionmaker(bind=engine)
 
 session = Session()
