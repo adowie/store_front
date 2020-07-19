@@ -106,7 +106,7 @@
                                     </div>
                                 </div>
                                 <div class="widget-content-right header-user-info ml-3">
-                                    <a href="{{ url_for('osf.shop',company=company.id)}}" class="btn btn-warning">
+                                    <a href="{{ url_for('osf.shop',company=company.id)}}" target="blank_" class="btn btn-warning">
                                         <i class="metismenu-icon pe-7s-home"></i> View Shop
                                         <!-- <i class="fa text-white fa-calendar pr-1 pl-1"></i> -->
                                     </a>
@@ -577,9 +577,10 @@
                                         <div class="widget-content-left">
                                             <div class="widget-heading">Total Products</div>
                                             <div class="widget-subheading"><a href="{{ url_for('mods.products_') }}">Available Products</a></div>
+                                          <div class="widget-subheading"> {{ sort_active_inactive_products(company.id) }} </div>
                                         </div>
                                         <div class="widget-content-right">
-                                            <div class="widget-numbers text-white"><span>{{ company.products|length }}</span></div>
+                                            <div class="widget-numbers text-white"><span> {{ company.products|length }}</span></div>
                                         </div>
                                     </div>
                                 </div>
@@ -605,7 +606,7 @@
                                             <div class="widget-subheading">Revenue streams</div>
                                         </div>
                                         <div class="widget-content-right">
-                                            <div class="widget-numbers text-warning"><span>$14M</span></div>
+                                            <div class="widget-numbers text-warning"><span>0</span></div>
                                         </div>
                                     </div>
                                 </div>

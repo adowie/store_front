@@ -501,8 +501,8 @@ class UomShedule(db.Model):
 		return '<UomShedule %s,%s>' % (self.uom_id,self.product_id)
 
 class Category(db.Model):
-	id = db.Column(db.Integer,primary_key=True)
-	name = db.Column(db.String(64),index=True)
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(64), index=True)
 	created_date = db.Column(db.DateTime)
 	image = db.Column(db.String(1024))
 	active = db.Column(db.Boolean)

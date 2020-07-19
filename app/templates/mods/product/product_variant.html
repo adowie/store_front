@@ -56,7 +56,7 @@
     <div class="col-md-5">
       <h5><center>ADD VARIATION</center></h5>
 
-      <form action="{{ url_for('mods.addProductVariant') }}" method="post" role="form" id="variant_creator">
+      <form action="{{ url_for('mods.addProductVariant') }}" method="post" role="form" id="variant_creator"  enctype="multipart/form-data">
       
        <input type="hidden" name="update" value="0" id="uom_update">
 
@@ -83,13 +83,22 @@
               <input class="form-control" type="text" placeholder="Variant Inventory" name="qty" id="var_qty"  required>
             </div>
           </div>
-           
+            
+          <div class="form-group row">
+            <label for="" class="col-md-5 col-form-label">Variant Image</label>
+            <div class="col-md-7">
+              <input class="form-control" type="file" name="image_" id="image_" accept="image/*" enctype="multipart/form-data">
+              <input class="form-control" type="hidden" name="variant_image" id="variant_image" value="">
+
+            </div>
+          </div>
           <div class="form-group row">
             <label for="" class="col-md-5 col-form-label"></label>
             <div class="col-md-7">
               <input class="btn btn-success" type="submit" value="ADD VARIANT" id="add_product_variant">
             </div>
-          </div>
+          </div>                       
+
       </form>
       </div>
 
@@ -114,10 +123,12 @@
                         <th class="th">Price</th>
                         <th class="th">Quantity</th>
                         <th class="th">Created</th>
+                        <th class="th">Image</th>
                       </tr>
                       </thead>
 
                       <tbody class="tbody">
+                        <input type="hidden" name="product_id" value="{{ product.id }}"> 
                       {% if product.variants|length > 0 %}
                         {% for variant in product.variants %}
                         
@@ -128,6 +139,7 @@
                           <td class="td" id="variant_price">{{  variant.price }}.00</td>
                           <td class="td" id="variant_qty">{{  variant.qty }}</td>
                           <td class="td" id="variant_date">{{  variant.created_date }}</td>
+                          <td class="td variant_image" id="variant_image"><img src="{{ url_for('static',filename=variant.image)}}"></td>
                           
                         </tr>                    
 

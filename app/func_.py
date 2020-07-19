@@ -4,7 +4,7 @@ from threading import Thread
 from datetime import datetime
 from Crypto.Cipher import AES
 from . import db
-from .models import User,Customer
+from .models import User,Customer,Product
 
 import jwt
 import config as conf
@@ -15,7 +15,10 @@ import os
 import base64
 import random
 
-
+def fetch_company_products(company):
+	active_products = len(Product.query.filter_by(company_id=company,status=True).all())
+	inactive_products = len(Product.query.filter_by(company_id=company,status=False).all())
+	return active_products, inactive_products
 
 def getFavourites(user):
 	customer_ = Customer.query.filter_by(email=user).first()

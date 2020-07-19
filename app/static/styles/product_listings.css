@@ -5,6 +5,7 @@
 
 .add_fav {
    cursor: pointer;
+   text-shadow: 0px 0px 4px #000;
 }
 
 .add_fav:hover {
@@ -749,63 +750,16 @@
 
 
     .prod-wrap div[class*=col-md-5] {
-
- 
-
-
         padding-right: 0
-
- 
-
-
     }
-
- 
-
 
     .prod-wrap div[class*=col-md-7] {
-
- 
-
-
         padding: 0 13px 0 0
-
- 
-
-
     }
-
- 
-
-
-    .prod-info-main .product-image {
-
- 
-
-
-        border-right: 1px solid #dfe5e9
-
- 
-
-
-    }
-
- 
-
 
     .prod-info-main .product-info {
-
- 
-
-
         position: relative
-
- 
-
-
     }
-
- 
 
 }
 

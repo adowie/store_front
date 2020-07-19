@@ -14,7 +14,13 @@ def pos_(company):
 	session["company"] = company_.as_dict()
 	title_ = company_.name
 	products = [] 
-	pos_session = createPOSSession(company)
+	error = createPOSSession(company)
+	if "success" in error:
+		pos_session = error["pos"]
+	else:
+		flash("Cannot create POS session. Contact admin for assistance","error")
+		return redirect(url_for('home.dashboard'))
+
 	categories = getCategoriesByCompany(company_.id)
 	products = userItems(current_user,"products",company_.id)
 	customer_ = Customer.query.filter_by(customer_type='default').first()
@@ -163,7 +169,13 @@ def void_line():
 	line_ = DDOT(request.form.to_dict())
 	orderline_ = orderlineVoid(line_,current_user)
 	updateOrder(orderline_.order_id)
-	session_ = createPOSSession(company.id)
+	error = createPOSSession(company.id)
+	if "success" in error:
+		session_ = error["pos"]
+	else:
+		flash("Cannot create POS session. Contact admin for assistance","error")
+		return redirect(url_for('home.dashboard'))
+		
 	products = userItems(current_user,"products",company.id)
 	categories = getCategoriesByCompany(company.id)
 	return render_template("pos/spos.html",title=title_+" | POS Session",user=current_user,time=now_time(),categories=categories,products=products,pos=session_)
@@ -180,7 +192,13 @@ def remove_line():
 			flash("line item removed successfully.","success");
 		updateOrder(line_.order)
 
-	session_ = createPOSSession(company.id)
+	error = createPOSSession(company.id)
+	if "success" in error:
+		session_ = error["pos"]
+	else:
+		flash("Cannot create POS session. Contact admin for assistance","error")
+		return redirect(url_for('home.dashboard'))
+		
 	products = userItems(current_user,"products",company.id)
 	categories = getCategoriesByCompany(company.id)
 	return render_template("pos/spos.html",title=title_+" | POS Session",user=current_user,time=now_time(),categories=categories,products=products,pos=session_)

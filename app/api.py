@@ -408,13 +408,22 @@ def deleteVariant(form):
 		Variation.query.filter_by(id=variant_).delete() #find the product by productId and deletes it
 	db_sess.commit() #commit changes to the database
 
-def updateVariant(variant):
+def updateVariant(variant,image_):
 	variant_ = Variation.query.filter(id=variant.id).first()
 	error = ""
 	vars_ = "variant_"
 	for k,v in variant.items():
 		if k != "image":
 			exec(vars_+ ".%s = '%s'" % (k,v))# print(prod_+".%s = '%s'" % (k,v))
+
+	if variant.variant_image == "":
+		variant_image = request.files["image_"]
+		image_path = save_uploaded_file(variant_image, conf.PRODUCT_IMAGES_DIR)
+	else: 
+		image_path = entry.variant_image
+	
+	if image_path:
+		variant_.image = image_path
 	
 	error = db_commit_update_or_revert()
 
@@ -1194,9 +1203,9 @@ def createPOSSession(company):
 			return { "error":error} # error #[data] #prepare visual data
 		else:
 			pos = pos_
-			return pos #prepare visual data
+			return {"success": True,"pos":pos} #prepare visual data
 	else:
-		return pos
+		return {"success": True,"pos":pos}
 
 
 def getPosActiveSession(user,session):

@@ -258,7 +258,6 @@ def create_company():
 	else:
 		print(".....Unknown error caused company not to be created.....\n")
 
-
 # bulk product adder by product image
 def create_product_from_image():
 	mypath = f'img/company/{company}'

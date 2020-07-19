@@ -1,4 +1,4 @@
-from flask import Flask,render_template
+from flask import Flask,render_template,Markup
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -23,6 +23,13 @@ def page_not_found(e):
 
 def permission_denied(e):
   return render_template('error/403.html'), 403
+
+
+
+def sort_active_inactive_products(company):
+	from .func_ import fetch_company_products
+	active_products, inactive_products = fetch_company_products(company)
+	return Markup(f'Active <span class="active_products">{active_products}</span> <br> InActive <span class="inactive_products">{inactive_products}</span>')
 
 
 def encript_(enc_str):
@@ -84,6 +91,7 @@ def create_app():
 	app.jinja_env.globals.update(ordinal=ordinal)	
 	app.jinja_env.globals.update(favourites=favourites)	
 	app.jinja_env.globals.update(parse_account_type=parse_account_type)	
+	app.jinja_env.globals.update(sort_active_inactive_products=sort_active_inactive_products)	
 
 	db.init_app(app)
 	admin.init_app(app)

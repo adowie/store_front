@@ -1,5 +1,5 @@
 preloader();
-
+var hide = null;
 $(function(){
 	if($("input[name='created_date']").val() == "")
 	$("input[name='created_date']").val(today());	
@@ -22,7 +22,7 @@ $(function(){
 	$("#company_products_list").contentEditable().change(updateProductMeta);
 	$("input#username").focus();
 	$(".dis_item_image").on("mouseover",popOutImage);
-	
+	$(".dis_item_add_as_variant").on("click",enableVariantInput);
 
   	var panel_ = $('.form-panel.two');
   	var panelOne = 100;
@@ -97,6 +97,41 @@ function setFieldType(e){
 	}
 }
 
+function enableVariantInput(){
+	$("#variant_converter").remove();
+	var product_id = $(this).data("product-id");
+	var product_name = $(this).data("product-name");
+	var product_price = $(this).data("product-price");
+	var product_image = $(this).data("product-image");
+	var product_code = $(this).data("product-code");
+	var product_qty = $(this).data("product-qty");
+	if(product_name != "" && parseInt(product_price) > 0){
+		$(this).html("<input type='text' class='form-control' id='variant_converter' placeholder='Enter Product code'>");
+		$("#variant_converter").focus();
+		$("#variant_converter").on("change",function(){
+			var target_parent = $(".product_line#product_"+$.trim($(this).val()));
+			if(target_parent.length > 0){
+				var parent_product = target_parent.children(".dis_item_add_as_variant");
+				var parent_id = parent_product.data("product-id");
+				var parent_name = parent_product.data("product-name");
+				var parent_price = parent_product.data("product-price");
+				
+				if($.trim(parent_name) != "" && parseFloat(parent_price) > 0 ){
+					$.post("/products/variant/add/",{"product_id":parent_id,"name":product_name,"price":product_price,"variant_image":product_image,"qty":product_qty},function(){
+						window.location.reload();
+					});
+				}else{
+					notifyAlert("<h3>You cannot add a variant to a product that does not have a price or a name.</h3>", "ok", false);
+				}
+		
+				$(this).blur();
+			}
+		});
+	}else{
+		notifyAlert("Complete setup for this product to set it as a variant.", "ok", false);
+	}	
+}
+
 function popOutImage(){
 	$("#popupimage").html($(this).children("img").clone()).show();
 	$(this).on("mouseout",function(){
@@ -124,6 +159,15 @@ function updateProductMeta(e){
 
 						field_.html(value_word);
 					}
+					var product_ = $(".product_line#product_"+item_code).children(".dis_item_add_as_variant");
+					if(field_name == "item_price"){
+						product_.data("product-price",data)
+					}else{
+						if(field_name == "item_name"){
+							product_.data("product-name",data);
+						}
+					}
+
 				}
 
 			});

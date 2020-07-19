@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, url_for,request,session,Markup
+from flask import flash, redirect, render_template, url_for,request,session,Markup, abort
 from flask_login import login_required, login_user, logout_user,current_user
 from flask_paginate import Pagination, get_page_args
 
@@ -140,6 +140,8 @@ def companies(company_type):
 
 		for company in companies_:
 			fav_companies.append(company.company_id)
+	if len(business_of_type) < 1:
+		return redirect(url_for('osf.land'))
 	return render_template("osf/companies.html",title="Companies",resgistered_businesses=business_of_type,is_admin=is_admin,fav_companies=fav_companies)
 
 @osf.route('/account/',defaults={"account_type":None}, methods=['GET', 'POST'])
@@ -351,11 +353,15 @@ def shop(company,category):
 		per_page = 12
 		
 	if category:
-		category_ = Category.query.filter_by(id=category,company_id=company).first();
-		products = category_.products
+		# category_ = CompanyCategory.query.filter_by(category_id=category,company_id=company).first();
+		products = []
+		products_all = Product.query.filter_by(company_id=company,status=True).all()
+		for product in products_all:
+			if category in product.categories:
+				products.append(product)	
 		page_products = products[offset: offset + per_page]
 	else:
-		products = company_.products
+		products = Product.query.filter_by(company_id=company,status=True).all()
 		page_products = products[offset: offset + per_page]
 
 	pagination = Pagination(page=page, per_page=per_page, offset=offset,total=len(products))
@@ -365,14 +371,18 @@ def shop(company,category):
 
 	if company_.closed:
 		flash("Company is closed, no orders will be processed at this time.")
+		return redirect(url_for('osf.companies',company_type=company_.company_type_id))
+
 	if customer:
 		active_order = Order.query.filter_by(user_id=current_user.id,company_id=company,status=0,customer_id=customer.id).first()
-		if not active_order and pos_:
-			active_order = Order(name=randomString(16),pos_id=pos_.id,user_id=current_user.id,company_id=company,order_date=now(),status=0,customer_id=customer.id)
-		else:
-			if not pos_:
-				flash("It seems company is not accepting orders at this time.")
 
+		if not active_order:
+			if pos_:
+				active_order = Order(name=randomString(16),pos_id=pos_.id,user_id=current_user.id,company_id=company,order_date=now(),status=0,customer_id=customer.id)
+				error = db_commit_add_or_revert(active_order)
+			else:
+				flash("It seems company is not accepting orders at this time.")
+				return redirect(url_for('osf.companies',company_type=company_.company_type_id))
 	else:
 		flash("You need a customer account to access that resource.")
 		return redirect(url_for('osf.account'))
@@ -380,6 +390,7 @@ def shop(company,category):
 	fav_products = []
 	for product in customer.fav_products:
 		fav_products.append(product.product_id)
+
 
 	return render_template("osf/shop.html",title="Shop",company=company_,is_admin=is_admin,products=page_products,page=page,
                            per_page=per_page,total=len(products),pagination=pagination,in_category=category,active_order=active_order,fav_products=fav_products)
@@ -518,21 +529,24 @@ def company(name,_id):
 		is_admin = session["is_admin"]
 	company = Company.query.filter_by(id=_id,name=name).first()
 	geo = {}
-	if not company.coords:
-		address = ",".join(company.location.split(',')[:-1])
-		geo = geocoder.osm(f'{ address }')
-		if not geo:
-			geo["json"] = {"raw":{"lat":18.47369,"lon":-77.92209},"zoom": 11}
+	if company:
+		if not company.coords:
+			address = ",".join(company.location.split(',')[:-1])
+			geo = geocoder.osm(f'{ address }')
+			if not geo:
+				geo["json"] = {"raw":{"lat":18.47369,"lon":-77.92209},"zoom": 11}
+			else:
+				geo.json["zoom"] = 25
+				print(geo.json)
+				company.coords = f'{geo.json["raw"]["lat"]},{geo.json["raw"]["lon"]}'
+				error = db_commit_update_or_revert()
+				if error:
+					print(error)
 		else:
-			geo.json["zoom"] = 25
-			print(geo.json)
-			company.coords = f'{geo.json["raw"]["lat"]},{geo.json["raw"]["lon"]}'
-			error = db_commit_update_or_revert()
-			if error:
-				print(error)
+			print(company.coords)
+			geo["json"] = {"raw":{"lat":0,"lon":0,"zoom":25}}#{"raw":{"lat":company.coords.split(",")[0],"lon":company.coords.split(",")[1]},"zoom":25}
 	else:
-		geo["json"] = {"raw":{"lat":company.coords.split(",")[0],"lon":company.coords.split(",")[1]},"zoom":25}
-
+		abort(404)
 	return render_template("osf/company_detail.html",title=f"Detail | {company.name}",is_admin=is_admin,company=company,geo=geo["json"])
 
 @osf.route('/favourite/', methods=['GET', 'POST'])

@@ -140,7 +140,10 @@ def openCompany(company):
 	company_ = Company.query.filter_by(id=company).first()
 	company_.closed = 0
 	error = db_commit_update_or_revert()
-	# pos_session = createPosSession(company)
+	error = createPOSSession(company)
+	if "success" in error:
+		flash("Pos session is now active.","success")
+
 	if not error:
 		flash("Open Sign Erected successfully.","success")
 
@@ -155,6 +158,12 @@ def publishCompany(company):
 		error = db_commit_update_or_revert()
 		if not error:
 			flash("Your Company is now available to customers for browsing and sending in orders. Be prepared to fulfil those orders.","success")
+			if company_.closed:
+				company_.closed = False
+				error = db_commit_update_or_revert()
+				if not error:
+					flash("Your Company is now OPEN for business.","success")
+
 		else:
 			flash(f"{error}")
 	else:
@@ -449,14 +458,20 @@ def addProductVariant():
 	if entry.product_id:
 		variant_ = Variation.query.filter_by(product_id=entry.product_id,name=trim(entry.name)).first()
 		if not variant_:
-			new_variant = Variation(product_id=entry.product_id,name=trim(entry.name),created_date=now(),price=entry.price,qty=entry.qty)
+			if entry.variant_image == "":
+				variant_image = request.files["image_"]
+				image_path = save_uploaded_file(variant_image, conf.PRODUCT_IMAGES_DIR)
+			else: 
+				image_path = entry.variant_image
+
+			new_variant = Variation(product_id=entry.product_id,name=trim(entry.name),image=image_path,created_date=now(),price=entry.price,qty=entry.qty)
 			error = db_commit_add_or_revert(new_variant)
 			if not error:
-				flash("Product Variant added successfully","success")
+				flash("Product Variant added successfully","success") 
 			else:
 				flash(f'Error: {error}','error')
 		else:
-			res = updateVariant(entry)
+			res = updateVariant(entry,request.files["image_"])
 			msg, msg_type = flash_res_msg(res)
 			if msg:
 				flash(msg,msg_type)
@@ -467,17 +482,10 @@ def addProductVariant():
 @mods.route('/products/variant/remove/', methods=['GET','POST'])
 @login_required
 def removeProductVariant():
-	entry = DDOT(request.form)
-	entry_name = ' '.join(entry.name.split())
-	variant_ = Variant.query.filter_by(product_id=entry.product_id,name=entry_name).first()
-	if not variant_:
-		new_variant = Variant(product_id=entry.product_id,name=entry_name,created_date=now(),price=entry.price,qty=entry.qty)
-		error = db_commit_add_or_revert(new_variant)
-		msg, msg_type = flash_res_msg(res)
-		if msg:
-			flash(msg,msg_type)
-		
-	return redirect(url_for('mods.productVariant',product=entry.product_id))
+	product = DDOT(request.form)
+	deleteVariant(request.form)
+				
+	return redirect(url_for('mods.productVariant', product=product.product_id))
 	
 
 
