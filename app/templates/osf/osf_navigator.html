@@ -28,7 +28,7 @@
                 <ul>
                     <li><span class="log_in_as">{{ current_user.fullname }}</span></li>
                     {% if is_admin == 1 %}
-                        <li><a href="{{ url_for('home.dashboard') }}">Administrator</a></li>
+                        <li><a href="{{ url_for('home.dashboard') }}" rel=“nofollow”>Administrator</a></li>
                     {% endif %}
                     <li class="active"><a href="{{ url_for('osf.land') }}">Home</a></li>
                     {% if current_user.is_authenticated %}
@@ -48,9 +48,9 @@
             <!-- Cart Menu -->
             <div class="cart-fav-search mb-100">
                 
-                <a href="{{ url_for('osf.orders') }}" class="cart-nav"><img src="{{ url_for('static', filename='img/core-img/cart.png') }}" alt=""> Orders</a>
+                <a href="{{ url_for('osf.orders') }}" class="cart-nav" rel=“nofollow”><img src="{{ url_for('static', filename='img/core-img/cart.png') }}" alt=""> Orders</a>
                 
-                <a href="{{ url_for('osf.favourites') }}" class="fav-nav"><img src="{{ url_for('static', filename='img/core-img/favorites.png') }}" alt=""> Favourites (
+                <a href="{{ url_for('osf.favourites') }}" class="fav-nav" rel=“nofollow”><img src="{{ url_for('static', filename='img/core-img/favorites.png') }}" alt=""> Favourites (
                     {% if current_user.is_authenticated %}
                         <span class="fav-count">{{ favourites(current_user.email) }}</span>
                     {% else %}

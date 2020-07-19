@@ -108,6 +108,17 @@ function enableVariantInput(){
 	if(product_name != "" && parseInt(product_price) > 0){
 		$(this).html("<input type='text' class='form-control' id='variant_converter' placeholder='Enter Product code'>");
 		$("#variant_converter").focus();
+		$("#variant_converter").on("keyup",function(e){
+			var key_ = e.keyCode;
+			if(key_ == 27){
+				$(this).parent().html('<span class="fa fa-plus fa-2x"></span>');
+			}else{
+				console.log(key_)
+				if(key_ == 9 && $(this).val().length < 1){
+					$(this).parent().html('<span class="fa fa-plus fa-2x"></span>');
+				}
+			}
+		});
 		$("#variant_converter").on("change",function(){
 			var target_parent = $(".product_line#product_"+$.trim($(this).val()));
 			if(target_parent.length > 0){

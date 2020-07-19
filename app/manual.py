@@ -70,11 +70,9 @@ def db_insert(db_obj):
         except (SQLAlchemyError, IntegrityError, DataError) as e:
             db_sess.rollback()
             db_sess.flush() # for resetting non-commited .add()
-            error = e
-        if error:
-            error = "Error: %s"%error
-        return error
-    return "Error: No entry to process!"
+        	return {"error": e}
+        
+    return error
 
 class Company(Base):
 	__tablename__ = 'company'
@@ -293,8 +291,11 @@ def create_product_from_image():
 		if product_code != "logo" and product_code != "store":
 			product = Product(item_code=product_code,created_date=now(),name=old_image[:-4],description='',image=image_path,company_id=company_num)
 			bulk_products.append(product)
-	
-	return db_insert(bulk_products)
+	error = db_insert(bulk_products)
+
+	if not error:
+		return f"Products have been imported successfully. You can now make changes by login into osf as {company} and making the necessary changes to publish store." 
+	return error
 		
 def add_default_admin_user():
 	user = User(username=user_name, fullname=user_full, email=user_email, password=user_pass, created_date=now()) 

@@ -100,13 +100,13 @@ def createProduct(form,image):
 		if image.filename != '':
 			product.image = image_path
 
-		product_exist,product_exist_error = productExist(product)
+		product_exist = productExist(product)
 
 		if product_exist:
-			if int(product.update) < 1:
-				result = wpos_error_(product_exist_error)
-			else:
-				result = updateProduct(product,product.image)
+			# if int(product.update) < 1:
+			# 	result = wpos_error_(product_exist_error)
+			# else:
+			result = updateProduct(product,product.image)
 		else:
 			product_ = Product(item_code=product.item_code, barcode=barCoder(product.barcode), created_date=convertDateTime(product.created_date), company_id=product.company_id, name=product.name, description=product.description, status=product.status,cost=product.cost, price=product.price, qty=product.qty,taxable=product.taxable, image=product.image)   
 			
@@ -123,17 +123,10 @@ def createProduct(form,image):
 	return result
 
 def productExist(form):
-	product_code = Product.query.filter_by(item_code=form.item_code,company_id=form.company_id).first()
-	product_name = Product.query.filter_by(name=form.name,company_id=form.company_id).first()
-	msg = ""
-	if product_code is not None or product_name is not None:
-		if product_name and not product_code:
-			msg = {"error":"Product name %s is assocciated with item code %s this command cannot be executed." % (product_name.name, product_name.item_code),"form":[form] } 
-		else: 
-			msg = {"error":"Product code %s already exist"  % product_code.item_code,"form":[form]}
-		return True,msg
-	
-	return False,0
+	product_ = Product.query.filter_by(item_code=form.item_code,company_id=form.company_id).first()
+	if product_code:
+		return True
+	return False
 
 def fetchProductsBySearch(search):
 	by_ = search.by

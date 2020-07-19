@@ -407,7 +407,7 @@ def addProduct():
 	company = Company.query.filter_by(id=session["company"]["id"]).first()
 	title_ = company.name
 	form = request.form
-	res = createProduct(form,request.files["image_"]) 
+	res = createProduct(form,request.files["image_"])  
 	product = [1]
 	if "form" in res:
 		product = res["form"]

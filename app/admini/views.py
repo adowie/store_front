@@ -32,6 +32,7 @@ class CompanyView(ModelView):
 	form_excluded_columns = ['categories', 'products', 'sessions', 'favourites', 'orders', 'line', 'pos']
 
 class CategoryView(ModelView):
+	can_export = True
 	form_excluded_columns = ['products','companies']
 	column_exclude_list = ['products','companies']
 
