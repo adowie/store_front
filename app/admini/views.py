@@ -20,42 +20,101 @@ class UserView(ModelView):
 	form_excluded_columns = ['notifications','is_logged_in','access', 'company', 'sessions', 'orders', 'customer', 'lineup']
 	def on_model_change(self, form, model, is_created):
 		model.password_ = generate_password_hash(model.password)
-
+		
+	def is_accessible(self):
+		if not current_user.is_authenticated:
+			return False
+		return True
 
 class PlanView(ModelView):
 	column_exclude_list = ['company']
 	form_excluded_columns = ['company']
+	def is_accessible(self):
+		if not current_user.is_authenticated:
+			return False
+		return True
 
 class CompanyView(ModelView):
 	column_searchable_list = ['name', 'email']
 	column_exclude_list = ['categories', 'products', 'sessions', 'favourites', 'orders', 'line', 'pos']
 	form_excluded_columns = ['categories', 'products', 'sessions', 'favourites', 'orders', 'line', 'pos']
+	def is_accessible(self):
+		if not current_user.is_authenticated:
+			return False
+		return True
 
 class CategoryView(ModelView):
 	can_export = True
 	form_excluded_columns = ['products','companies']
 	column_exclude_list = ['products','companies']
+	def is_accessible(self):
+		if not current_user.is_authenticated:
+			return False
+		return True
 
 class ProductView(ModelView):
 	form_excluded_columns = ['uoms','variants','orderline','favourites','images']
 	column_exclude_list = ['variants','orderline','favourites','images']
+	def is_accessible(self):
+		if not current_user.is_authenticated:
+			return False
+		return True
 
 class CustomerView(ModelView):
 	form_excluded_columns = ['orders','fav_companies','fav_products']
 	column_exclude_list = ['orders','fav_companies','fav_products']
-	
+	def is_accessible(self):
+		if not current_user.is_authenticated:
+			return False
+		return True
+
 class CompanyTypeView(ModelView):
 	form_excluded_columns = ['companies']
+	def is_accessible(self):
+			if not current_user.is_authenticated:
+				return False
+			return True
+
+class CompanyCategoryView(ModelView):
+	def is_accessible(self):
+			if not current_user.is_authenticated:
+				return False
+			return True
+
+class CategoryProductView(ModelView):
+	def is_accessible(self):
+			if not current_user.is_authenticated:
+				return False
+			return True
+
+class ProductPhotoView(ModelView):
+	def is_accessible(self):
+			if not current_user.is_authenticated:
+				return False
+			return True
+
+class NotificationView(ModelView):
+	def is_accessible(self):
+			if not current_user.is_authenticated:
+				return False
+			return True
+
+class OrderView(ModelView):
+	def is_accessible(self):
+			if not current_user.is_authenticated:
+				return False
+			return True
 
 
 admin.add_view(UserView(User,db_sess))
 admin.add_view(PlanView(Plan,db_sess))
 admin.add_view(CompanyTypeView(CompanyType,db_sess))
 admin.add_view(CompanyView(Company,db_sess))
-admin.add_view(CustomerView(Customer,db_sess))
+admin.add_view(CustomerView(Customer,db_sess)) 
 admin.add_view(CategoryView(Category,db_sess))
-admin.add_view(ModelView(CompanyCategory,db_sess))
+admin.add_view(CompanyCategoryView(CompanyCategory,db_sess))
+admin.add_view(CategoryProductView(CategoryProduct,db_sess))
 admin.add_view(ProductView(Product,db_sess))
-admin.add_view(ModelView(ProductPhoto,db_sess))
-admin.add_view(ModelView(Order,db_sess))
-admin.add_view(ModelView(Notification,db_sess))
+admin.add_view(ProductPhotoView(ProductPhoto,db_sess))
+admin.add_view(OrderView(Order,db_sess))
+admin.add_view(NotificationView(Notification,db_sess))
