@@ -124,7 +124,7 @@ def createProduct(form,image):
 
 def productExist(form):
 	product_ = Product.query.filter_by(item_code=form.item_code,company_id=form.company_id).first()
-	if product_code:
+	if product_:
 		return True
 	return False
 
@@ -228,7 +228,7 @@ def updateProduct(product,image):
 
 
 # start product category crud
-def createCategory(form,image,comp_id):
+def createCategory(form,image,company):
 	if type(form) != dict:
 		category = DDOT(form.to_dict())
 	else:
@@ -242,21 +242,21 @@ def createCategory(form,image,comp_id):
 		if image or not category.image:
 			category.image = image_path
 
-		category_exist,category_exist_error = categoryExist(category,category.name)
+		category_exist = categoryExist(category,category.name)
 
 		if category_exist:
-			if int(category.update) < 1:
-				result = wpos_error_(category_exist_error)
-			else:
-				result = updateCategory(form,category.image)
+			result = updateCategory(form,category.image)
 		else:
-			category_ = Category(name=category.name,company_id=comp_id,created_date=convertDateTime(category.created_date),image=category.image,active=category.status)   
-			
+			category_ = Category(name=category.name,parent_id=company.company_type_id,created_date=convertDateTime(category.created_date),image=category.image,active=category.status)   
 			error = db_commit_add_or_revert(category_)
 
 			if error:
 				result = { "error":error,"form":[category]} #[data] #prepare visual data
 			else:
+				if company:
+					entry = CompanyCategory(company_id=company.id,category_id=category_.id)
+					error = db_commit_add_or_revert(entry)
+											
 				result = {"form":[category_],"success":"Category was added successfully."}#prepare visual data
 
 	else:
@@ -264,15 +264,11 @@ def createCategory(form,image,comp_id):
 
 	return result
 
-
 def categoryExist(form,name):
 	category = Category.query.filter_by(name=name).first()
-	msg = ""
-	if category is not None:
-		msg = {"error":"Product category %s already exist"  % category.name,"form":[form]}
-		return True,msg
-	
-	return False,0
+	if category:
+		return True	
+	return False
 
 def getCategories():  
 	data = Category.query.all() #fetch all products on the table
@@ -281,6 +277,12 @@ def getCategories():
 		categories.append(category)
 	return categories
 
+def getCategoriesByCompanyType(type_id):
+	data = Category.query.filter_by(parent_id=type_id).all() #fetch all products on the table
+	categories = []
+	for category in data:
+		categories.append(category)
+	return categories
 
 def getCategoriesByCompany(comp_id):  
 	data = CompanyCategory.query.filter_by(company_id=comp_id).all() #fetch all products on the table
@@ -289,15 +291,15 @@ def getCategoriesByCompany(comp_id):
 		categories.append(category)
 	return categories
 
-def deleteCategory(category_id):
-	category = Category.query.filter_by(id=category_id).first() #find the product by productId and deletes it
-	category_name = category.name
-	error = db_commit_delete_or_revert(category)
+def deleteCategory(company, category_id):
+	entry = CompanyCategory.query.filter_by(company_id=company.id,category_id=category_id).first() #find the product by productId and deletes it
+	category_name = entry.category.name
+	error = db_commit_delete_or_revert(entry)
 	result = None
 	if error:
-		result = {"error":"An Unknown error occurred while removing category %s"%category.name}
+		result = {"error":"An Unknown error occurred while removing category %s"%category_name}
 	else:
-		result = {"success":"Category %s was removed successfully."%category_name}
+		result = {"success":"Category %s was removed from company categories successfully."%category_name}
 	return result
 
 

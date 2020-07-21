@@ -1,0 +1,75 @@
+{% import "bootstrap/utils.html" as utils %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+    <title>Our Store Front Online | {{ title }}</title>
+
+    {% include "osf/osf_header.html" %}
+    <style type="text/css">
+        #contact-details {
+            /*width: 60%;*/
+            margin-top: 5%;
+            margin-left: 30%;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Search Wrapper Area Start -->
+        {% include "osf/osf_search.html" %}
+  
+    <!-- Search Wrapper Area End -->
+
+    <!-- ##### Main Content Wrapper Start ##### -->
+    <div class="main-content-wrapper d-flex clearfix">
+
+        <!-- Header area start -->
+        {% include "osf/osf_navigator.html" %}
+        <!-- Header Area End -->
+
+        <!-- Product Catagories Area Start -->
+        <div class="products-catagories-area clearfix">
+  {{ utils.flashed_messages() }}
+            
+            <div class="amado-pro-catagory clearfix">
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                   <h1><center> Our Store Front Online </center></h1>
+                   <h4><center>Contact Us</center></h4>
+                <div id="contact-details">
+
+                   <p><span class="fa fa-envelope fa-2x"></span> <a href="mailto:osfo@ourstorefront.online">osfo@ourstorefront.online</a></p>
+                   <p><span class="fa fa-phone fa-2x"></span> (876) 502 2140</p>
+                   <p><span class="fa fa-tty fa-2x"></span> (876) 615 8416</p>
+                </div>
+            </div>
+        </div>
+              
+        
+        <!-- Product Catagories Area End -->
+    </div>
+    <!-- ##### Main Content Wrapper End ##### -->
+
+    <!-- ##### Newsletter Area Start ##### -->
+ 
+    <!-- ##### Newsletter Area End ##### -->
+
+    <!-- ##### Footer Area Start ##### -->
+{% include "osf/osf_footer.html" %}
+    <!-- ##### Footer Area End ##### -->
+{% include "osf/osf_scripts.html" %}
+</body>
+</html>

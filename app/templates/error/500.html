@@ -1,7 +1,18 @@
+{% import "bootstrap/utils.html" as utils %}
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-	<title>500 | OSFO - Our Store Front Online | Server Error</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
+ 
+    <title>404 | OSFO - Our Store Front Online </title>
 	<link rel="apple-touch-icon" sizes="57x57" href="{{ url_for('static',filename='img/apple-icon-57x57.png') }}">
 	<link rel="apple-touch-icon" sizes="60x60" href="{{ url_for('static',filename='img/apple-icon-60x60.png') }}">
 	<link rel="apple-touch-icon" sizes="72x72" href="{{ url_for('static',filename='img/apple-icon-72x72.png') }}">
@@ -22,12 +33,12 @@
     <link href="{{ url_for('static', filename='styles/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='styles/fontawesome.css') }}" rel="stylesheet">
 	<script language="javascript" src="{{ url_for('static', filename='js/jquery.js') }}" > </script>
-
+    {% include "osf/osf_header.html" %}
 
 <style type="text/css">
 	body {
     height: 100vh;
-    background: #1ad3f1;
+    background: #fff;
     display: grid;
   font-family: 'Roboto Condensed', sans-serif;
 }
@@ -41,11 +52,19 @@
 .container svg {
   height: 100%;
 }
-p, a {
+
+footer .container {
+  height: 100%;
+}
+
+.main-content-wrapper {
+    margin-bottom: 10%;
+}
+
+.cont_ p, .cont_ a {
     margin: 0;
     position: absolute;
     text-decoration: none;
-    text-transform: uppercase;
     color: #032C3F;
     font-size: 20px;
     font-weight: bold;
@@ -53,12 +72,14 @@ p, a {
  .textA {
     top: 169px;
     left: 265px;
+    text-transform: uppercase;
+
     transform: rotate(-3deg);
   }
   .textB {
     font-weight: 700;
-    font-size: 135px;
-    top: 209px;
+    font-size: 135px !important;
+    top: 160px;
     left: 273px;
     transform: rotate(-2deg);
   }
@@ -72,20 +93,26 @@ p, a {
 </style>	
 </head>
 
-<body> 
- 
+
+<body>
+    <!-- Search Wrapper Area Start -->
+        {% include "osf/osf_search.html" %}
   
-<!-- 
-        <span>404</span>
-    
-       <span class="inner-status">Oops! The page you requested cannot be found.</span> 
-        <center><a href="{{ url_for( 'osf.land' ) }}" class="btn btn-info mtl"><i class="fa fa-home"></i>&nbsp; Return home </a> </center>
-   
- -->
+    <!-- Search Wrapper Area End -->
 
+    <!-- ##### Main Content Wrapper Start ##### -->
+    <div class="main-content-wrapper d-flex clearfix">
 
+        <!-- Header area start -->
+        {% include "osf/osf_navigator.html" %}
+        <!-- Header Area End -->
 
-<div class="container">
+        <!-- Product Catagories Area Start -->
+        <div class="products-catagories-area clearfix">
+  {{ utils.flashed_messages() }}
+            <div class="cont_">
+            <div class="amado-pro-catagory clearfix">
+            	<div class="container">
 	  <p class="textA">Server Error/p>
   <p class="textB">500</p>
   <a class="textC" href="{{ url_for('osf.land')}}">OSFO</a>
@@ -409,14 +436,28 @@ p, a {
 		    </g>
 		   
 		  </svg>
+		  <p>This is a server error. Try refreshing page, if the problem persist please inform <a href="mailto:support@ourstorefront.online" target="_blank">support.</a></p>
 </div>
-<script language="javascript" src="{{ url_for('static', filename='js/bootstrap.js') }}" > </script>
+            </div>
+
+        </div>
+        </div>
+              
+        
+        <!-- Product Catagories Area End -->
+    </div>
+    <!-- ##### Main Content Wrapper End ##### -->
+
+    <!-- ##### Newsletter Area Start ##### -->
  
-<script type="text/javascript">
+    <!-- ##### Newsletter Area End ##### -->
 
-</script> 
- </body>
-
+    <!-- ##### Footer Area Start ##### -->
+{% include "osf/osf_footer.html" %}
+    <!-- ##### Footer Area End ##### -->
+{% include "osf/osf_scripts.html" %}
+</body>
 </html>
+
 
 

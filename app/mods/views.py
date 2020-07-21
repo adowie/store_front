@@ -153,19 +153,23 @@ def openCompany(company):
 @login_required
 def publishCompany(company):
 	company_ = Company.query.filter_by(id=company).first()
+	product_ = Product.query.filter_by(company_id=company,status=1).first()
 	if len(company_.products) > 0:
-		company_.published = 1
-		error = db_commit_update_or_revert()
-		if not error:
-			flash("Your Company is now available to customers for browsing and sending in orders. Be prepared to fulfil those orders.","success")
-			if company_.closed:
-				company_.closed = False
-				error = db_commit_update_or_revert()
-				if not error:
-					flash("Your Company is now OPEN for business.","success")
+		if product_:	
+			company_.published = 1
+			error = db_commit_update_or_revert()
+			if not error:
+				flash("Your Company is now available to customers for browsing and sending in orders. Be prepared to fulfil those orders.","success")
+				if company_.closed:
+					company_.closed = False
+					error = db_commit_update_or_revert()
+					if not error:
+						flash("Your Company is now OPEN for business.","success")
 
+			else:
+				flash(f"{error}")
 		else:
-			flash(f"{error}")
+			flash("You have no active products to complete the publish action.")
 	else:
 		flash("Your company setup is incomplete. Ensure that you have products for customers to shop and your company location is set.","warning")
 
@@ -373,7 +377,11 @@ def product_update():
 									product.taxable = html_to_txt(form['value'])
 								else:
 									if form['field'] == 'item_status':
-										product.status = bool(int(html_to_txt(form['value'])))
+										variant_ = Variation.query.filter_by(product_id=product.id).first()
+										if variant_:
+											product.status = 0
+										else:
+											product.status = bool(int(html_to_txt(form['value'])))
 
 			error = db_commit_update_or_revert()
 	
@@ -407,7 +415,7 @@ def addProduct():
 	company = Company.query.filter_by(id=session["company"]["id"]).first()
 	title_ = company.name
 	form = request.form
-	res = createProduct(form,request.files["image_"])  
+	res = createProduct(form,request.files["image_"])    
 	product = [1]
 	if "form" in res:
 		product = res["form"]
@@ -436,7 +444,7 @@ def addProduct():
 
 	if 'action' in res and res['action'] == 'update':
 		form_action = 'edit'
-
+		form = DDOT(form)
 		return redirect(url_for('mods.editProduct',product_id=form.item_code))
 	
 	return redirect(url_for('mods.productAdder'))
@@ -456,25 +464,30 @@ def productVariant(product):
 def addProductVariant():
 	entry = DDOT(request.form)
 	if entry.product_id:
-		variant_ = Variation.query.filter_by(product_id=entry.product_id,name=trim(entry.name)).first()
-		if not variant_:
-			if entry.variant_image == "":
-				variant_image = request.files["image_"]
-				image_path = save_uploaded_file(variant_image, conf.PRODUCT_IMAGES_DIR)
-			else: 
-				image_path = entry.variant_image
+		product_ = Product.query.filter_by(id=entry.product_id).first()
+		if product_:
+			variant_ = Variation.query.filter_by(product_id=entry.product_id,name=entry.name).first()
+			if not variant_:
+				if entry.variant_image == "": 
+					variant_image = request.files["image_"]
+					image_path = save_uploaded_file(variant_image, conf.PRODUCT_IMAGES_DIR)
+				else: 
+					image_path = entry.variant_image
 
-			new_variant = Variation(product_id=entry.product_id,name=trim(entry.name),image=image_path,created_date=now(),price=entry.price,qty=entry.qty)
-			error = db_commit_add_or_revert(new_variant)
-			if not error:
-				flash("Product Variant added successfully","success") 
+				new_variant = Variation(product_id=entry.product_id,name=entry.name,image=image_path,created_date=now(),price=entry.price,qty=entry.qty)
+				error = db_commit_add_or_revert(new_variant)
+				if not error:
+					if entry.bulk:
+						product_.status = 0
+						error = db_commit_update_or_revert()
+					flash("Product Variant added successfully","success") 
+				else:
+					flash(f'Error: {error}','error')
 			else:
-				flash(f'Error: {error}','error')
-		else:
-			res = updateVariant(entry,request.files["image_"])
-			msg, msg_type = flash_res_msg(res)
-			if msg:
-				flash(msg,msg_type)
+				res = updateVariant(entry,request.files["image_"])
+				msg, msg_type = flash_res_msg(res)
+				if msg:
+					flash(msg,msg_type)
 
 	return redirect(url_for('mods.productVariant',product=entry.product_id))
 
@@ -496,8 +509,6 @@ def editProduct(product_id):
 	title_ = company.name
 	product = [getProductByID(product_id,company)]
 	product_categories = getCategoriesByCompany(company.id)
-	# uoms = getUom()
-	# todo: add 
 
 	return render_template("mods/product/product_adder.html",title=title_+" | Products",form='edit',year=year(),product=product,categories=product_categories,company=company)
 
@@ -568,21 +579,19 @@ def removeProduct():
 	
 
 
-@mods.route('/products/category/remove/<int:category_id>', methods=['GET'])
+@mods.route('/products/category/remove/<int:category_id>', methods=['GET','POST'])
 @login_required
 def removeCategory(category_id):
 	company = Company.query.filter_by(id=session["company"]["id"]).first()
-	title_ = company.name
-	res = deleteCategory(category_id)
+	res = deleteCategory(company,category_id)
 	categories = getCategoriesByCompany(company.id)
 	msg, msg_type = flash_res_msg(res)
 	if msg:
 		flash(msg,msg_type)
- 
-	return render_template("mods/product/product_category.html",title=title_+" | Product Categories",user=current_user,year=year(),categories=categories,category=res,company=company)
-	
 
-@mods.route('/products/type/remove/', methods=['POST'])
+	return redirect(url_for('mods.Category'))
+
+@mods.route('/products/type/remove/', methods=['POST','GET'])
 @login_required
 def removeType():
 	company = Company.query.filter_by(id=session["company"]["id"]).first()
@@ -592,6 +601,18 @@ def removeType():
 	ptype = getProductType()
 	return render_template("mods/product/products_type.html",title=title_+" | Products Types",user=auth.Adminuser,year=year(),ptypes=ptype,type=res,company=company)
 
+@mods.route('/products/company/category/add/<int:category_id>', methods=['GET','POST'])
+def addCompanyCategory(category_id):
+	company = Company.query.filter_by(id=session["company"]["id"]).first()
+	entry = CompanyCategory.query.filter_by(company_id=company.id,category_id=category_id).first()
+	if not entry:
+		entry = CompanyCategory(company_id=company.id,category_id=category_id)
+		error = db_commit_add_or_revert(entry)
+		if error:
+			flash(error)
+
+	return redirect(url_for('mods.Category'))
+
 @mods.route('/products/category', methods=['GET','POST'])
 @login_required
 def Category():
@@ -599,7 +620,8 @@ def Category():
 	title_ = company.name
 
 	categories = getCategoriesByCompany(company.id)
-	return render_template("mods/product/product_category.html",title=title_+" | Product Categories",user=current_user,year=year(),categories=categories,company=company)
+	global_categories = getCategoriesByCompanyType(company.company_type_id)
+	return render_template("mods/product/product_category.html",title=title_+" | Product Categories",year=year(),company_categories=categories,global_categories=global_categories,company=company)
 
 @mods.route('/products/category/add/product/<int:product>/', methods=['GET','POST'])
 @login_required
@@ -610,15 +632,14 @@ def addToCategory(product):
 @mods.route('/products/category/create/', methods=['GET','POST'])
 def addProductCategory():
 	company = Company.query.filter_by(id=session["company"]["id"]).first()
-	title_ = company.name
 	form = request.form
-	res = createCategory(form,request.files["image_"],company.id) 
+	res = createCategory(form,request.files["image_"],company) 
 	categories = getCategoriesByCompany(company.id)
 	msg, msg_type = flash_res_msg(res)
 	if msg:
 		flash(msg,msg_type)
+	return redirect(url_for('mods.Category'))
 
-	return render_template("mods/product/product_category.html",title=title_+" | Product Categories",user=current_user,year=year(),categories=categories,company=company)
 	
 @mods.route('/products/import/', methods=['POST','GET'])
 @login_required

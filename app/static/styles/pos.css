@@ -1,3 +1,7 @@
+.hide {
+	display: none !important;
+}
+
 .active_products {
 	padding: 1% 5%;
     border-radius: 50%;

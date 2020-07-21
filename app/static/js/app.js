@@ -128,7 +128,7 @@ function enableVariantInput(){
 				var parent_price = parent_product.data("product-price");
 				
 				if($.trim(parent_name) != "" && parseFloat(parent_price) > 0 ){
-					$.post("/products/variant/add/",{"product_id":parent_id,"name":product_name,"price":product_price,"variant_image":product_image,"qty":product_qty},function(){
+					$.post("/products/variant/add/",{"bulk":true,"product_id":parent_id,"name":product_name,"price":product_price,"variant_image":product_image,"qty":product_qty},function(){
 						window.location.reload();
 					});
 				}else{

@@ -59,20 +59,20 @@ def now():
     return time.strftime("%Y-%m-%d %H:%M:%S")
 
 def db_insert(db_obj):
-    error = None
-    if len(db_obj) > 0:
-        db_sess = session
-        try:
-            db_sess.bulk_save_objects(db_obj, return_defaults=True)
-            for obj_ in db_obj:
-                assert obj_.id is not None
-            db_sess.commit()
-        except (SQLAlchemyError, IntegrityError, DataError) as e:
-            db_sess.rollback()
-            db_sess.flush() # for resetting non-commited .add()
-        	return {"error": e}
-        
-    return error
+	error = None
+	if len(db_obj) > 0:
+		db_sess = session
+		try:
+			db_sess.bulk_save_objects(db_obj, return_defaults=True)
+			for obj_ in db_obj:
+				assert obj_.id is not None
+			db_sess.commit()
+		except (SQLAlchemyError, IntegrityError, DataError) as e:
+			db_sess.rollback()
+			db_sess.flush() # for resetting non-commited .add()
+			return {"error": e}
+
+	return error
 
 class Company(Base):
 	__tablename__ = 'company'

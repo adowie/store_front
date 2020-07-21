@@ -453,6 +453,7 @@ class CompanyType(db.Model):
 	created_date = db.Column(db.DateTime)
 	active = db.Column(db.Boolean)
 	companies = db.relationship("Company")
+	categories = db.relationship("Category")
 
 	def __repr__(self):
 		return '<CompanyType %s,%s,%s>' % (self.name,self.created_date,self.active)
@@ -506,7 +507,8 @@ class Category(db.Model):
 	created_date = db.Column(db.DateTime)
 	image = db.Column(db.String(1024))
 	active = db.Column(db.Boolean)
-	parent_id = db.Column(db.Integer, db.ForeignKey('category.id'),default=None)
+	parent_id = db.Column(db.Integer, db.ForeignKey('company_type.id'),default=None)
+	company_type = db.relationship("CompanyType",back_populates="categories",foreign_keys=parent_id)
 	products = db.relationship("CategoryProduct")
 	companies = db.relationship("CompanyCategory")
 

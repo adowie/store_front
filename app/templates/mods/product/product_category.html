@@ -6,34 +6,29 @@
       
          
               <div class="col-md-12">
+                <br>
+                <br>
+                <br>
+                <br>
  
-      <h5 class="card-title">CATEGORY REGISTRATION</h5>
+      <h5 class="card-title text-center">CATEGORIES</h5>
            
 
               <form action="{{ url_for('mods.addProductCategory') }}" method="post" id="category_creator" role="form" enctype="multipart/form-data">
                 <input type="hidden" name="update" id="category_update" value=0 />
                 
                 <div class="form-row">
-                     <!-- <div class="col-md-4">
-                      <div class="position-relative form-group">
-                        <label for="company" class="col-form-label">Parent Category</label>
-                        
-                          <select class="form-control" name="parent_id" id="category_parent">
-                              <option value="0">Default</option>
-                             {% if categories %}
-                               {% for category in categories %}
-                                  <option value="{{ category.id }}">{{ category.name }}</option>
-                               {% endfor%}
-                             {% endif %}
-                          </select>
-                       </div>
-                     </div>
-                -->
+ 
               <div class="col-md-4">
+                <h5>Add Company Category</h5>
                       <div class="position-relative form-group">
                   <label for="item_code" class="col-form-label">Category Name</label>
                  
                     <input class="form-control" type="text" name="name" placeholder="Enter Category Name" id="category_name">
+                  <!-- <label for="item_code" class="col-form-label">Category Image</label> -->
+
+                    <input class="form-control hide" type="file" name="image_" id="image_" accept="image/*" >
+
                 <div id="selected_products">
                   <ul id="add_procs">
 
@@ -42,40 +37,10 @@
                 </div>
               </div>
 
-              <input type="hidden" name="parent_id" value="0">
+              <input type="hidden" name="parent_id" value="{{ company.company_type_id }}">
               <input type="hidden" name="created_date" value="" id="category_date">
               <input type="hidden" name="status" value="1" id="category_status">
-           
-            <div class="col-md-4">
-              <div class="position-relative form-group">
-                  <label for="image" class=" col-form-label">Category Image</label>
-                 
-                    <input class="form-control" type="file" name="image_" id="image_" accept="image/*" >
-                    <!-- <input class="form-control image_select" name="image" type="text" id="category_image" placeholder="Select Category Image"> -->
-              </div>
             </div>
-                 <div class="col-md-4">
-                    <div class="position-relative form-group">
-                      <label for="category_products" class="col-form-label">Category Products</label>
-                      <div>
-                        <input type="text" name="product_search" class="form-control" placeholder="Search Products" id="product_search">
-                      </div>
-
-                    </div>
-                    <div id="product_list">
-                      <ul>
-                        {% if company.products %}
-                          {% for product in company.products %}
-                            <li><a href="{{ url_for('mods.addToCategory',product=product.id) }}">{{ product }}</a></li>
-                          {% endfor%}
-                        {% else %}
-                            <li>No Product to add to category</li>
-                        {% endif %}
-                      </ul>
-                    </div>
-                  </div>
-            </div>
-         
                 <div class="form-row">
                   <div class="col-md-4">
                       <div class="position-relative form-group">
@@ -88,33 +53,49 @@
 
               </form>
            
-       
-                <h5 class="card-title">CATEGORIES</h5>
-                    <div class="form-row">
-                  <div class="col-md-8">
-                    
-                     
-                      <input type="hidden" name="confirm_delete" id="confirm_delete" value="0" />
-                      {% if categories is iterable and categories|length > 0 %}
-                        <ul id="cats">
-                        {% for category in categories %}
-                          <li>
-                            <a href="{{ url_for('mods.removeCategory', category_id=category.id )}}"><i class="fa fa-times"></i></a> 
-                            <span class="cat_img"><img src="/static/{{ category.image }}" /></span><span class="cat_name">{{ category.name }}</span>
-                          </li>
-                        {% endfor %}
-                          </ul>
-                          <label for="" class="col-form-label"></label>
-                          <input class="btn btn-success" type="submit" value="REMOVE CATEGORY" id="category_remover_btn">
-                        
+            <h5 class="card-title text-center">
+              COMPANY CATEGORIES
+            </h5>
+            <div class="form-row">
+              <div class="col-md-8">
+                  <input type="hidden" name="confirm_delete" id="confirm_delete" value="0" />
+     
+                    <ul id="cats">
+                      {% set company_entries = [] %}
+                      {% for entry in company_categories %}
+                        {% do company_entries.append(entry.category.id) %}
+                        <li>
+                          <span class="cat_name">{{ entry.category.name }} <a title="Remove from company categories" href="{{ url_for('mods.removeCategory', category_id=entry.category.id )}}"><i class="fa fa-times"></i></a></span>
+                        </li>
                       {% else %}
-                        <span id="no_result_found_message">No Category Found</span>
-                      {% endif %}
-                      
-                </div>
-             
-          </div>
-      
+                        <span id="no_result_found_message">No Company Category Found</span>
+                      {% endfor %}
+                    </ul>
+                 
+          
+              </div>
+            </div>
+
+            <h5 class="card-title text-center">
+              UNUSED CATEGORIES
+            </h5>
+            <div class="form-row">
+              <div class="col-md-8">                
+                    <ul id="cats">
+                      {% for category in global_categories %}
+                        {% if category.id not in company_entries %}
+                          <li>
+                            <span class="cat_name">{{ category.name }} 
+                                <a title="Add to company category" href="{{ url_for('mods.addCompanyCategory', category_id=category.id )}}"><i class="fa fa-plus"></i></a>
+                           </span>
+                          </li>
+                        {% endif %}
+                      {% endfor %}
+                    </ul>
+                 
+              </div>
+            </div>
+
     </div>
 
 

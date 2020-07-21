@@ -13,7 +13,7 @@ locale.setlocale(locale.LC_ALL, 'en_US')
 
 db = SQLAlchemy()
 login_manager = LoginManager()
-admin = Admin(name='OSFO Administrator', index_view=MyAdminIndexView(), template_mode='bootstrap3')
+admin = Admin(name='OSFO Administrator', index_view=MyAdminIndexView(),base_template='admin/admin_base.html', template_mode='bootstrap3')
 
 def server_error(e):
   return render_template('error/500.html'), 500

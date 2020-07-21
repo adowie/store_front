@@ -125,6 +125,14 @@ def about():
 		is_admin = session["is_admin"]
 	return render_template("osf/about.html",title="About",is_admin=is_admin)
 
+@osf.route('/contact/', methods=['GET', 'POST'])
+def contact():
+
+	is_admin = False
+	if "is_admin" in session:
+		is_admin = session["is_admin"]
+	return render_template("osf/contact.html",title="Contact",is_admin=is_admin)
+
 @osf.route('/companies/<int:company_type>/', methods=['GET', 'POST'])
 def companies(company_type):
 
