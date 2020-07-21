@@ -1154,7 +1154,7 @@ def fetchCustomers(search):
 def userItems(user,method,filter_):
 	items = []
 	if method == "products":
-		items = Product.query.filter_by(company_id=filter_).all()
+		items = Product.query.filter_by(company_id=filter_).order_by(Product.price.desc()).all()
 		
 	if method == "session":
 		sessions = user.sessions
