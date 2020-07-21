@@ -632,6 +632,21 @@ def addCategoryProducts():
 	error = db_insert(entries)
 	return redirect(url_for('mods.Category'))
 
+@mods.route('/company/category/product/remove/', methods=['GET','POST'])
+def removeCategoryProducts():
+	form = DDOT(request.form)
+	product_list = request.form.getlist("products_for_category_removal")
+	entries = 0
+	for item in product_list:
+		entry = CategoryProduct.query.filter_by(category_id=form.category,product_id=item).first()
+		if entry:
+			error = db.session.delete(entry)
+			entries = entries + 1
+	if entries:
+		db.session.commit()
+	return redirect(url_for('mods.Category'))
+
+
 
 @mods.route('/products/category', methods=['GET','POST'])
 @login_required

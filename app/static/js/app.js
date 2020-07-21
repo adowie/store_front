@@ -26,7 +26,7 @@ $(function(){
 	$(".edit_variant").on("click",editVariant);
 	$(".cat_prod_item").on("click",toggleChecked);
 	$(".cat_item").on("click",setActiveCategory);
-	$("#product_list .bg").on("click",clsCategoryDialog);
+	$("#product_list .bg, .category_product_list .bg").on("click",clsCategoryDialog);
 	$(".edit_category").on("click",editCategory);
 
   	var panel_ = $('.form-panel.two');
@@ -77,7 +77,7 @@ function editCategory(){
 }
 
 function clsCategoryDialog(){
-	$("#product_list").hide();
+	$("#product_list, .category_product_list").hide();
 }
 
 function setActiveCategory(){
@@ -86,16 +86,20 @@ function setActiveCategory(){
 	$("input#category").val(category_);
 	$("#active_category_name").html(category_name);
 	$("#product_list").show("slow");
-	$(this).addClass("selected");
 }
 
 function toggleChecked(){
-	$(this).children("input").click();
-	var selected_cats = $(".cat_prod_item input:checked");
-	if(selected_cats.length > 0)
+	$(this).toggleClass("selected");
+	if(!$(this).hasClass("selected"))
+		$(this).children("input").attr("checked",false);
+	else
+		$(this).children("input").attr("checked",true);
+
+	if($(".cat_prod_item input:checked").length > 0)
 		$("#add_category_products").show("slow");
 	else
-		$("#add_category_products").hide("slow");
+		$("#add_category_products").hide("slow");			
+	
 
 }
 

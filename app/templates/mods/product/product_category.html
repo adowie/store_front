@@ -65,8 +65,41 @@
                       {% for entry in company_categories %}
                         {% do company_entries.append(entry.category.id) %}
                         <li>
-                          <span class="cat_name">{{ entry.category.name }} <span class="cat_item add" data-category="{{ entry.category.id }}" data-name="{{ entry.category.name }}" title="Add products to category"><i class="fa fa-plus"></i> </span><span class="edit_category remove" title="Edit"><i class="fa fa-ellipsis-h"></i></span> <a title="Stop using this category" href="{{ url_for('mods.removeCategory', category_id=entry.category.id )}}"><i class="fa fa-times"></i></a></span>
+                          <span class="cat_name">{{ entry.category.name }} <span class="cat_item add" data-category="{{ entry.category.id }}" data-name="{{ entry.category.name }}" title="Add products to category"><i class="fa fa-plus"></i> </span><span class="edit_category remove" title="Edit" data-category="{{ entry.category.id }}"><i class="fa fa-ellipsis-h"></i></span> <a title="Stop using this category" href="{{ url_for('mods.removeCategory', category_id=entry.category.id )}}"><i class="fa fa-times"></i></a></span>
                         </li>
+
+                        <div class="category_product_list" id="category_product_list_{{ entry.category.id }}">
+                          <div class="bg"></div>
+                            <div id="stick_search" class="p-3">
+                             <h3 class="text-center text-uppercase p-2">Remove Products from <u><span> {{ entry.category.name }}</span></u> category</h3>
+                            
+                            
+                          </div>
+                          <form action="{{ url_for('mods.removeCategoryProducts') }}" method="post" role="form" enctype="multipart/form-data">
+                             {% if entry.category.products|length > 0 %}
+                              <input type="submit" value="SAVE" class="btn btn-info" id="save_{{ entry.category.id }}">
+                            {% endif %}
+                            <input type="hidden" name="category" value="{{ entry.category.id }}">
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                          <ul>
+                            {% if entry.category.products %}
+                              {% for entry in entry.category.products %}
+                                {% if entry.product.status|int %}
+                                  <li class="cat_prod_item" data-category="{{ entry.category.id }}"><input type="checkbox" name="products_for_category_removal" value="{{ entry.product.id }}" ><img src="{{ url_for('static',filename=entry.product.image) }}" /><h3> {{ entry.product.name }}</h3><p></p> </li>
+                                {% endif %}
+                              {% endfor%}
+                            {% else %}
+                                <li>No Products available.</li>
+                            {% endif %}
+                          </ul>
+
+                          </form>
+                        </div>
                       {% else %}
                         <span id="no_result_found_message">No Company Category Found</span>
                       {% endfor %}
@@ -89,6 +122,8 @@
                                 <a title="Add to company category" href="{{ url_for('mods.addCompanyCategory', category_id=category.id )}}"><i class="fa fa-plus"></i></a>
                            </span>
                           </li>
+
+                         
                         {% endif %}
                       {% endfor %}
                     </ul>

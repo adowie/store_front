@@ -180,6 +180,10 @@
     color: green;
 }
 
+.add:hover, .remove:hover {
+    color: #fc3;
+}
+
 .proc_add, .proc_remove {
     float: right;
     margin-right: 5px;
@@ -225,7 +229,11 @@
    box-shadow: 0 0 7px #999;
 }
 
-#product_list {
+#product_list input[type='checkbox'], .category_product_list input[type='checkbox'] {
+    visibility: hidden;
+}
+
+#product_list, .category_product_list {
     position: fixed;
     display: none;
     width: 70%;
@@ -239,12 +247,12 @@
 }
 
 
-#product_list form{
+#product_list form, .category_product_list form{
     background: #fff;
     padding: 1%;
 }
 
-#product_list .bg {
+#product_list .bg, .category_product_list .bg {
     position: fixed;
     width: 100%;
     height: 100%;
@@ -255,39 +263,45 @@
     background: #000;
 }
 
-#product_list ul {
+#product_list ul, .category_product_list ul{
     list-style-type: none;
     padding: 2%;
     margin:0;
 }
 
-#product_list ul li {
-    display: inline-block;
-    width: 33%;
-    padding: 10px;
-    overflow: auto;
+#product_list ul li, .category_product_list ul li {
+    display: inline-block !important;
+    width: 33% !important;
+    padding: 10px !important;
+    overflow: auto !important;
+    box-shadow: none !important;
+    background: #eee !important;
+    text-align:  left !important;
+}
+
+#product_list ul li.selected , .category_product_list ul li.selected {
+    background: #fc3 !important;
+}
+
+#product_list ul li img, .category_product_list ul li img{
+    width: 50px !important;
+    height: 50px !important;
+    float: left !important;
+    margin: 0 15px 0 0 !important;
+}
+
+#product_list ul li h3, .category_product_list ul li h3 {
+  font: 300 20px/1.5 Helvetica, Verdana, sans-serif !important;
 }
 
 
-#product_list ul li img{
-    width: 50px;
-    height: 50px;
-    float: left;
-    margin: 0 15px 0 0;
-}
 
-#product_list ul li h3 {
-  font: 300 20px/1.5 Helvetica, Verdana, sans-serif;
+#product_list ul li p, .category_product_list ul li p {
+  font: 200 12px/1.5 Georgia, Times New Roman, serif !important;
 }
 
 
-
-#product_list ul li p {
-  font: 200 12px/1.5 Georgia, Times New Roman, serif;
-}
-
-
-#product_list ul li:hover {
+#product_list ul li:hover, .category_product_list ul li:hover{
   background: #eee;
   cursor: pointer;
 }
@@ -647,3 +661,4 @@ input.remover_btn {
 #item_variants.td {
     text-align: center;
 }
+
