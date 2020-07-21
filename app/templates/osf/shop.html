@@ -35,24 +35,19 @@
 
             <!-- ##### Single Widget ##### -->
             <div class="widget catagory mb-50">
-                <!-- Widget Title -->
+                <!-- Widget Title --> 
                 <h6 class="widget-title mb-30">Catagories</h6>
 
                 <!--  Catagories  -->
                 <div class="catagories-menu">
                     <ul>
                         <li><a href="{{ url_for('osf.shop',company=company.id) }}">All</a></li>
-                        {% for category in company.categories %}
-                            {% if category.products|length > 0 %}
-                                <li><a href="{{ url_for('osf.shop',company=company.id,category=category.id) }}">{{ category.name }}</a></li>
+                        {% for entry in company.categories %}
+                            {% if entry.category.products|length > 0 %}
+                                <li><a href="{{ url_for('osf.shop',company=company.id,category=entry.category.id) }}">{{ entry.category.name }}</a></li>
                             {% endif %}
                         {% endfor %}
-                        <!-- <li><a href="#">Beds</a></li>
-                        <li><a href="#">Accesories</a></li>
-                        <li><a href="#">Furniture</a></li>
-                        <li><a href="#">Home Deco</a></li>
-                        <li><a href="#">Dressings</a></li>
-                        <li><a href="#">Tables</a></li> -->
+           
                     </ul>
                 </div>
             </div>

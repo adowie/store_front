@@ -365,8 +365,10 @@ def shop(company,category):
 		products = []
 		products_all = Product.query.filter_by(company_id=company,status=True).all()
 		for product in products_all:
-			if category in product.categories:
-				products.append(product)	
+			for entry in product.categories:
+				if category == entry.category_id: 
+					products.append(product)	
+
 		page_products = products[offset: offset + per_page]
 	else:
 		products = Product.query.filter_by(company_id=company,status=True).all()
