@@ -65,7 +65,7 @@
                       {% for entry in company_categories %}
                         {% do company_entries.append(entry.category.id) %}
                         <li>
-                          <span class="cat_name">{{ entry.category.name }} <a title="Remove from company categories" href="{{ url_for('mods.removeCategory', category_id=entry.category.id )}}"><i class="fa fa-times"></i></a></span>
+                          <span class="cat_name">{{ entry.category.name }} <span class="cat_item add" data-category="{{ entry.category.id }}" data-name="{{ entry.category.name }}" title="Add products to category"><i class="fa fa-plus"></i> </span><span class="edit_category remove" title="Edit"><i class="fa fa-ellipsis-h"></i></span> <a title="Stop using this category" href="{{ url_for('mods.removeCategory', category_id=entry.category.id )}}"><i class="fa fa-times"></i></a></span>
                         </li>
                       {% else %}
                         <span id="no_result_found_message">No Company Category Found</span>
@@ -81,7 +81,7 @@
             </h5>
             <div class="form-row">
               <div class="col-md-8">                
-                    <ul id="cats">
+                    <ul id="g_cats">
                       {% for category in global_categories %}
                         {% if category.id not in company_entries %}
                           <li>
@@ -96,6 +96,38 @@
               </div>
             </div>
 
+
+            <div id="product_list">
+              <div class="bg"></div>
+              <div id="stick_search" class="p-3 fix">
+                 <h3 class="text-center text-uppercase p-2">Add Products to <u><span id="active_category_name"></span></u> category</h3>
+                <input type="text" name="product_search" class="form-control" placeholder="Search Products" id="product_search">
+                
+              </div>
+              <form action="{{ url_for('mods.addCategoryProducts') }}" method="post" id="category_product_creator" role="form" enctype="multipart/form-data">
+                <input type="submit" value="SAVE" class="btn btn-info" id="add_category_products">
+                <input type="hidden" name="category" id="category" value="">
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+              <ul>
+                {% if company.products %}
+                  {% for product in company.products %}
+                    {% if product.status|int %}
+                      <li class="cat_prod_item"><input type="checkbox" name="products_for_category" value="{{ product.id }}" id="product_{{ product.item_code }}"><img src="{{ url_for('static',filename=product.image) }}" /><h3> {{ product.name }}</h3><p></p> </li>
+                    {% endif %}
+                  {% endfor%}
+                {% else %}
+                    <li>No Products available.</li>
+                {% endif %}
+              </ul>
+
+              </form>
+
+            </div>
     </div>
 
 

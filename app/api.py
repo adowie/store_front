@@ -404,18 +404,18 @@ def deleteVariant(form):
 	db_sess.commit() #commit changes to the database
 
 def updateVariant(variant,image_):
-	variant_ = Variation.query.filter(id=variant.id).first()
+	variant_ = Variation.query.filter_by(id=variant.id).first()
 	error = ""
 	vars_ = "variant_"
 	for k,v in variant.items():
 		if k != "image":
 			exec(vars_+ ".%s = '%s'" % (k,v))# print(prod_+".%s = '%s'" % (k,v))
 
-	if variant.variant_image == "":
-		variant_image = request.files["image_"]
-		image_path = save_uploaded_file(variant_image, conf.PRODUCT_IMAGES_DIR)
+	if variant.image_:
+		image_path = save_uploaded_file(image_, conf.PRODUCT_IMAGES_DIR)
 	else: 
-		image_path = entry.variant_image
+		if variant.variant_image:
+			image_path = variant.variant_image
 	
 	if image_path:
 		variant_.image = image_path

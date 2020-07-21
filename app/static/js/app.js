@@ -23,6 +23,11 @@ $(function(){
 	$("input#username").focus();
 	$(".dis_item_image").on("mouseover",popOutImage);
 	$(".dis_item_add_as_variant").on("click",enableVariantInput);
+	$(".edit_variant").on("click",editVariant);
+	$(".cat_prod_item").on("click",toggleChecked);
+	$(".cat_item").on("click",setActiveCategory);
+	$("#product_list .bg").on("click",clsCategoryDialog);
+	$(".edit_category").on("click",editCategory);
 
   	var panel_ = $('.form-panel.two');
   	var panelOne = 100;
@@ -66,6 +71,48 @@ $(function(){
 	addressNavigator();
 	errorReportParser();
 });
+
+function editCategory(){
+	$("#category_product_list_"+$(this).data("category")).show("slow");
+}
+
+function clsCategoryDialog(){
+	$("#product_list").hide();
+}
+
+function setActiveCategory(){
+	var category_ = $(this).data("category");
+	var category_name = $(this).data("name");
+	$("input#category").val(category_);
+	$("#active_category_name").html(category_name);
+	$("#product_list").show("slow");
+	$(this).addClass("selected");
+}
+
+function toggleChecked(){
+	$(this).children("input").click();
+	var selected_cats = $(".cat_prod_item input:checked");
+	if(selected_cats.length > 0)
+		$("#add_category_products").show("slow");
+	else
+		$("#add_category_products").hide("slow");
+
+}
+
+function editVariant(){
+	var variant_id = $(this).data("variant-id");
+	var variant_name = $(this).data("variant-name");
+	var variant_image = $(this).data("variant-image");
+	var variant_qty = $(this).data("variant-qty");
+	var variant_price = $(this).data("variant-price");
+
+	$("input#variant_id").val(variant_id);
+	$("input#variant_name").val(variant_name);
+	$("input#variant_image").val(variant_image);
+	$("input#variant_qty").val(variant_qty);
+	$("input#variant_price").val(variant_price);
+	$("input#variant_update").val(1);
+}
 
 function setFieldType(e){
 	var field_ = $(e.target);
@@ -128,7 +175,7 @@ function enableVariantInput(){
 				var parent_price = parent_product.data("product-price");
 				
 				if($.trim(parent_name) != "" && parseFloat(parent_price) > 0 ){
-					$.post("/products/variant/add/",{"bulk":true,"product_id":parent_id,"name":product_name,"price":product_price,"variant_image":product_image,"qty":product_qty},function(){
+					$.post("/products/variant/add/",{"bulk":1,"variant_code":product_code,"product_id":parent_id,"name":product_name,"price":product_price,"variant_image":product_image,"qty":product_qty},function(){
 						window.location.reload();
 					});
 				}else{

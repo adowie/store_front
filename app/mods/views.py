@@ -466,7 +466,11 @@ def addProductVariant():
 	if entry.product_id:
 		product_ = Product.query.filter_by(id=entry.product_id).first()
 		if product_:
-			variant_ = Variation.query.filter_by(product_id=entry.product_id,name=entry.name).first()
+			if "update" in entry and bool(int(entry.update)):
+				variant_ = Variation.query.filter_by(id=entry.id).first()
+			else:
+				variant_ = Variation.query.filter_by(product_id=entry.product_id,name=entry.name).first()
+
 			if not variant_:
 				if entry.variant_image == "": 
 					variant_image = request.files["image_"]
@@ -477,9 +481,11 @@ def addProductVariant():
 				new_variant = Variation(product_id=entry.product_id,name=entry.name,image=image_path,created_date=now(),price=entry.price,qty=entry.qty)
 				error = db_commit_add_or_revert(new_variant)
 				if not error:
-					if entry.bulk:
-						product_.status = 0
-						error = db_commit_update_or_revert()
+					if bool(int(entry.bulk)):
+						variant_product = Product.query.filter_by(item_code=entry.variant_code).first()
+						if variant_product:
+							variant_product.status = 0
+							error = db_commit_update_or_revert()
 					flash("Product Variant added successfully","success") 
 				else:
 					flash(f'Error: {error}','error')
@@ -612,6 +618,20 @@ def addCompanyCategory(category_id):
 			flash(error)
 
 	return redirect(url_for('mods.Category'))
+
+@mods.route('/company/category/product/add/', methods=['GET','POST'])
+def addCategoryProducts():
+	form = DDOT(request.form)
+	product_list = request.form.getlist("products_for_category")
+	entries = []
+	for item in product_list:
+		entry = CategoryProduct.query.filter_by(category_id=form.category,product_id=item).first()
+		if not entry:
+			entry = CategoryProduct(category_id=form.category,product_id=item)
+			entries.append(entry)
+	error = db_insert(entries)
+	return redirect(url_for('mods.Category'))
+
 
 @mods.route('/products/category', methods=['GET','POST'])
 @login_required
