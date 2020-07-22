@@ -330,6 +330,7 @@ class Product(db.Model):
 	description = db.Column(db.String(254))
 	status = db.Column(db.Boolean)
 	cost = db.Column(db.Float,default=0)
+	discount = db.Column(db.Integer,default=0)
 	price = db.Column(db.Float)
 	qty = db.Column(db.Float)
 	taxable = db.Column(db.Boolean)

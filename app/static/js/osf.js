@@ -237,8 +237,10 @@ function addOsfLineItem(){
 	var variant_name = variant[0];
 	var variant_price = variant[1];
 	var variant_code = variant[2];
+	var variant_image = variant[3];
 
 	$("#product_price_"+variant_code).html("$"+parseFloat(variant_price).toFixed(2));
+	$("#p_images_"+variant_code+" img").attr("src","/static/"+variant_image);
 	var variant_link = $("#item_add_link_"+variant_code).attr("href").split("/");
 	variant_link[(variant_link.length-2)] = variant_name;
 	var selected_variant_link = variant_link.join("/");

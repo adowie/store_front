@@ -30,156 +30,152 @@
 
       <!-- Product Catagories Area Start -->
       <div class="products-catagories-area clearfix">
+        <br>
+        <br>
+        <br>
+        <h3 class="text-center">My Favourites</h3>
+        <br>
+        <br>
+
       {{ utils.flashed_messages() }}
-          <div class="amado-pro-catagory clearfix">         
+          <div class="amado-pro-catagory clearfix">    
+          <h4 class="text-center text-uppercase">Companies</h4>   
+                <!-- <div class="container"> -->
+
             {% for favourite in favourites_["companies"] %}
                  {% set business = favourite.company %}
-                    <div class="container">
-<div class="col-xs-12 col-md-6">
-                <!-- First product box start here-->
-                <div class="prod-info-main prod-wrap clearfix">
-                      <div class="row">
-                           <div class="col-md-5 col-sm-12 col-xs-12">
-                            <div class="product-image">
-                             <img src="{{ url_for('static', filename=business.logo) }}" class="img-responsive">
-                               <span class="tag2 {{ closed }}">
-                                 
-                               </span>
-                       </div>
-                  </div>
-     <div class="col-md-7 col-sm-12 col-xs-12">
-                  <div class="product-detail">
-                               <h5 class="name">
-                               <a href="{{ url_for('osf.company',name= business.name,_id=business.id)}}">
-                                {{ business.name }}
-                               </a><br>
-                               <a href="#">
-                                <span>{{ business.company_type.name }}</span>
-                               </a>                           
-                        </h5>
-                            <p class="price-container">
-                             <span></span>
-                           </p>
-              <span class="tag1">
-               
-                {% set add_fav_class = "favourite" %}  
-                {% set fav_title = "Remove "+ business.name + " from favourites." %}
-              
-                <span class="add_fav {{ add_fav_class }}" data="1:{{ business.id }}:{{ business.name }}:0" data-toggle="tooltip" title="{{ fav_title }}">
-                  <i class="fa fa-star"></i>
-                </span>
-              </span>
-   </div>
-   <div class="description">
-      <p> </p>
-   </div>
-      <div class="product-info smart-form">
-         <div class="row">
-         <div class="col-md-12">
-          <a href="{{ url_for('osf.shop',company=business.id) }}" class="shop-here btn btn-danger">Shop Here</a>
-       </div>
-      <div class="col-md-12">
-        <!--  <div class="rating">Rating:
-          <label for="stars-rating-5"><i class="fa fa-star text-danger"></i></label>
-          <label for="stars-rating-4"><i class="fa fa-star text-danger"></i></label>
-          <label for="stars-rating-3"><i class="fa fa-star text-danger"></i></label>
-          <label for="stars-rating-2"><i class="fa fa-star text-warning"></i></label>
-          <label for="stars-rating-1"><i class="fa fa-star text-warning"></i></label>
-         </div> -->
-       </div>
-    </div>
-   </div>
-  </div>
-  </div>
- </div>
- <!-- end product -->
-</div>
-</div>
-
-{% endfor %}
-
-{% for favourite in favourites_["products"] %}
- <!-- <div class="container"> -->
-  {% set product = favourite.product %}
-                        <div class="col-xs-12 col-md-6">
-                
-                        <!-- First product box start here-->
-                        <div class="prod-info-main prod-wrap clearfix">
+                <div class="inline-items">
+                                <!-- First product box start here-->
+                    <div class="prod-info-main prod-wrap clearfix">
                           <div class="row">
                                <div class="col-md-5 col-sm-12 col-xs-12">
                                 <div class="product-image">
-                                 <img src="{{ url_for('static', filename=product.image) }}" class="img-responsive">
+                                <div class="company-logo">
+                                 <img src="{{ url_for('static', filename=business.logo) }}" alt="{{ business.name }}" class="img-responsive">
+                               </div>
                                    <span class="tag2">
+
                                      
                                    </span>
                            </div>
-                        </div>
+                      </div>
                         <div class="col-md-7 col-sm-12 col-xs-12">
                         <div class="product-detail">
-                           {% if product.variants|length > 0 %}
+                                     <h5 class="name">
+                                     <a href="{{ url_for('osf.company',name= business.name,_id=business.id)}}">
+                                      {{ business.name }}
+                                     </a><br>
+                                     <a href="#">
+                                      <span>{{ business.company_type.name }}</span>
+                                     </a>                           
+                              </h5>
+                                  <p class="price-container">
+                                   <span></span>
+                                 </p>
+                        <span class="tag1">
+
+                        {% set add_fav_class = "favourite" %}  
+                        {% set fav_title = "Remove "+ business.name + " from favourites." %}
+
+                        <span class="add_fav {{ add_fav_class }}" data="1:{{ business.id }}:{{ business.name }}:0" data-toggle="tooltip" title="{{ fav_title }}">
+                        <i class="fa fa-star"></i>
+                        </span>
+                        </span>
+                   </div>
+                   <div class="description">
+                      <p> </p>
+                   </div>
+                      <div class="product-info smart-form">
+                         <div class="row">
+                         <div class="col-md-12">
+                          <a href="{{ url_for('osf.shop',company=business.id) }}" class="shop-here btn btn-danger">Shop Here</a>
+                       </div>
+                      <div class="col-md-12">
+                        <!--  <div class="rating">Rating:
+                          <label for="stars-rating-5"><i class="fa fa-star text-danger"></i></label>
+                          <label for="stars-rating-4"><i class="fa fa-star text-danger"></i></label>
+                          <label for="stars-rating-3"><i class="fa fa-star text-danger"></i></label>
+                          <label for="stars-rating-2"><i class="fa fa-star text-warning"></i></label>
+                          <label for="stars-rating-1"><i class="fa fa-star text-warning"></i></label>
+                         </div> -->
+                       </div>
+                    </div>
+                   </div>
+                  </div>
+                  </div>
+                 </div>
+                 <!-- end product -->
+                </div>
+
+                {% endfor %}
+                <!-- </div> -->
+
+          <h4 class="text-center text-uppercase">Products</h4>     
+
+                {% for favourite in favourites_["products"] %}
+                 <!-- <div class="container"> -->
+                  {% set product = favourite.product %}
+                      <div class="col-md-3 col-sm-6">
+                        <div class="product-grid">
+                            <div class="product-image">
+                                <a href="#" id="p_images_{{ product.item_code }}">
+                                    <img class="pic-1" src="{{ url_for('static', filename=product.image) }}">
+                                    <img class="pic-2" src="{{ url_for('static', filename=product.image) }}">
+                                </a>
+                                
+                                <ul class="social">
+                                
+                               
+                                            {% set add_fav_class = "favourite" %}
+                                            {% set fav_title = "Remove product from favourites." %}
+                                    
+
+                                        <li class="add_fav {{ add_fav_class }}" data="2:{{ product.id }}:product:{{ product.company_id }}"><a href="#" data-tip="{{ fav_title }}"><i class="fa fa-star"></i></a></li>
+                                
+                                    <!-- <li><a href="#" data-tip="Add to Wishlist"><i class="fa fa-shopping-bag"></i></a></li> -->
+                                    <li><a href="{{ url_for('osf.add_osf_order',company=favourite.company_id,category=0,item=product.id,item_name='base',customer=favourite.customer_id )}}" data-tip="Add to Order"><i class="fa fa-plus-square"></i></a></li>
+                                </ul>
+                                {% if product.discount|int > 0 %}
+                                    <span class="product-new-label">
+                                        -{{ product.discount }}%
+                                    </span>
+                                {% endif %}
+                                <span class="product-discount-label">
+                                </span>
+                                {% if product.variants|length > 0 %}
                                 <span class="variant_cont">
                                     <label for="variant_select{{ product.item_code }}">Options
                                 
-                                    <select id="variant_select{{ product.item_code }}" class="variant_options btn btn-info">
-                                        <option value="base:{{ product.price }}:{{ product.item_code }}"> Base </option>
+                                    <select id="variant_select{{ product.item_code }}" class="variant_options btn btn-small">
+                                        <option value="base:{{ product.price }}:{{ product.item_code }}:{{ product.image }}"> Base </option>
                                         {% for variant in product.variants %}
-                                            <option value="{{ variant.name }}:{{ variant.price }}:{{ product.item_code }}"> 
+                                            <option value="{{ variant.name }}:{{ variant.price }}:{{ product.item_code }}:{{ variant.image }}"> 
                                                 {{ variant.name }}
                                             </option>
                                         {% endfor %}
                                     </select>
                                     </label>
                                </span>
-                                {% endif %}
-                            <h5 class="name">
-                                   <a href="#" class="title">
-                                    {{ product.name }}
-                                   </a>
-
-                                   {% for category in product.categories %}
+                            {% endif %}
+                            </div>
+                 
+                            <div class="product-content">
+                                <h3 class="title"><a href="#">{{ product.name }}</a></h3>
+                                <div class="price" id="product_price_{{ product.item_code }}">
+                                    {{ toMoney(product.price) }}
+                                    <!-- <span>$16.00</span> -->
+                                </div>
+                                <a class="add-to-cart" id="item_add_link_{{ product.item_code }}" href="{{ url_for('osf.add_osf_order',company=favourite.company_id,category=0,item=product.id,item_name='base',customer=favourite.customer_id )}}">ADD TO ORDER</a>
+                                  <p>
+                                <a href="{{ url_for('osf.shop',company=favourite.company_id,category=0)}}">@<b>{{ product.company.name }}</b></a>
+                              </p>
+                                 {% for category in product.categories %}
                                        <a href="{{ url_for('osf.shop',company=favourite.company_id,category=category.id)}}"><span>{{ category.name }}</span></a>
                                    {% endfor %}
-                            </h5>
-                                <p class="price-container">
-                                 <span id="product_price_{{ product.item_code }}">{{ toMoney(product.price) }}</span>
-                               </p>
-                        <span class="tag1">
-                          
-                        {% set add_fav_class = "favourite" %}  
-                        {% set fav_title = "Remove product from favourites." %}
-                      
-                        <span class="add_fav {{ add_fav_class }}" data="2:{{ product.id }}:product:{{ product.company_id }}" data-toggle="tooltip" title="{{ fav_title }}">
-                          <i class="fa fa-star"></i>
-                        </span>
-                        </span>
+                            </div>
                         </div>
-                        <div class="description">
-                        <p> {{ product.description }}</p>
-                        </div>
-                        <div class="product-info smart-form">
-                        <div class="row">
-                        <div class="col-md-12">
-                        <a id="item_add_link_{{ product.item_code }}" href="{{ url_for('osf.add_osf_order',company=favourite.company_id,category=0,item=product.id,item_name='base',customer=favourite.customer_id )}}" class="btn btn-warning">Add To Order</a>                
-                        </div>
-                        <div class="col-md-12">
-                        <!--  <div class="rating">Rating:
-                        <label for="stars-rating-5"><i class="fa fa-star text-danger"></i></label>
-                        <label for="stars-rating-4"><i class="fa fa-star text-danger"></i></label>
-                        <label for="stars-rating-3"><i class="fa fa-star text-danger"></i></label>
-                        <label for="stars-rating-2"><i class="fa fa-star text-warning"></i></label>
-                        <label for="stars-rating-1"><i class="fa fa-star text-warning"></i></label>
-                        </div> -->
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-                        <!-- end product -->
-                        </div>
-                        <!-- </div> -->
-                        
-{% endfor %}
+                    </div>                          
+                {% endfor %}
           </div>
       </div>
         <!-- Product Catagories Area End -->

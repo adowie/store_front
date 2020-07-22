@@ -50,7 +50,9 @@
                       <div class="row">
                            <div class="col-md-5 col-sm-12 col-xs-12">
                             <div class="product-image">
-                             <img src="{{ url_for('static', filename=business.logo) }}" class="img-responsive">
+                              <div>
+                               <img src="{{ url_for('static', filename=business.logo) }}" alt="{{ business.name }}" class="img-responsive">
+                              </div>
                                <span class="tag2 {{ closed }}">
                                  
                                </span>

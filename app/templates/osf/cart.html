@@ -57,10 +57,18 @@
                                         {% for line in order.orderlines %}
                                             <tr>
                                                 <td class="cart_product_img">
-                                                    <a href="#"><img src="{{ url_for('static',filename=line.product.image) }}" alt="Product"></a>
+                                                    {% if line.name == 'Base' %}
+                                                        <a href="#"><img src="{{ url_for('static',filename=line.product.image) }}" alt="Product"></a>
+                                                    {% else %}
+                                                        {% for variant in line.product.variants %}
+                                                            {% if line.name == variant.name %}
+                                                                <a href="#"><img src="{{ url_for('static',filename=variant.image) }}" alt="Product"></a>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
                                                 </td>
                                                 <td class="cart_product_desc">
-                                                    <h5>{{ line.product.name|capitalize  }}</h5>
+                                                    <h5>{{ line.product.name|capitalize }}</h5>
                                                     <span>{{ line.name|capitalize }}</span>
                                                 </td>
                                                 <td class="price">

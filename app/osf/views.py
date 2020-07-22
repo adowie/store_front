@@ -367,7 +367,7 @@ def shop(company,category):
 		for product in products_all:
 			for entry in product.categories:
 				if category == entry.category_id: 
-					products.append(product)	
+					products.append(product)	 
 
 		page_products = products[offset: offset + per_page]
 	else:
