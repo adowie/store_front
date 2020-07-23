@@ -237,7 +237,7 @@ img {
 .nav-tabs {
     border: 0; 
     height: 0;
-    width: 25%;
+    /*width: 25%;*/
     margin-top: 6%;
 }
 
@@ -328,8 +328,12 @@ img {
 }
 
 .tab-content {
-    width: 60%;
-    margin-top: 14%;
+    width: 50%;
+    margin-top: 7%;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 5%;
+    padding: 1%;
 }
 
 .register-heading{
