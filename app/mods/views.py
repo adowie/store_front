@@ -8,7 +8,7 @@ from ..models import *
 from ..func_ import *
 import urllib.request
 import simplejson as json
-
+import config as conf
 
 title_ = "OSFO"
 empty_form = []
@@ -25,16 +25,15 @@ def orders():
 @login_required
 def fillOrder(order):
 	company = Company.query.filter_by(id=session["company"]["id"]).first()
-	title_ = company.name
 	order_ = Order.query.filter_by(id=order,company_id=company.id).first()
 	if order_:
-		mail_send_res = sendOrderConfirmation(order,"fulfilled")
-		if "success" in mail_send_res:
-			order_.status = 1
-			error = db_commit_update_or_revert()
-			flash("fulfilment notification has been sent to customer.")
-		else:
-			flash("There was an error sending fulfilment notification to customer. Try again or contact OSFO support if the problem persists.")
+		# mail_send_res = sendOrderConfirmation(order,"fulfilled")
+		params = {"type":"fulfilled","order":order_.id,"message":f"Your order has been fulfilled. Order#{order_.id} has been confirmed [fulfilled] by #{order_.company.name}. You can now pickup your items and complete transaction @ store location. Company details can be acquired by clicking the button below.","name":order_.customer.name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.company',name=order_.company.name,_id=order_.company.id,_external=True),"email":order_.customer.email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
+		company.owner.add_notification("confirmation", "company", company.owner.id, "Order Fulfilled Confirmation", json.dumps(params, default=json_util.default), 0)
+		
+		order_.status = 1
+		error = db_commit_update_or_revert()
+		flash("fulfilment notification will be sent to customer.")
 
 	return redirect(url_for('mods.orders'))
 

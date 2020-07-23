@@ -11,7 +11,7 @@ from ..func_ import *
 from bson import json_util
 import simplejson as json
 import geocoder
-
+import config as conf
 
 
 @osf.route('/',methods=['GET', 'POST'])
@@ -521,12 +521,15 @@ def sendorder(order,customer,company):
 	
 	order = Order.query.filter_by(id=order,customer_id=customer,company_id=company).first()
 	if not order.company.closed:
-		mail_send_res = sendOrderConfirmation(order,"confirmed")
-		if "success" in mail_send_res:
-			order.filter_state = "sent"
-			error = db_commit_update_or_revert()
-			if not error:
-				flash(f"Order has been sent to {order.company.name}. Please await fulfillment verification.")
+		# mail_send_res = sendOrderConfirmation(order,"confirmed") 
+
+		params = {"type":"confirmation","order":order.id,"message":f"You have a new order confirmation. Order#{order.id} has been confirmed by customer and requires fulfillment. Log in to your OSFO account for order detail using the button below.","name":order.company.name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('home.dashboard',_external=True),"email":order.company.email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
+		order.customer.user.add_notification("confirmation", "customer", order.customer.user.id, "Order Confirmation", json.dumps(params, default=json_util.default), 0)
+		
+		order.filter_state = "sent"
+		error = db_commit_update_or_revert()
+		if not error:
+			flash(f"Order has been sent to {order.company.name}. Please await fulfillment verification.")
 	else:
 		flash(f"{order.company.name} is not processing any orders at the moment. Company closed.")
 

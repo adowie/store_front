@@ -341,22 +341,29 @@ def accountVerification(account):
 		error = {'error':'Account does not exist.'}
 	return error
 
-def sendOrderConfirmation(order,type_):
+def sendOrderConfirmation(account):
 	error = None
-	_temp = None
-	if type_ == "confirmed":
-		account_name = order.company.name
-		confirmation_message = f"You have a new order confirmation. Order#{order.id} has been confirmed by customer and requires fulfillment. Log in to your OSFO account for order detail using the button below."
-		rec_link = url_for('home.dashboard',_external=True)
-		confirmation_email = order.company.email
-	else:
-		if type_ == "fulfilled":
-			account_name = order.customer.name
-			confirmation_message = f"Your order has been fulfilled. Order#{order.id} has been confirmed [fulfilled] by #{order.company.name}. You can now pickup your items and complete transaction @ store location. Company details can be acquired by clicking the button below."
-			rec_link = url_for('osf.company',name=order.company.name,_id=order.company.id,_external=True)
-			confirmation_email = order.customer.email
+	_temp = None 
+
+	account_name = account.name
+	confirmation_message = account.message 
+	confirmation_email = account.email
+	rec_link =  account.rec_link
+	app_link = account.app_link
+	# if type_ == "confirmed":
+	# 	account_name = order.company.name
+	# 	confirmation_message = f"You have a new order confirmation. Order#{order.id} has been confirmed by customer and requires fulfillment. Log in to your OSFO account for order detail using the button below."
+	# 	rec_link = url_for('home.dashboard',_external=True)
+	# 	confirmation_email = order.company.email
+	# else:
+	# 	if type_ == "fulfilled":
+	# 		account_name = order.customer.name
+	# 		confirmation_message = f"Your order has been fulfilled. Order#{order.id} has been confirmed [fulfilled] by #{order.company.name}. You can now pickup your items and complete transaction @ store location. Company details can be acquired by clicking the button below."
+	# 		rec_link = url_for('osf.company',name=order.company.name,_id=order.company.id,_external=True)
+	# 		confirmation_email = order.customer.email
+	
 	try:
-		_temp = get_email_template('confirmation_temp.html',{"user_":account_name,"app_link":url_for('osf.land',_external=True),"rec_link":order.rec_link,"app_sign":"Our Store Front Online","confirmation_message":confirmation_message})	
+		_temp = get_email_template('confirmation_temp.html',{"user_":account_name,"app_link":app_link,"rec_link":rec_link,"app_sign":"Our Store Front Online","confirmation_message":confirmation_message})	
 	except Exception as e:
 		error = {"error": e}
 		
