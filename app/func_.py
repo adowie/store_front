@@ -270,24 +270,13 @@ def resetUserPassword(passwd,token):
 
 
 def recoverUserAccount(account):
-	# user_ = User.query.filter_by(email=account.email_).first()
-	# if module == "auth":
-	# 	login_uri = 'auth.login'
-	# 	recover_uri = 'auth.recover'
-	# else:
-	# 	if module == "osf":
-	# 		login_uri = 'osf.account'
-	# 		recover_uri = 'osf.recover'
-
-			# url_for(login_uri,_external=True)
-			# url_for(recover_uri,token=token,_external=True)
 
 	if account:
 		error = None
 		admin_error = None
 		_temp = None
 		try:
-			_temp = get_email_template('recovery_temp.html',{"user_":account.name,"app_link":account.app_link,"rec_link":account.rec_link,"app_sign":"Our Store Front Online"})	
+			_temp = get_email_template('recovery_temp.html',{"user_":account.name,"app_link":account.app_link,"rec_link":account.rec_link,"app_sign":"Our Store Front Online","contact":account.contact})	
 		except Exception as e:
 			error = {"error": e.message }
 
@@ -326,7 +315,7 @@ def accountVerification(account):
 			
 	if account:
 		try:
-			_temp = get_email_template('activation_temp.html',{"user_":account.name,"app_link":account.app_link,"rec_link":account.rec_link,"app_sign":"Our Store Front Online","account_type":account.type.capitalize()})	
+			_temp = get_email_template('activation_temp.html',{"user_":account.name,"app_link":account.app_link,"rec_link":account.rec_link,"app_sign":"Our Store Front Online","account_type":account.type.capitalize(),"contact":account.contact})	
 		except Exception as e:
 			error = {"error": e }
 		
@@ -350,20 +339,9 @@ def sendOrderConfirmation(account):
 	confirmation_email = account.email
 	rec_link =  account.rec_link
 	app_link = account.app_link
-	# if type_ == "confirmed":
-	# 	account_name = order.company.name
-	# 	confirmation_message = f"You have a new order confirmation. Order#{order.id} has been confirmed by customer and requires fulfillment. Log in to your OSFO account for order detail using the button below."
-	# 	rec_link = url_for('home.dashboard',_external=True)
-	# 	confirmation_email = order.company.email
-	# else:
-	# 	if type_ == "fulfilled":
-	# 		account_name = order.customer.name
-	# 		confirmation_message = f"Your order has been fulfilled. Order#{order.id} has been confirmed [fulfilled] by #{order.company.name}. You can now pickup your items and complete transaction @ store location. Company details can be acquired by clicking the button below."
-	# 		rec_link = url_for('osf.company',name=order.company.name,_id=order.company.id,_external=True)
-	# 		confirmation_email = order.customer.email
-	
+		
 	try:
-		_temp = get_email_template('confirmation_temp.html',{"user_":account_name,"app_link":app_link,"rec_link":rec_link,"app_sign":"Our Store Front Online","confirmation_message":confirmation_message})	
+		_temp = get_email_template('confirmation_temp.html',{"user_":account_name,"app_link":app_link,"rec_link":rec_link,"app_sign":"Our Store Front Online","confirmation_message":confirmation_message,"contact":account.contact})	
 	except Exception as e:
 		error = {"error": e}
 		
@@ -377,24 +355,6 @@ def sendOrderConfirmation(account):
 	
 	return error
 
-# def Notification(notif_):
-# 	error = None
-# 	_temp = None
-	
-# 	try:
-# 		_temp = get_email_template('notification_temp.html',{"user_":notif_.name,"app_link":url_for('osf.land',_external=True),"app_sign":"Our Store Front Online"})	
-# 	except Exception as e:
-# 		error = {"error": e }
-	
-# 	if _temp:
-# 		not_temp = _temp
-	
-# 	try:
-# 		error = sendMail(conf.ADMINS[0],[account.email],[],"Notification","This is a notification email from OSFO",not_temp,conf.MAIL_USERNAME,conf.MAIL_PASSWORD)
-# 	except Exception as e:
-# 		error = {"error": e}
-
-# 	return error
 
 def sendRegistrationLink(user):
 	pass

@@ -13,7 +13,7 @@ from bson import json_util
 import simplejson as json
 import geocoder
 import config as conf
-import pdfkit as pdf
+# import pdfkit as pdf
 import os
 
 # @osf.route('/be/',methods=['GET', 'POST'])

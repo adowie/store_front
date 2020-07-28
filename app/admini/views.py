@@ -76,7 +76,7 @@ class CustomerView(ModelView):
 		
 
 class CompanyTypeView(ModelView):
-	form_excluded_columns = ['companies']
+	form_excluded_columns = ['companies','categories']
 	def is_accessible(self):
 		if not current_user.is_authenticated:
 			return False
