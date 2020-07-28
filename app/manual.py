@@ -40,6 +40,8 @@ if command == "-cm":
 	company_tax = sys.argv[14]
 	company_pass = sys.argv[15]
 
+if command == "-adm":
+	user_email = sys.argv[2]
 
 DB_PASS = os.getenv('DB_PASS')
 DB_HOST = os.getenv('DB_SERVER')
@@ -214,15 +216,13 @@ class User(Base):
 
 
 def create_company():
+	db_sess = session
 	name = owner_name.split(" ")
 	user_name = f'{name[1].lower()[0]}{name[1].lower()}'
-	db_sess = session
-
 	user = db_sess.query(User).filter_by(email=company_email).first()
 
 	if not user:
 		user = User(username=user_name, fullname=owner_name, email=company_email, password_=generate_password_hash(company_pass), created_date=now()) 
-	
 		try:
 			db_sess.add(user)
 			db_sess.commit()
@@ -300,13 +300,51 @@ def create_product_from_image():
 def add_default_admin_user():
 	user = User(username=user_name, fullname=user_full, email=user_email, password=user_pass, created_date=now()) 
 	db_sess = session
+	error = None
 	try:
 		db_sess.add(user)
 		db_sess.commit()
+		error = "default admin user now added."
 	except (SQLAlchemyError, IntegrityError, DataError) as e:
 		db_sess.rollback()
 		db_sess.flush() # for resetting non-commited .add()
 		error = e
+	return error
+
+def make_user_super_admin():
+	db_sess = session
+	user = db_sess.query(User).filter_by(email=user_email).first()
+	user.is_admin = True
+	error = None
+	try:
+		db_sess.commit()
+		error = f"User {user.fullname} is now super admin"
+	except (SQLAlchemyError, IntegrityError, DataError) as e:
+		db_sess.rollback()
+		db_sess.flush() # for resetting non-commited .add()
+		error = e
+	return error
+
+def revoke_user_super_admin():
+	db_sess = session
+	user = db_sess.query(User).filter_by(email=user_email).first()
+	user.is_admin = False
+	error = None
+	try:
+		db_sess.commit()
+		error = f"User {user.fullname} is no longer super admin"
+	except (SQLAlchemyError, IntegrityError, DataError) as e:
+		db_sess.rollback()
+		db_sess.flush() # for resetting non-commited .add()
+		error = e
+	return error
+
+
+if command == "-radm":
+	print(revoke_user_super_admin())
+
+if command == "-adm":
+	print(make_user_super_admin())
 
 if command == "-np":
 	print(create_product_from_image())

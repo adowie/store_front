@@ -45,35 +45,29 @@
             <h1>Our Store Front Online</h1>
       <div class="container">
         <div class="row">
-          <div class="col-lg-4">
-            <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
-              <div class="features-icons-icon d-flex">
-                <i class="icon-screen-desktop m-auto text-primary"></i>
-              </div>
+          <div class="col-md-6">
+            <div class="mt-3">
+           
               <h3>Are you a Business Owner?</h3>
-              <p class="lead mb-0">Is the novelty affecting or have affected your business in any way?</p>
-              <p class="lead mb-0">Have your customers been inconvienced by covid-19 restrictions?</p>
-              <p class="lead mb-0">Would your business benefit from having an online presence?</p>
+              <p class="">Would your business benefit from having an online presence?</p>
+              <p class="">Is the novelty affecting or have affected your business in any way?</p>
+              <p class="">Have your customers been inconvienced by covid-19 restrictions?</p>
             </div>
           </div>
-          <div class="col-lg-4">
-            <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
-              <div class="features-icons-icon d-flex">
-                <i class="icon-layers m-auto text-primary"></i>
-              </div>
+          <div class="col-md-6">
+            <div class="mt-3">
+            
               <h3>Are you a Consumer?</h3>
-              <p class="lead mb-0">Is the novelty affecting or have affected you and yours in any way?</p>
-              <p class="lead mb-0">Is your health and the health of your family a priority?</p>
-              <p class="lead mb-0">Would you benefit if your local business had an online presence?</p>
+              <p class="">Is your health and the health of your family a priority <i class="far fa-meh"></i>?</p>
+              <p class="">Is the novelty affecting or have affected you and yours in any way?</p>
+              <p class="">Would you benefit if your local business had an online presence?</p>
             </div>
           </div>
-          <div class="col-lg-4">
-            <div class="features-icons-item mx-auto mb-0 mb-lg-3">
-              <div class="features-icons-icon d-flex">
-                <i class="icon-check m-auto text-primary"></i>
-              </div>
-              <h3>Did you Answer yes to any of those questions?</h3>
-              <p class="lead mb-0">IF you answered yes to any of those questions THEN you are in the right place.</p>
+          <div class="col-md-12">
+            <div class="mt-5">
+          
+              <h3>Did you answer yes to any of the above questions?</h3>
+              <p class="">IF you answered yes to any of those questions THEN you are in the right place.</p>
             </div>
           </div>
         </div>
@@ -88,7 +82,7 @@
           <div class="col-lg-6 order-lg-2 text-white showcase-img" style="background-image: url('{{url_for('static',filename='img/about/connect.jpg')}}');"></div>
           <div class="col-lg-6 order-lg-1 my-auto showcase-text">
             <h2>Our Store Front Online</h2>
-            <p class="lead mb-0">OSFonline connects local businesses with local consumers from a central, easy to use, cost effective and convenient platform.</p>
+            <p class="lead mb-0">OSFOnline connects local businesses with local consumers from a central, easy to use, cost effective and convenient platform.</p>
           </div>
         </div>
         <div class="row no-gutters">
@@ -127,7 +121,37 @@
         </div>
       </div>
     </section>
-
+<section>
+  
+  <ul>
+      <li class="mb-5">
+        <b>
+        - Due to the global pandemic and its effect on local businesses we are waivering subscription for 60 days from enrollment, which we may extend based on the extended effects of the pandemic.
+      </b>
+    </li>
+    <li  class="mb-5">
+      <b><i>- No business can servive without the proper exposure. Let us expose your business the right way. Regardless of your location as long as it is local. People will find you.</i></b>
+    </li>
+    <li  class="mb-5">
+      <b>- We depend on your success so we work tirelessly to ensure such.</b>
+       </li>
+    </ul>
+    <table class="table table-condensed table-responsive">
+      <thead>
+        <tr>
+          <th>Merchants</th>
+          <th>Customers</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a class="btn btn-warning" href="{{ url_for('osf.account',account_type=3)}}">Enroll Now</a></td>
+          <td><a class="btn btn-info" href="{{ url_for('osf.account',account_type=2)}}">Signup</a></td>
+        </tr>
+      </tbody>
+    </table>
+     
+</section>
     <!-- Testimonials -->
 <!--     <section class="testimonials text-center bg-light">
       <div class="container">

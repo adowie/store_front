@@ -366,7 +366,7 @@ class Variation(db.Model):
 
 class Company(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
-	name = db.Column(db.String(64),index=True,unique=True)
+	name = db.Column(db.String(64),index=True, unique=True)
 	email = db.Column(db.String(120), index=True)
 	created_date = db.Column(db.DateTime)
 	logo = db.Column(db.String(254),default=None)
