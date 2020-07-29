@@ -2,4 +2,4 @@ notifications_log.txt
 .env
 config.py
 migrations/
-/**/__pycache__/
+**/__pycache__
