@@ -154,9 +154,9 @@
                                 </span>
                                            {% if product.variants|length > 0 %}
                                 <span class="variant_cont">
-                                    <label for="variant_select{{ product.item_code }}">Choices
+                                    <label for="variant_select{{ product.item_code }}">Choices</label>
                                 
-                                    <select id="variant_select{{ product.item_code }}" class="variant_options btn btn-warning">
+                                    <select id="variant_select{{ product.item_code }}" class="variant_options">
                                         <option value="base:{{ product.price }}:{{ product.item_code }}:{{ product.image }}"> Base </option>
                                         {% for variant in product.variants %}
                                             <option value="{{ variant.name }}:{{ variant.price }}:{{ product.item_code }}:{{ variant.image }}"> 
@@ -164,7 +164,6 @@
                                             </option>
                                         {% endfor %}
                                     </select>
-                                    </label>
                                </span>
                             {% endif %}
                             </div>
