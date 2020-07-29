@@ -83,20 +83,13 @@
                             <div class="widget-content-wrapper">
                                 <div class="widget-content-left">
                                     <div class="btn-group">
-                                        <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
-                                            <img width="42" class="rounded-circle" src="{{ url_for('static', filename=current_user.avatar) }}" alt="">
-                                            <b>{{ current_user.fullname }}</b> <i class="fa fa-angle-down ml-2 opacity-8"></i>
-                                        </a>
-                                        <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
-                                            <a href="{{ url_for('osf.shop',company=company.id)}}" target="blank_" tabindex="0" class="btn btn-warning dropdown-item">
+                                        <!-- <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right"> -->
+                                            <a href="{{ url_for('osf.shop',company=company.id)}}" target="blank_" tabindex="0" class="btn btn-warning">
                                                 <i class="metismenu-icon pe-7s-home"></i> View Shop
-                                                
                                             </a>
-                                            <div tabindex="-1" class="dropdown-divider"></div>
-
-                                            <a href="{{ url_for('osf.logout')}}" tabindex="0" class="dropdown-item btn-shadow p-1 btn btn-primary btn-sm">
+                                            <!-- <div tabindex="-1" class="dropdown-divider"></div> -->
+                                            <a href="{{ url_for('osf.logout')}}" tabindex="0" class="btn-shadow p-1 btn btn-primary btn-sm">
                                                 <i class="metismenu-icon pe-7s-lock"></i> Logout
-                                             
                                             </a>
                                            <!--  <button type="button" tabindex="0" class="dropdown-item"></button>
                                             <button type="button" tabindex="0" class="dropdown-item">Settings</button>
@@ -104,13 +97,18 @@
                                             <button type="button" tabindex="0" class="dropdown-item">Actions</button>
                                             <div tabindex="-1" class="dropdown-divider"></div>
                                             <button type="button" tabindex="0" class="dropdown-item">Dividers</button> -->
-                                        </div>
+                                        <!-- </div> -->
+                                            <a  aria-expanded="true" class="p-0 btn">
+                                            <img width="42" class="rounded-circle" src="{{ url_for('static', filename=current_user.avatar) }}" alt="">
+                                            <b>{{ current_user.fullname }}</b> <!-- <i class="fa fa-angle-down ml-2 opacity-8"></i> -->
+                                        </a>
                                     </div>
                                 </div>
                               
                             </div>
                         </div>
-                    </div>        </div>
+                    </div>        
+                </div>
             </div>
         </div>        
       

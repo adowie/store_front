@@ -180,9 +180,10 @@ def publishCompany(company):
 def retractCompany(company):
 	company_ = Company.query.filter_by(id=company).first()
 	company_.published = 0
+	company_.closed = 1
 	error = db_commit_update_or_revert()
 	if not error:
-		flash("Your Company has been retracted.")
+		flash("Your Company has been retracted. Customers will no longer see your products.")
 	else:
 		flash(f"{error}")
 

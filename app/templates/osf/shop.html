@@ -154,9 +154,9 @@
                                 </span>
                                            {% if product.variants|length > 0 %}
                                 <span class="variant_cont">
-                                    <label for="variant_select{{ product.item_code }}">Options
+                                    <label for="variant_select{{ product.item_code }}">Choices
                                 
-                                    <select id="variant_select{{ product.item_code }}" class="variant_options btn btn-small">
+                                    <select id="variant_select{{ product.item_code }}" class="variant_options btn btn-warning">
                                         <option value="base:{{ product.price }}:{{ product.item_code }}:{{ product.image }}"> Base </option>
                                         {% for variant in product.variants %}
                                             <option value="{{ variant.name }}:{{ variant.price }}:{{ product.item_code }}:{{ variant.image }}"> 

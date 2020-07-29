@@ -403,6 +403,14 @@ def shop(company,category):
 		is_admin = session["is_admin"]
 
 	company_ = Company.query.filter_by(id=company).first()
+	if company_.closed:
+		flash("Company is closed, no orders will be processed at this time.")
+		if current_user.email != company_.email:
+			return redirect(url_for('osf.companies',company_type=company_.company_type_id))
+		else:
+			flash("Your Company is closed to the public no orders will be processed until you open for business.")
+			
+		
 	page, per_page, offset = get_page_args(page_parameter='page',
                                            per_page_parameter='per_page')
 	if per_page == 10:
@@ -427,10 +435,7 @@ def shop(company,category):
 	pos_ = Pos.query.filter_by(company_id=company,active=True).first()
 	customer = Customer.query.filter_by(email=current_user.email).first()
 
-	if company_.closed:
-		flash("Company is closed, no orders will be processed at this time.")
-		return redirect(url_for('osf.companies',company_type=company_.company_type_id))
-
+	
 	if customer:
 		active_order = Order.query.filter_by(user_id=current_user.id,company_id=company,status=0,customer_id=customer.id).first()
 
