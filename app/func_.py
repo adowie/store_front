@@ -57,10 +57,13 @@ def datetimeToDate(dt):
 		day = dt.strftime('%Y-%m-%d')
 		return day
    
-
 def convertDateTime(dt):
 	if dt:
 		return datetime.strptime(dt,'%Y-%m-%d %H:%M:%S')
+
+def date_dif(sd,ed):
+	dif = ed - sd
+	return int(dif.seconds / 60)
 
 def barCoder(code):
     if code and code != "":
@@ -72,6 +75,13 @@ def barCoder(code):
     #     return None
     return  None
 
+def ordinal(n):
+	ord_ = ["st","nd","rd"]
+	nth = ((n+90)%100-10)%10-1
+	if nth < len(ord_):
+		return f'{n}{ord_[nth]}'
+	return f'{n}th'
+	
 def save_uploaded_file (file_, upload_dir):
     # This saves a file uploaded by an HTML form.
     #    The form_field is the name of the file input field from the form.

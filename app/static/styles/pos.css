@@ -808,11 +808,10 @@ body {
 }
 
 #product_thumb_item {
-	width: 19%;
-	padding: 5px;
-	margin-left: 5px;
-	display: inline-block;
-	box-shadow: 1px 1px 5px 1px #999;
+	/*padding: 1%;*/
+	/*margin: 1px;*/
+	border-radius: 5px;
+	border: 1px solid #999;
 }
 
 #product_thumb {

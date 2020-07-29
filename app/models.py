@@ -47,6 +47,8 @@ class User(UserMixin,db.Model):
 	last_login = db.Column(db.DateTime)
 	is_logged_in = db.Column(db.Boolean, default=False)
 	is_admin = db.Column(db.Boolean, default=False)
+	login_attempt = db.Column(db.Integer, default=0)
+	last_failed_login_attempt = db.Column(db.DateTime, default=None)
 
 	notifications = db.relationship('Notification', backref='users',lazy='dynamic')
 	access = db.relationship('Access',back_populates="user")

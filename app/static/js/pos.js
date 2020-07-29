@@ -898,9 +898,7 @@ function doToolTip(){
 			
 			if((tip_left + tip_width) > $("body").width())
 			$(".tip-block").css({"left": tip_window_dif});
-
 			// if()
-
 		}
 	});
 }

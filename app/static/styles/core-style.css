@@ -30,7 +30,7 @@ body {
 
 #resend {
   position: absolute;
-    bottom: 20%;
+    bottom: 5%;
     z-index: 1;
     right: 15%;
 }

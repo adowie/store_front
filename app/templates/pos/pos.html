@@ -284,11 +284,16 @@
 		    </div>
 
 		<div class="p_view">
-		    <div id="pos_product_detail_view" class="view pos_product_detail_view">
-		    	<ul id="product_thumb">
+		    <div id="pos_product_detail_view" class="view pos_product_detail_view p-4">
+		    	<!-- <ul id="product_thumb"> -->
+		    	<div class="row">
 		    		{% for product in products %}
+		    			{% set active="inactive" %}
+		    			{% if product.status %}
+			    			{% set active="active" %}
+			    		{% endif %}
 
-		                  <li class="well col-md-12 product_{{ product.item_code }}" id="product_thumb_item" category="{{ product.category_id }}" taxable="{{ 1 if product.taxable else 0 }}" code="{{ product.item_code }}" name="base" company="{{ product.company_id }}" view="detail">
+		                  <div class="well col-md-3 product_{{ product.item_code }} mb-1 {{ active }}" id="product_thumb_item" category="{{ product.category_id }}" taxable="{{ 1 if product.taxable else 0 }}" code="{{ product.item_code }}" name="base" company="{{ product.company_id }}" view="detail">
 		             
 		                    <span id="item_thumb">
 		                    	<img src="{{ url_for('static',filename=product.image ) }}" class="product_img_thumb" />
@@ -314,11 +319,12 @@
 			                    <div class="detail_item"><span>Inventory:</span><span class="the_qty" data="{{ product.qty }}">{{ product.qty }}</span></div>
 		                    </span>
 		  
-		                  </li>                    
+		                  </div>                    
 
                     {% endfor %}
+                </div>
 		    		
-		    	</ul>
+		    	<!-- </ul> -->
 		    </div>
 
 	    </div>

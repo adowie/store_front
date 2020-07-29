@@ -171,6 +171,9 @@ def account(account_type):
 	comp_types = getCompanyType()
 	form = request.form
 	activation_link = None
+	activation_busi_link = None
+	lock_login = None
+
 	if "account_type" in form: 
 		if int(form["account_type"]) == 3:
 			user = User.query.filter_by(email=form["bus_email"]).first()
@@ -182,27 +185,34 @@ def account(account_type):
 					owner_id = user_.id
 			else:
 				owner_id = user.id
+				user_ = user
 
-			location = f'{form["bus_address"]},{form["bus_state"]},{form["bus_city"]},{form["bus_postal"]}'
-			company = {"name":form["bus_name"],"created_date":today(),"contact":form["bus_phone"],"email":form["bus_email"],"tax":form["bus_tax"],"owner_id":owner_id,"type_id":form["bus_type"],"location":location,"status":0,"update":0}#account to be verified b4 it becomes active
+			company = Company.query.filter_by(email=form["bus_email"]).first()
 
-			res = createCompany(company,request.files["image_"],request.files["store_front_image"])
-			if "success" in res:
-				# add business as customer by default
-				customer_ = Customer(name=form["bus_owner"],email=form["bus_email"],created_date=now(),last_business=None,street=form["bus_address"],street2={form["bus_state"]},city=form["bus_city"],zip_code=form["bus_postal"],active=1,customer_type="normal",contact=form["bus_phone"],barcode="",credit_limit=None,tax_id="000000000",avatar="img/customers/default.png",company_name=form["bus_name"])   
-				error = db_commit_add_or_revert(customer_)
-				token = company_.get_activation_token()
-				params = {"type":"company","name":company_.owner.fullname,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":company_.email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
-				user_.add_notification("activation", "company", user_.id, "Company Account Activation", json.dumps(params, default=json_util.default), 0)
+			if not company:
+				location = f'{form["bus_address"]},{form["bus_state"]},{form["bus_city"]},{form["bus_postal"]}'
+				company = {"name":form["bus_name"],"created_date":today(),"contact":form["bus_phone"],"email":form["bus_email"],"tax":form["bus_tax"],"owner_id":owner_id,"type_id":form["bus_type"],"location":location,"status":0,"update":0}#account to be verified b4 it becomes active
 
+				res = createCompany(company,request.files["image_"],request.files["store_front_image"])
+				if "success" in res:
+					company_ = res["company"]
+					# add business as customer by default
+					customer_ = Customer(name=form["bus_owner"],email=form["bus_email"],created_date=now(),last_business=None,street=form["bus_address"],street2={form["bus_state"]},city=form["bus_city"],zip_code=form["bus_postal"],active=1,customer_type="normal",contact=form["bus_phone"],barcode="",credit_limit=None,tax_id="000000000",avatar="img/customers/default.png",company_name=form["bus_name"])   
+					error = db_commit_add_or_revert(customer_)
+					token = company_.get_activation_token()
+					params = {"type":"company","name":company_.owner.fullname,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":company_.email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
+					user_.add_notification("activation", "company", user_.id, "Company Account Activation", json.dumps(params, default=json_util.default), 0)
 
-			msg, msg_type = flash_res_msg(res)
-			if msg:
-				flash(msg,msg_type)
+				msg, msg_type = flash_res_msg(res)
+				if msg:
+					flash(msg,msg_type)
+			else:
+				company_ = company
 
-			company_ = Company.query.filter_by(email=form["bus_email"]).first()
 			if not company_.active:
-				activation_link = Markup(f"<a class='btn btn-success' id='activation_link' href='{url_for('osf.resend',account_type=2,email=company_.email)}'>Resend Activation link</a>")
+				if date_dif(user_.created_date,convertDateTime(now())) >= 5:
+					flash(f"An Account associated with {user_.email} already exist, however it is not active. Resend the activation link with the button below.")
+					activation_busi_link = Markup(f"<a class='btn btn-success' id='activation_link' href='{url_for('osf.resend',account_type=2,email=company_.email)}'>Resend Activation link {date_dif(user_.created_date,convertDateTime(now()))}</a>")
 			else:
 				flash("Your Business Account is already active. You may need to use account recovery to regain access.")
 		else:
@@ -219,26 +229,32 @@ def account(account_type):
 						user_id = user_.id
 				else:
 					user_id = user.id
+					user_ = user
 
 				if user_id:
-					customer = {"name":cus_full_name,"email":form["cus_email"],"created_date":today(),"street":"","street2":"","city":"","zip":"","status":0,"type":"normal","contact":form["cus_phone"],"tax_id":"000000000","image":"img/customers/default.png","company_id":"","company_name":"","barcode":"","update":0}
-					res = createCustomer(customer,request.files["image_"])	
+					customer = Customer.query.filter_by(email=form["cus_email"]).first()
+					if not customer:
+						customer = {"name":cus_full_name,"email":form["cus_email"],"created_date":today(),"street":"","street2":"","city":"","zip":"","status":0,"type":"normal","contact":form["cus_phone"],"tax_id":"000000000","image":"img/customers/default.png","company_id":"","company_name":"","barcode":"","update":0}
+						res = createCustomer(customer,request.files["image_"])	
 						
-					if "success" in res:
-						customer_ = res["customer"]
+						if "success" in res:
+							customer_ = res["customer"]
 					
-						token = customer_.get_activation_token()
-						params = {"type":"customer","name":customer_.name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":customer_.email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
-						user_.add_notification("activation", "customer", user_.id, "Customer Account Activation", json.dumps(params, default=json_util.default), 0)
+							token = customer_.get_activation_token()
+							params = {"type":"customer","name":customer_.name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.activate',token=token,_external=True),"email":customer_.email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
+							user_.add_notification("activation", "customer", user_.id, "Customer Account Activation", json.dumps(params, default=json_util.default), 0)
 						
+						msg, msg_type = flash_res_msg(res)
+						if msg:
+							flash(msg,msg_type)
+					
+					else:
+						customer_ = customer
 
-					msg, msg_type = flash_res_msg(res)
-					if msg:
-						flash(msg,msg_type)
-					
-					customer_ = Customer.query.filter_by(email=form["cus_email"]).first()
 					if not customer_.active:
-						activation_link = Markup(f"<a id='resend' class='btn btn-success' id='activation_link' href='{url_for('osf.resend',account_type=1,email=customer_.email)}'>Resend Activation link</a>")
+						if date_dif(user_.created_date,convertDateTime(now())) >= 5:
+							flash(f"An Account associated with {user_.email} already exist, however it is not active. Resend the activation link with the button below.")
+							activation_link = Markup(f"<a id='resend' class='btn btn-success' id='activation_link' href='{url_for('osf.resend',account_type=1,email=customer_.email)}'>Resend Activation link</a>")
 					else:
 						flash("Your Customer Account is already active. You may need to use account recovery to regain access.")
 			else:
@@ -246,34 +262,54 @@ def account(account_type):
 					user_ = User.query.filter_by(email=form["log_email"]).first()
 					if user_:
 						# print(form["log_pass"])
-						if user_.verify_password(form["log_pass"]):
-							login_user(user_)
-							session_id = randomString(16)
-							accounts = []
-							business_ = Company.query.filter_by(email=form["log_email"],active=1).first()
-							customer_ = Customer.query.filter_by(email=form["log_email"],active=1).first()
-							if business_:
-								accounts.append({"type":2,"account":business_})
-								session["company"] = business_.as_dict()
-								session["is_admin"] = True
+						if not user_.login_attempt or user_.login_attempt < 3:
+							if user_.verify_password(form["log_pass"]):
+								login_user(user_)
+								user_.login_attempt = 0
+								session_id = randomString(16)
+								accounts = []
+								business_ = Company.query.filter_by(email=form["log_email"],active=1).first()
+								customer_ = Customer.query.filter_by(email=form["log_email"],active=1).first()
+								if business_:
+									accounts.append({"type":2,"account":business_})
+									session["company"] = business_.as_dict()
+									session["is_admin"] = True
 
-							if customer_:
-								accounts.append({"type":1,"account":customer_})
+								if customer_:
+									accounts.append({"type":1,"account":customer_})
 
-							session["id"] = session_id
+								session["id"] = session_id
 
-							if len(accounts) < 1:
-								flash("The Account you registered is not yet activated. Check your email for activation link.")
-							else:									
-								return redirect(url_for('osf.land'))
-							# else:
-							# 	return render_template("osf/accounts.html",title="Proceed as",cus_accounts=accounts)
+								if len(accounts) < 1:
+									flash("The Account you registered is not yet activated. Check your email for activation link.")
+								else:									
+									return redirect(url_for('osf.land'))
+								# else:
+								# 	return render_template("osf/accounts.html",title="Proceed as",cus_accounts=accounts)
+							else:
+								if not user_.login_attempt:
+									user_.login_attempt = 1
+								else:
+									user_.login_attempt = user_.login_attempt + 1
+
+								user_.last_failed_login_attempt = now()
+								flash("Invalid Credentials","error")
+								flash(f"{ordinal(user_.login_attempt)} Failed login attempt","error")
+
+							error = db_commit_update_or_revert()
 						else:
-							flash("Invalid Credentials","error")
+							if date_dif(user_.last_failed_login_attempt,convertDateTime(now())) < 5: 
+								flash(f"You have exceeded your login attempt limit. You may have forgotten your password. Wait 5 minutes refresh this page and try again or use the Account Recovery link in the login form.")
+								lock_login = 1
+							else:
+								lock_login = 0
+								user_.login_attempt = 0
+								error = db_commit_update_or_revert()
+
 					else:
 						flash(f"No account found for {form['log_email']}. Create an account to proceed.","error")
 
-	return render_template("osf/account.html",title="Sign In | Sign Up",form=form,account_type=account_type,company_types=comp_types,activation_link=activation_link,is_admin=is_admin)
+	return render_template("osf/account.html",title="Sign In | Sign Up",form=form,account_type=account_type,company_types=comp_types,activation_link=activation_link,is_admin=is_admin,activation_busi_link=activation_busi_link,lock_login=lock_login)
 
 
 @osf.route('/account/activation/<int:account_type>/<email>/', methods=['GET', 'POST'])

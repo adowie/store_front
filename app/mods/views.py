@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, url_for,request,session
+from flask import flash, redirect, render_template, url_for,request,session,abort
 from flask_login import login_required, login_user, logout_user,current_user
 from openpyxl import load_workbook
 from . import mods
@@ -156,25 +156,23 @@ def openCompany(company):
 def publishCompany(company):
 	company_ = Company.query.filter_by(id=company).first()
 	product_ = Product.query.filter_by(company_id=company,status=1).first()
-	if len(company_.products) > 0:
-		if product_:	
-			company_.published = 1
-			error = db_commit_update_or_revert()
-			if not error:
-				flash("Your Company is now available to customers for browsing and sending in orders. Be prepared to fulfil those orders.","success")
-				if company_.closed:
-					company_.closed = False
-					error = db_commit_update_or_revert()
-					if not error:
-						flash("Your Company is now OPEN for business.","success")
-
+	if company_:
+		if len(company_.products) > 0:
+			if product_:	
+				company_.published = 1
+				error = db_commit_update_or_revert()
+				if not error:
+					flash("Your Company is now available to customers for browsing and sending in orders. Be prepared to fulfil those orders.","success")
+					return redirect(url_for('mods.openCompany',company=company_.id))
+						
+				else:
+					flash(f"{error}")
 			else:
-				flash(f"{error}")
+				flash("You have no active products to complete the publish action.")
 		else:
-			flash("You have no active products to complete the publish action.")
+			flash("Your company setup is incomplete. Ensure that you have products for customers to shop and your company location is set.","warning")
 	else:
-		flash("Your company setup is incomplete. Ensure that you have products for customers to shop and your company location is set.","warning")
-
+		abort(404)
 	return redirect(url_for('home.dashboard'))
 
 @mods.route("/company/retract/<int:company>/",methods=["POST","GET"])
