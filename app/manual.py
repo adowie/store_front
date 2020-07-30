@@ -314,7 +314,7 @@ def add_default_admin_user():
 def make_user_super_admin():
 	db_sess = session
 	user = db_sess.query(User).filter_by(email=user_email).first()
-	user.is_admin = True
+	user.is_super_admin = True
 	error = None
 	try:
 		db_sess.commit()
@@ -328,7 +328,7 @@ def make_user_super_admin():
 def revoke_user_super_admin():
 	db_sess = session
 	user = db_sess.query(User).filter_by(email=user_email).first()
-	user.is_admin = False
+	user.is_super_admin = False
 	error = None
 	try:
 		db_sess.commit()
