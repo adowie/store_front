@@ -119,7 +119,7 @@ class OrderView(ModelView):
 			
 
 def role_master(user,module):
-	if user.is_admin:
+	if user.is_super_admin:
 		return True
 	return False
 

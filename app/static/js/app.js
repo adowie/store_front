@@ -1,5 +1,6 @@
 preloader();
 var hide = null;
+$mobile = false;
 $(function(){
 	if($("input[name='created_date']").val() == "")
 	$("input[name='created_date']").val(today());	
@@ -71,6 +72,31 @@ $(function(){
 	addressNavigator();
 	errorReportParser();
 });
+
+
+function social_sharer(who){
+	var href_ = ""; 
+	// if(app == "whatsapp_share_product"){
+	// 	href = $mobile ? "https://api.whatsapp.com/send?text="+encodeURIComponent(" ") : "https://web.whatsapp.com/send?l=en&text="+encodeURIComponent("");
+	// }else{		
+	// 	if(app == "fb"){
+	// 		href = $mobile ? "fb://Domino101-927565090756312/": "https://www.facebook.com/Domino101-927565090756312/";
+	// 	}else{
+	// 		if(app == "insta"){
+	// 			href = $mobile ? "instagram://domino1zero1/": "http://www.instagram.com/domino1zero1/";
+	// 		}else{
+	// 			if(app == "fb_share"){
+	// 				href = $mobile ? "fb://sharer/sharer.php?u=https://domino101.com/": "https://www.facebook.com/sharer/sharer.php?u=https://domino101.com";
+	// 			}else{
+			
+	// 			}
+	// 		}
+	// 	}
+	// }
+	// window.open(href,"_blank");	
+}
+
+
 
 function editCategory(){
 	$("#category_product_list_"+$(this).data("category")).show("slow");
