@@ -203,7 +203,8 @@ class User(Base):
 	last_login = Column(DateTime)
 	is_logged_in = Column(Boolean, default=False)
 	is_admin = Column(Boolean, default=False)
-	def __init__(self,username,fullname,email,password_, created_date, image=None, last_login=None, is_logged_in=False, is_admin=True):
+	is_super_admin = Column(Boolean, default=False)
+	def __init__(self,username,fullname,email,password_, created_date, image=None, last_login=None, is_logged_in=False, is_admin=False,is_super_admin=False):
 		self.username = username
 		self.fullname = fullname
 		self.email = email
@@ -213,6 +214,7 @@ class User(Base):
 		self.last_login = last_login
 		self.is_logged_in = is_logged_in
 		self.is_admin = is_admin
+		self.is_super_admin = is_super_admin
 
 
 def create_company():
@@ -316,13 +318,16 @@ def make_user_super_admin():
 	user = db_sess.query(User).filter_by(email=user_email).first()
 	user.is_super_admin = True
 	error = None
-	try:
-		db_sess.commit()
-		error = f"User {user.fullname} is now super admin"
-	except (SQLAlchemyError, IntegrityError, DataError) as e:
-		db_sess.rollback()
-		db_sess.flush() # for resetting non-commited .add()
-		error = e
+	if user:
+		try:
+			db_sess.commit()
+			error = f"User {user.fullname} is now super admin"
+		except (SQLAlchemyError, IntegrityError, DataError) as e:
+			db_sess.rollback()
+			db_sess.flush() # for resetting non-commited .add()
+			error = e
+	else:
+		error = f"{user_email} User doesnt exist"
 	return error
 
 def revoke_user_super_admin():
@@ -330,13 +335,17 @@ def revoke_user_super_admin():
 	user = db_sess.query(User).filter_by(email=user_email).first()
 	user.is_super_admin = False
 	error = None
-	try:
-		db_sess.commit()
-		error = f"User {user.fullname} is no longer super admin"
-	except (SQLAlchemyError, IntegrityError, DataError) as e:
-		db_sess.rollback()
-		db_sess.flush() # for resetting non-commited .add()
-		error = e
+	if user:
+		try:
+			db_sess.commit()
+			error = f"User {user.fullname} is no longer super admin"
+		except (SQLAlchemyError, IntegrityError, DataError) as e:
+			db_sess.rollback()
+			db_sess.flush() # for resetting non-commited .add()
+			error = e
+	else:
+		error = f"{user_email} User doesnt exist"
+
 	return error
 
 

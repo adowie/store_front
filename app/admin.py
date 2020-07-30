@@ -18,7 +18,7 @@ class MyAdminIndexView(AdminIndexView):
 
 		form = request.form
 		if form and 'login' in form:
-			user_ = User.query.filter_by(email=form['email'],is_admin=True).first()
+			user_ = User.query.filter_by(email=form['email'],is_super_admin=True).first()
 			if user_ and user_.verify_password(form['key']):
 				print("verified")
 				user_.update_last_login()
