@@ -41,22 +41,25 @@
           <div class="amado-pro-catagory clearfix">    
           <h4 class="text-center text-uppercase">Companies</h4>   
                 <!-- <div class="container"> -->
-
+              <div class="row">
             {% for favourite in favourites_["companies"] %}
                  {% set business = favourite.company %}
-                <div class="inline-items">
+                <div class="col-md-3">
                                 <!-- First product box start here-->
                     <div class="prod-info-main prod-wrap clearfix">
                           <div class="row">
                                <div class="col-md-5 col-sm-12 col-xs-12">
                                 <div class="product-image">
                                 <div class="company-logo">
-                                 <img src="{{ url_for('static', filename=business.logo) }}" alt="{{ business.name }}" class="img-responsive">
+                                {% if business.logo and business.logo != 'None' %}
+                                  <img src="{{ url_for('static', filename=business.logo) }}" alt="{{ business.name }}" class="img-responsive">
+                                {% else %}
+                                  <img style="position: absolute; top: 0;width: 60px;height: 60px;" src="{{ url_for('static', filename='img/core-img/logo.png') }}" alt="{{ business.name }}" class="img-responsive">
+                                  {{ business.name }}
+                                {% endif %}
                                </div>
-                                   <span class="tag2">
-
-                                     
-                                   </span>
+                               <span class="tag2">
+                               </span>
                            </div>
                       </div>
                         <div class="col-md-7 col-sm-12 col-xs-12">
@@ -108,14 +111,14 @@
                 </div>
 
                 {% endfor %}
-                <!-- </div> -->
+                </div>
 
           <h4 class="text-center text-uppercase">Products</h4>     
 
                 {% for favourite in favourites_["products"] %}
-                 <!-- <div class="container"> -->
+                 <div class="row">
                   {% set product = favourite.product %}
-                      <div class="col-md-3 col-sm-6">
+                      <div class="col-md-3">
                         <div class="product-grid">
                             <div class="product-image">
                                 <a href="#" id="p_images_{{ product.item_code }}">
@@ -176,6 +179,7 @@
                         </div>
                     </div>                          
                 {% endfor %}
+              </div>
           </div>
       </div>
         <!-- Product Catagories Area End -->

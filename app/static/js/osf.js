@@ -1,4 +1,5 @@
 var hide = null;
+$mobile = false;
 $(function(){
 	// var crop_;
 	paginLinks();
@@ -31,6 +32,29 @@ $(function(){
 	$(".search_type").on("click",initSearchType);
 	initBusinessEnrollmentWizard();
 });
+
+function social_sharer(app){
+	var href_ = ""; 
+	if(app == "whatsapp_share_osfo"){
+		href = $mobile ? "https://api.whatsapp.com/send?text="+encodeURIComponent("Shop at your favourite local stores @ https://www.ourstorefront.online") : "https://web.whatsapp.com/send?l=en&text="+encodeURIComponent("Shop at your favourite local stores @ https://www.ourstorefront.online");
+	}
+	//else{		
+	// 	if(app == "fb"){
+	// 		href = $mobile ? "fb://Domino101-927565090756312/": "https://www.facebook.com/Domino101-927565090756312/";
+	// 	}else{
+	// 		if(app == "insta"){
+	// 			href = $mobile ? "instagram://domino1zero1/": "http://www.instagram.com/domino1zero1/";
+	// 		}else{
+	// 			if(app == "fb_share"){
+	// 				href = $mobile ? "fb://sharer/sharer.php?u=https://domino101.com/": "https://www.facebook.com/sharer/sharer.php?u=https://domino101.com";
+	// 			}else{
+			
+	// 			}
+	// 		}
+	// 	}
+	// }
+	window.open(href,"_blank");	
+}
 
 
 function initBusinessEnrollmentWizard(){
