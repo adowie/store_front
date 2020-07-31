@@ -51,7 +51,7 @@
                            <div class="col-md-5 col-sm-12 col-xs-12">
                             <div class="product-image">
                               <div class="text-center">
-                                {% if business.logo %}
+                                {% if business.logo and business.logo != 'None' %}
                                   <img src="{{ url_for('static', filename=business.logo) }}" alt="{{ business.name }}" class="img-responsive">
                                 {% else %}
                                   <img style="position: absolute; top: 0;width: 60px;height: 60px;" src="{{ url_for('static', filename='img/core-img/logo.png') }}" alt="{{ business.name }}" class="img-responsive">
