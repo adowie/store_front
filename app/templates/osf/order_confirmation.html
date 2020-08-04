@@ -34,9 +34,17 @@
                     <div class="row p-5">
                         <div class="col-md-6">
                         	<div class="invoice-logo">
-                            	<a href="{{ url_for('osf.shop',company=order.company.id)}}"><img src="{{ url_for('static',filename=order.company.logo) }}"></a>
+                            	<a href="{{ url_for('osf.shop',company=order.company.id)}}" style="color: #999;">
+                                {% if order.company.logo and order.company.logo != 'None' %}
+                                  <img src="{{ url_for('static', filename=order.company.logo) }}" alt="{{ order.company.name }}" class="img-responsive">
+                                {% else %}
+                                  <img style="width: 60px;height: 60px;" src="{{ url_for('static', filename='img/core-img/logo.png') }}" alt="{{ order.company.name }}" class="img-responsive">
+
+                                  {{ order.company.name }}
+                                  {% endif %}
+                                </a>
                         	</div>
-                        </div>
+                        </div> 
 
                         <div class="col-md-6 text-right">
                             <p class="font-weight-bold mb-1">Invoice #{{ order.id }}</p>

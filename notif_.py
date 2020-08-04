@@ -29,12 +29,16 @@ def notify_(notif):
 	error = {"error":"No notification to process"}
 	if notif.name == "activation":
 		account = DDOT(json.loads(notif.params))
-		# print(account)
 		error = accountVerification(account)
 	else:
 		if notif.name == "recovery":
 			account = DDOT(json.loads(notif.params))
 			error = recoverUserAccount(account)
+		else:
+			if notif.name == "confirmation":
+				account = DDOT(json.loads(notif.params))
+				error = sendOrderConfirmation(account)
+
 	return error
 
 

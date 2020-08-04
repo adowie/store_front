@@ -33,7 +33,7 @@ def fillOrder(order):
 		params = {"type":"fulfilled","order":order_.id,"message":confirmation_msg,"name":order_.customer.name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('osf.company',name=order_.company.name,_id=order_.company.id,_external=True),"email":order_.customer.email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
 		company.owner.add_notification("confirmation", "company", company.owner.id, "Order Fulfilled Confirmation", json.dumps(params, default=json_util.default), 0)
 		if order_.customer.contact:
-			sms_(order_.contact.contact, confirmation_msg)
+			sms_(f'1{order_.contact.contact}', confirmation_msg)
 		order_.status = 1
 		error = db_commit_update_or_revert()
 		flash("fulfilment notification will be sent to customer.")

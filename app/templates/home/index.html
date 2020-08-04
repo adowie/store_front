@@ -17,7 +17,7 @@
 <body>
     <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
         <div class="app-header header-shadow">
-            <div class="app-header__logo" style="background: url('{{ url_for('static',filename=company.logo) }}') no-repeat;">
+            <div class="app-header__logo" style="background: url('{{ url_for('static',filename=company.logo) if company.logo and company.logo != 'None' else url_for('static',filename='img/core-img/logo.png')}}') no-repeat;">
                 <div class="logo-src" ></div> 
                 <div class="header__pane ml-auto">
                     <div>

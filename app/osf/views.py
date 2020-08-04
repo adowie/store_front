@@ -262,10 +262,12 @@ def account(account_type):
 					user_ = User.query.filter_by(email=form["log_email"]).first()
 					if user_:
 						# print(form["log_pass"])
-						if not user_.login_attempt or user_.login_attempt < 3:
+						if not user_.login_attempt or user_.login_attempt <= 3:
 							if user_.verify_password(form["log_pass"]):
 								login_user(user_)
 								user_.login_attempt = 0
+								error = db_commit_update_or_revert()
+
 								session_id = randomString(16)
 								accounts = []
 								business_ = Company.query.filter_by(email=form["log_email"],active=1).first()
@@ -296,7 +298,7 @@ def account(account_type):
 								flash("Invalid Credentials","error")
 								flash(f"{ordinal(user_.login_attempt)} Failed login attempt","error")
 
-							error = db_commit_update_or_revert()
+								error = db_commit_update_or_revert()
 						else:
 							if date_dif(user_.last_failed_login_attempt,convertDateTime(now())) < 5: 
 								flash(f"You have exceeded your login attempt limit. You may have forgotten your password. Wait 5 minutes refresh this page and try again or use the Account Recovery link in the login form.")
@@ -583,8 +585,12 @@ def sendorder(order,customer,company):
 		error = db_commit_update_or_revert()
 		if not error:
 			flash(f"Order has been sent to {order.company.name}. Please await fulfillment verification.")
-		if order.company.contact:
-			sms_(order.company.contact, confirmation_msg)
+		# if order.company.contact:
+		# 	res = sms_(f'1{order.company.contact}', confirmation_msg)
+		# 	if "error" in res:
+		# 		flash(res["error"])
+
+
 	else:
 		flash(f"{order.company.name} is not processing any orders at the moment. Company closed.")
 

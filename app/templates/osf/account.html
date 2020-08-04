@@ -50,11 +50,7 @@
                                 <a class="nav-link" id="login-tab" data-toggle="tab" eq=3 href="#login" role="tab" aria-controls="login" aria-selected="true">Business</a>
                             </li>
                         </ul>
-                        {% set lock_login = '' %}
-
-                        {% if lock_login %}
-                            {% set locked_login = 'disabled' %}
-                        {% endif %}
+                    
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                 <h3 class="register-heading">Login</h3>
@@ -66,13 +62,16 @@
                                                 <div class="col-md-12">
 
                                                     <div class="form-group">
-                                                        <input type="email" class="form-control" placeholder="Enter Account Email *" name="log_email" value="{{ form.log_email }}" required {{ locked_login }}/>
+                                                        <input type="email" class="form-control" placeholder="Enter Account Email *" name="log_email" value="{{ form.log_email }}" required/>
                                                     </div>
                                                      <div class="form-group">
-                                                        <input type="password" class="form-control" placeholder="Password *" name="log_pass" value="" required {{ locked_login }} />
+                                                        <input type="password" class="form-control" placeholder="Password *" name="log_pass" value="" required/>
                                                     </div>
                                                     <a href="{{ url_for('osf.recover')}}" ><u>Recover Account</u></a>
-                                                    <input type="submit" class="btnRegister"  value="Login"/>
+
+                                                    {% if not lock_login|int %}
+                                                        <input type="submit" class="btnRegister"  value="Login"/>
+                                                    {% endif %}
                                                 </div>
 
                                                 </div>
@@ -164,7 +163,7 @@
 
                                         <div class="form-group wiz wiz-bump">
                                             <label>Business Contact</label>
-                                            <input type="text" minlength="10" maxlength="11" name="bus_phone" class="form-control" placeholder="Business Phone " value="{{ form.bus_phone }}" />
+                                            <input type="text" minlength="10" maxlength="10" name="bus_phone" class="form-control" placeholder="Business Phone " value="{{ form.bus_phone }}" />
                                         </div>
 
                                       
