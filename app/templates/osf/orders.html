@@ -111,7 +111,7 @@
                                 <td>{{ 'YES' if order.paid == 1 else 'NO'}}</td>
                                 <td>{{ order.filter_state|upper }}</td>
                                 <td>{{ order.company.name }}
-                                    {% if order.status|int == 0 %}
+                                    {% if order.status|int == 0 and order.filter_state|lower == "not sent" %}
                                         <a href="{{ url_for('osf.shop',company=order.company_id) }}" class="btn btn-warning">Shop</a>
                                     {% endif %}
                                 </td>

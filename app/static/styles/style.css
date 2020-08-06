@@ -101,9 +101,13 @@ img {
     cursor: pointer;
 }
 
-.shop_logo:hover {
-    box-shadow: 0 0 5px blue;
+.cart-img {
+    width: 100%;
+    height: 100%;
 }
+/*.shop_logo:hover {
+    box-shadow: 0 0 5px blue;
+}*/
 
 .main-content-wrapper {
     margin-bottom: 35%;

@@ -147,12 +147,17 @@ def contact():
 
 @osf.route('/companies/<int:company_type>/', methods=['GET', 'POST'])
 def companies(company_type):
-
+	comp_type = "All"
 	is_admin = False
+	comps_ = None
 	if "is_admin" in session:
 		is_admin = session["is_admin"]
 
 	fav_companies = []
+
+	if company_type:
+		comps_ = CompanyType.query.filter_by(id=company_type).first()
+
 	business_of_type = Company.query.filter_by(company_type_id=company_type,published=1).all()
 	if current_user.is_authenticated:
 		customer_ = Customer.query.filter_by(email=current_user.email).first()
@@ -162,7 +167,11 @@ def companies(company_type):
 			fav_companies.append(company.company_id)
 	if len(business_of_type) < 1:
 		return redirect(url_for('osf.land'))
-	return render_template("osf/companies.html",title="Companies",resgistered_businesses=business_of_type,is_admin=is_admin,fav_companies=fav_companies)
+
+	if comps_:
+		comp_type = comps_.name
+
+	return render_template("osf/companies.html",title=f"Companies::{comp_type}",resgistered_businesses=business_of_type,is_admin=is_admin,fav_companies=fav_companies)
 
 @osf.route('/account/',defaults={"account_type":None}, methods=['GET', 'POST'])
 @osf.route('/account/<account_type>/', methods=['GET', 'POST'])
@@ -401,6 +410,7 @@ def recover(token):
 @login_required
 def shop(company,category):
 	is_admin = False
+	in_ = "All"
 	if "is_admin" in session:
 		is_admin = session["is_admin"]
 
@@ -425,6 +435,7 @@ def shop(company,category):
 		for product in products_all:
 			for entry in product.categories:
 				if category == entry.category_id: 
+					in_ = entry.category.name
 					products.append(product)	 
 
 		page_products = products[offset: offset + per_page]
@@ -439,12 +450,13 @@ def shop(company,category):
 
 	
 	if customer:
-		active_order = Order.query.filter_by(user_id=current_user.id,company_id=company,status=0,customer_id=customer.id).first()
-
+		active_order = Order.query.filter_by(user_id=current_user.id,company_id=company,status=0,customer_id=customer.id,filter_state="NOT SENT").first()
 		if not active_order:
 			if pos_:
-				active_order = Order(name=randomString(16),pos_id=pos_.id,user_id=current_user.id,company_id=company,order_date=now(),status=0,customer_id=customer.id)
-				error = db_commit_add_or_revert(active_order)
+				new_order = Order(name=randomString(16),pos_id=pos_.id,user_id=current_user.id,company_id=company,order_date=now(),status=0,customer_id=customer.id)
+				error = db_commit_add_or_revert(new_order)
+				if not error:
+					active_order = new_order
 			else:
 				flash("It seems company is not accepting orders at this time.")
 				return redirect(url_for('osf.companies',company_type=company_.company_type_id))
@@ -457,13 +469,13 @@ def shop(company,category):
 		fav_products.append(product.product_id)
 
 
-	return render_template("osf/shop.html",title="Shop",company=company_,is_admin=is_admin,products=page_products,page=page,
-                           per_page=per_page,total=len(products),pagination=pagination,in_category=category,active_order=active_order,fav_products=fav_products)
+	return render_template("osf/shop.html",title=f"Shop::{in_}@{company_.name}",company=company_,is_admin=is_admin,products=page_products,page=page,
+                           per_page=per_page,total=len(products),pagination=pagination,category_name=in_,in_category=category,active_order=active_order,fav_products=fav_products)
 
 
-@osf.route('/shop/order/<int:company>/<int:category>/<int:customer>/<int:item>/<item_name>/', methods=['GET', 'POST'])
+@osf.route('/shop/order/<int:order_id>/<int:company>/<int:category>/<int:customer>/<int:item>/<item_name>/', methods=['GET', 'POST'])
 @login_required
-def add_osf_order(company,category,item,customer,item_name):
+def add_osf_order(order_id,company,category,item,customer,item_name):
 	company_ = Company.query.filter_by(id=company).first()
 	if company_:
 		pos_ = Pos.query.filter_by(company_id=company,active=True).first()
@@ -477,12 +489,8 @@ def add_osf_order(company,category,item,customer,item_name):
 					
 		error = None
 		if pos_:
-			customer_active_order = Order.query.filter_by(user_id=current_user.id,company_id=company,status=0,customer_id=customer).first()
-			if not customer_active_order:
-				customer_active_order = Order(name=randomString(16),pos_id=pos_.id,user_id=current_user.id,company_id=company,order_date=now(),status=0,customer_id=customer)
-				error = db_commit_add_or_revert(customer_active_order)
-			
-			if not error:
+			customer_active_order = Order.query.filter_by(id=order_id,user_id=current_user.id,company_id=company,status=0,customer_id=customer).first()
+			if customer_active_order:
 				orderline_ = OrderLine.query.filter_by(product_id=product.item_code,order_id=customer_active_order.id,name=item_name).first()				
 				if not orderline_:
 					item_tax = 0
@@ -510,9 +518,6 @@ def add_osf_order(company,category,item,customer,item_name):
 						flash("Order updated.")
 				if orderline_:
 					updateOrder(orderline_.order_id)
-			else: 
-				flash(f"error: {error}")
-
 		else:
 			flash("It seems company is not accepting orders at this time.")
 
@@ -580,17 +585,16 @@ def sendorder(order,customer,company):
 		confirmation_msg = f"You have a new order confirmation. Order#{order.id} has been confirmed by customer and requires fulfillment. Log in to your OSFO account for order detail."
 		params = {"type":"confirmation","order":order.id,"message": confirmation_msg,"name":order.company.name,"app_link":url_for('osf.land',_external=True),"rec_link":url_for('home.dashboard',_external=True),"email":order.company.email,"contact":Markup(f'Email: {conf.COMPANY_EMAIL}<br>Mobile: {conf.COMPANY_MOBILE}<br>Telephone: {conf.COMPANY_TELEPHONE}<br><span style="font-size:12px;">You can also reach out to us using the contact us form on the portal.</span><br>')}
 		order.customer.user.add_notification("confirmation", "customer", order.customer.user.id, "Order Confirmation", json.dumps(params, default=json_util.default), 0)
-		
+		if order.filter_state.lower() != "sent":
+			if order.company.contact:
+				res = sms_(f'1{order.company.contact}', confirmation_msg)
+				if "error" in res:
+					flash(res["error"])
+
 		order.filter_state = "sent"
 		error = db_commit_update_or_revert()
 		if not error:
 			flash(f"Order has been sent to {order.company.name}. Please await fulfillment verification.")
-		# if order.company.contact:
-		# 	res = sms_(f'1{order.company.contact}', confirmation_msg)
-		# 	if "error" in res:
-		# 		flash(res["error"])
-
-
 	else:
 		flash(f"{order.company.name} is not processing any orders at the moment. Company closed.")
 

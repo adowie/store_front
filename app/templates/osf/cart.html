@@ -57,12 +57,12 @@
                                         {% for line in order.orderlines %}
                                             <tr>
                                                 <td class="cart_product_img">
-                                                    {% if line.name == 'Base' %}
-                                                        <a href="#"><img src="{{ url_for('static',filename=line.product.image) }}" alt="Product"></a>
+                                                    {% if line.name == 'base' %}
+                                                        <a href="#"><img class="cart-img" src="{{ url_for('static',filename=line.product.image) }}" alt="{{ line.product.name }}"></a>
                                                     {% else %}
                                                         {% for variant in line.product.variants %}
                                                             {% if line.name == variant.name %}
-                                                                <a href="#"><img src="{{ url_for('static',filename=variant.image) }}" alt="Product"></a>
+                                                                <a href="#"><img class="cart-img" src="{{ url_for('static',filename=variant.image) }}" alt="{{ variant.name }}"></a>
                                                             {% endif %}
                                                         {% endfor %}
                                                     {% endif %}
@@ -85,8 +85,10 @@
                                                         &nbsp;
                                                         &nbsp;
                                                         &nbsp;
-                                                   <a href="{{ url_for('osf.remove_orderline',company=order.company_id,order=order.id,line=line.id,customer=order.customer_id)}}"><i class="fa fa-trash"></i>
-                                                    </a>
+                                                        <a href="{{ url_for('osf.remove_orderline',company=order.company_id,order=order.id,line=line.id,customer=order.customer_id)}}">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         {% endfor %}
@@ -121,13 +123,13 @@
                                         <p><center>This order is in [ <sub>fulfilment pending</sub> ] status</center></p>
                                         <p>
                                             <center>
-                                                Contact <span class="company">{{ order.company.name }}</span> to get fulfilment progress 
+                                                Contact <span class="company"><a href="mailto:{{ order.company.email }}">{{ order.company.name }}</a></span> to get fulfilment progress 
                                             </center>
                                         </p>
                                     {% endif %}
                                 {% else %}
                                         <p><center>This order has been flagged as being <span title="fulfilled: If you havent already picked up your order, you need to do so.">fulfilled.</center></p>
-                                        <h6><center><sub>If you did not confirm this order please reach out to <u>{{ order.company.name }}</u> for clarification</sub></center></h6>
+                                        <h6><center><sub>If you did not confirm this order please reach out to <u><a href="mailto:{{ order.company.email }}">{{ order.company.name }}</a></u> for clarification</sub></center></h6>
                                    
                                 {% endif %}
 

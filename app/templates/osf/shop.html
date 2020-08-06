@@ -41,10 +41,20 @@
                 <!--  Catagories  -->
                 <div class="catagories-menu">
                     <ul>
-                        <li><a href="{{ url_for('osf.shop',company=company.id) }}">All</a></li>
+                        {% if category_name == 'All' %}
+                            <li class="active"><a href="{{ url_for('osf.shop',company=company.id) }}">All</a></li>
+                        {% else %}
+                            <li><a href="{{ url_for('osf.shop',company=company.id) }}">All</a></li>
+                        {% endif %}
+                           
+                        {% set active = '' %}
                         {% for entry in company.categories %}
+                            {% if entry.category.name == category_name %}
+                                {% set active = 'active' %}
+                            {% endif %}
+                            
                             {% if entry.category.products|length > 0 %}
-                                <li><a href="{{ url_for('osf.shop',company=company.id,category=entry.category.id) }}">{{ entry.category.name }}</a></li>
+                                <li class="{{ active }}"><a href="{{ url_for('osf.shop',company=company.id,category=entry.category.id) }}">{{ entry.category.name }}</a></li>
                             {% endif %}
                         {% endfor %}
            
@@ -66,10 +76,11 @@
                             </div>
                             <h3><center>You are @ <a href="{{ url_for('osf.company',name=company.name,_id=company.id)}}">{{ company.name }}</a></center></h3>
                             <div class="shop_logo" style="color:#999;font-size:11px;">
-                                {% if company.logo %}
-                                    <img src="{{ url_for('static',filename=company.logo) }}" alt="{{ company.name }}">
+                                {% if company.logo and company.logo != 'None' %}
+                                    <img style="width:50px;height:50px;" src="{{ url_for('static',filename=company.logo) }}" alt="{{ company.name }}">
                                 {% else %}
-                                    <img src="{{ url_for('static',filename='img/core-img/logo.png') }}" alt="{{ company.name }}">
+                                    <img style="width:50px;height:50px;" src="{{ url_for('static',filename='img/core-img/logo.png') }}" alt="{{ company.name }}">
+                                    <br><span>{{ company.name }}</span>
                                 {% endif%}
                             </div>
                         <div class="product-topbar d-xl-flex align-items-end justify-content-between">
@@ -142,7 +153,7 @@
                                     {% endif %}
                                    
                                     <!-- <li><a href="#" data-tip="Add to Wishlist"><i class="fa fa-shopping-bag"></i></a></li> -->
-                                    <li><a href="{{ url_for('osf.add_osf_order',company=company.id,category=in_category,item=product.id,item_name='base',customer=active_order.customer_id )}}" data-tip="Add to Order"><i class="fa fa-plus-square"></i></a></li>
+                                    <li><a href="{{ url_for('osf.add_osf_order',order_id=active_order.id,company=company.id,category=in_category,item=product.id,item_name='base',customer=active_order.customer_id )}}" data-tip="Add to Order"><i class="fa fa-plus-square"></i></a></li>
                                 </ul>
                                 {% if product.discount|int > 0 %}
                                     <span class="product-new-label">
@@ -174,7 +185,7 @@
                                     {{ toMoney(product.price) }}
                                     <!-- <span>$16.00</span> -->
                                 </div>
-                                <a class="add-to-cart" id="item_add_link_{{ product.item_code }}" href="{{ url_for('osf.add_osf_order',company=company.id,category=in_category,item=product.id,item_name='base',customer=active_order.customer_id )}}">ADD TO ORDER</a>
+                                <a class="add-to-cart" id="item_add_link_{{ product.item_code }}" href="{{ url_for('osf.add_osf_order',order_id=active_order.id,company=company.id,category=in_category,item=product.id,item_name='base',customer=active_order.customer_id )}}">ADD TO ORDER</a>
                                  {% for category in product.categories %}
                                        <a href="{{ url_for('osf.shop',company=company.id,category=category.id)}}"><span>{{ category.name }}</span></a>
                                 {% endfor %}

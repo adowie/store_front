@@ -38,7 +38,6 @@ def notify_(notif):
 			if notif.name == "confirmation":
 				account = DDOT(json.loads(notif.params))
 				error = sendOrderConfirmation(account)
-
 	return error
 
 
