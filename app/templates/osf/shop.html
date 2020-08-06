@@ -74,14 +74,19 @@
                            <div class="companies_select">
                                 <a class="btn btn-success" href="{{ url_for('osf.companies',company_type=company.company_type_id) }}">{{ company.company_type.name }}s</a>
                             </div>
-                            <h3><center>You are @ <a href="{{ url_for('osf.company',name=company.name,_id=company.id)}}">{{ company.name }}</a></center></h3>
-                            <div class="shop_logo" style="color:#999;font-size:11px;">
+                            <h5 style="color: #555;"><center>You are in::{{ category_name }} @<a style="color: #777;" href="{{ url_for('osf.company',name=company.name,_id=company.id)}}">{{ company.name }}</a></center></h5>
+                            <div class="shop_logo text-center" style="color:#999;font-size:11px;">
                                 {% if company.logo and company.logo != 'None' %}
                                     <img style="width:50px;height:50px;" src="{{ url_for('static',filename=company.logo) }}" alt="{{ company.name }}">
                                 {% else %}
                                     <img style="width:50px;height:50px;" src="{{ url_for('static',filename='img/core-img/logo.png') }}" alt="{{ company.name }}">
                                     <br><span>{{ company.name }}</span>
                                 {% endif%}
+                                {% if active_order and active_order.orderlines|length > 0 %}
+                                    <a class="btn btn-info" href="{{ url_for('osf.order',order=active_order.id,customer=active_order.customer_id,company=active_order.company_id) }}">
+                                        View Order
+                                    </a>
+                                {% endif %}
                             </div>
                         <div class="product-topbar d-xl-flex align-items-end justify-content-between">
                             <!-- Total Products -->
@@ -95,11 +100,7 @@
                             </div>
                             <!-- Sorting -->
                             <div class="product-sorting d-flex">
-                                {% if active_order and active_order.orderlines|length > 0 %}
-                                    <a class="btn btn-info" href="{{ url_for('osf.order',order=active_order.id,customer=active_order.customer_id,company=active_order.company_id) }}">
-                                        View Order
-                                    </a>
-                                {% endif %}
+                      
                                 <!--<div class="sort-by-date d-flex align-items-center mr-15">
                                     <p>Sort by</p>
                                     <form action="#" method="get">

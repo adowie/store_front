@@ -43,23 +43,23 @@
                         {% set closed="hot closed" %}
                     {% endif %}
 
-                    <div class="container">
-<div class="col-xs-12 col-md-6">
+                  <div class="row">
+<div class="col-md-3">
                 <!-- First product box start here-->
                 <div class="prod-info-main prod-wrap clearfix"> 
                       <div class="row">
                            <div class="col-md-5 col-sm-12 col-xs-12">
                             <div class="product-image">
-                              <div class="text-center">
+                              
                                 {% if business.logo and business.logo != 'None' %}
                                   <img src="{{ url_for('static', filename=business.logo) }}" alt="{{ business.name }}" class="img-responsive">
                                 {% else %}
-                                  <img style="position: absolute; top: 0;width: 60px;height: 60px;" src="{{ url_for('static', filename='img/core-img/logo.png') }}" alt="{{ business.name }}" class="img-responsive">
+                                  <img style="width: 60px;height: 60px;" src="{{ url_for('static', filename='img/core-img/logo.png') }}" alt="{{ business.name }}" class="img-responsive"><br>
 
-                                  {{ business.name }}
+                                  <span  style="color: #999;" >{{ business.name }}</span>
 
                                 {% endif %}
-                              </div>
+                              
                                <span class="tag2 {{ closed }}">
                                  
                                </span>

@@ -532,7 +532,9 @@ img {
     -ms-flex: 0 0 calc(100% - 320px);
     flex: 0 0 calc(100% - 320px);
     width: calc(100% - 320px);
-    max-width: calc(100% - 320px); }
+    max-width: calc(100% - 320px); 
+    min-height: 150px;
+  }
     @media only screen and (min-width: 768px) and (max-width: 991px) {
       .main-content-wrapper .products-catagories-area {
         -webkit-box-flex: 0;
