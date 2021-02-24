@@ -31,7 +31,7 @@ without the requirement to process a payment before order fulfilment. Instead th
 It is a web based software solution written in python/flask
 * Version
 1.0
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+
 
 ### How do I get set up? ###
 initialize the database with flask db init -> flask db migrate -> flask db upgrade
@@ -40,7 +40,5 @@ then start the python dev server python3 run.py
 ### Who do I talk to? ###
 * Repo owner and admin
 Alex Dowie -> adowie01@gmail.com 
-Jessica McBean -> mcbeanjessica5@gmail.com
 * Other community or team contact
 mobile -> (876)276-0827
-mobile -> (876)813-9529
